@@ -12,6 +12,12 @@ def current_year_month() -> list:
     year, month = last_day_of_previous_month.year, f"{last_day_of_previous_month.month:02d}"
     return [year, month]
 
+def date_for_table():
+    year_month = current_year_month()
+    year = str(year_month[0])
+    month_number = str(year_month[1])
+    result = f"{month_number}_{year}"
+    return result
 
 def month_to_abbrev(month: int) -> str:
     """
@@ -24,3 +30,8 @@ def month_to_abbrev(month: int) -> str:
         9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
     }
     return month_abbreviations.get(month, "InvalidMonth")
+
+if __name__ == "__main__":
+    date = current_year_month()
+    date = [str(element) for element in date]
+    print(date)

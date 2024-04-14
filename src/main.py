@@ -3,9 +3,11 @@ import os
 from memory_profiler import profile
 
 from functions.generate_dl_link import generate_dl_link
+from functions.date_month import date_for_table
 from functions.motherduck_connection import connect_to_motherduck
 from functions.get_creds import get_secrets
 from functions.extract_load_data import fetch_data, process_batch_and_insert_to_duckdb
+from functions.motherduck_create_table import motherduck_create_table
 
 
 @profile
@@ -20,10 +22,15 @@ def main():
     secrets = get_secrets("streetmanagerpipeline")
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
-    schema = secrets["schema"]
-    table = secrets["table"]
+    schema = secrets["schema_24"]
+    
+    # Create table variable
+    table = date_for_table()
 
+    # Initiate motherduck connection and table 
     conn = connect_to_motherduck(token, database)
+    
+    motherduck_create_table(conn, schema, table)
 
     link = generate_dl_link()
     data = fetch_data(link)

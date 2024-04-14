@@ -113,7 +113,7 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
                 df = pd.DataFrame(flattened_data)
                 df = df.fillna('No Value')
                 # Insert the batch into DuckDB
-                conn.execute(f"INSERT INTO {schema}.{table} SELECT * FROM df")
+                conn.execute(f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df""")
                 logger.success("Batch processed!")
                 # Reset the batch for the next iteration
                 flattened_data = []
@@ -128,7 +128,7 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
         df = pd.DataFrame(flattened_data)
         df = df.fillna('No Value')
         # Insert the remaining data into DuckDB
-        conn.execute(f"INSERT INTO {schema}.{table} SELECT * FROM df")
+        conn.execute(f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df""")
         logger.success("Final batch processed!")
 
     logger.success("Data processing complete - all batches processed")
