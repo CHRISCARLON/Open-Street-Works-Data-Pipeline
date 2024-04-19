@@ -50,7 +50,7 @@ def motherduck_create_table(conn, schema, table):
                 collaboration_type_ref VARCHAR
             );"""
             conn.execute(table_command)
-            print("Table created successfully.")
+            print("MotherDuck Table created successfully.")
         except Exception as e:
             print(f"An error occurred: {e}")
             raise

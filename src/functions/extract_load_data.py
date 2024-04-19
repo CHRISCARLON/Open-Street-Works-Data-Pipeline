@@ -42,6 +42,11 @@ def flatten_json(json_data):
     return flattened_data
 
 
+def quick_col_rename(df):
+    df.columns = [col.replace("object_data.", "") if "object_data." in col else col for col in df.columns]
+    return df
+
+
 def check_data_schema(zipped_chunks):
     """
     Reads up to 10 JSON files from zipped chunks and returns a Pandas DataFrame.
@@ -51,7 +56,7 @@ def check_data_schema(zipped_chunks):
         zipped_chunks: Iterable of zipped chunks containing JSON files.
     
     """
-    max_files = 10
+    max_files = 50
     file_count = 0
     data_list = []
 
@@ -111,7 +116,8 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
             # Process and insert data in batches
             if batch_count >= batch_limit:
                 df = pd.DataFrame(flattened_data)
-                df = df.fillna('No Value')
+                df = df.fillna('NULL')
+                df = quick_col_rename(df)
                 # Insert the batch into DuckDB
                 conn.execute(f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df""")
                 logger.success("Batch processed!")
@@ -126,7 +132,8 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
     # Insert any remaining data after exiting the loop
     if flattened_data:
         df = pd.DataFrame(flattened_data)
-        df = df.fillna('No Value')
+        df = df.fillna('NULL')
+        df = quick_col_rename(df)
         # Insert the remaining data into DuckDB
         conn.execute(f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df""")
         logger.success("Final batch processed!")

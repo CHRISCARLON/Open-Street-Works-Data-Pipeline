@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-def current_year_month() -> list:
+def last_month() -> list:
     """
     Subtract one day from the first day of the current month to get a day in the previous month
     Should return [2024, 3] if you run it in April 2024
@@ -13,7 +13,7 @@ def current_year_month() -> list:
     return [year, month]
 
 def date_for_table():
-    year_month = current_year_month()
+    year_month = last_month()
     year = str(year_month[0])
     month_number = str(year_month[1])
     result = f"{month_number}_{year}"
@@ -32,6 +32,5 @@ def month_to_abbrev(month: int) -> str:
     return month_abbreviations.get(month, "InvalidMonth")
 
 if __name__ == "__main__":
-    date = current_year_month()
-    date = [str(element) for element in date]
+    date = date_for_table()
     print(date)
