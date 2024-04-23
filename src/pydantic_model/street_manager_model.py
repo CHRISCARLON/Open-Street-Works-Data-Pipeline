@@ -18,7 +18,7 @@ class StreetManagerPermitModel(BaseModel):
     version: Optional[int]
 
 # Validate a small sample against the model
-def validate_dataframe_sample(df: pd.DataFrame, model: BaseModel, sample_size: int = 50):
+def validate_dataframe_sample(df: pd.DataFrame, model: BaseModel, sample_size: int = 50) -> list:
     errors = []
     # Ensure sample size is not larger than the DataFrame
     sample_size = min(sample_size, len(df))
@@ -33,7 +33,7 @@ def validate_dataframe_sample(df: pd.DataFrame, model: BaseModel, sample_size: i
     return errors
 
 # Raise a ValueError if the list returned contains something - if empty continue as normal as no error
-def handle_validation_errors(validation_errors):
+def handle_validation_errors(validation_errors: list):
     if validation_errors:
         # Log each validation error
         for error in validation_errors:

@@ -23,6 +23,13 @@ from pydantic_model.street_manager_model import (
 @profile
 def main():
     
+    """
+    Monthly Main will process the latest month of data. 
+    
+    If you run this in April then you will generate the D/L link for the data from March.
+    
+    """
+    
     # Get the initial memory usage
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
 

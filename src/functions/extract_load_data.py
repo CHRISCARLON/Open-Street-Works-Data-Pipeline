@@ -9,21 +9,23 @@ from tqdm import tqdm
 
 def fetch_data(dl_url):
     """
-    Stream unzip data from DfT website for the street manager data you want
+    Stream data from DfT website for the street manager data you want
 
     Args: 
         takes the url for the street manager data for exmaple:
         "https://opendata.manage-roadworks.service.gov.uk/permit/2024/03.zip"
-        
+    
+    It should return chunks of the data to be processed further
+    
     """
     with requests.get(dl_url, stream=True, timeout=30) as chunk:
         yield from chunk.iter_content(chunk_size=6500)
 
 
-def flatten_json(json_data):
+def flatten_json(json_data) -> dict:
     """
-    Street manager archived open data comes in nested json files.
-    This function flattens the structure.
+    Street manager archived open data comes in nested json files
+    This function flattens the structure
     
     Args:
         json_data to flatten
@@ -42,15 +44,24 @@ def flatten_json(json_data):
     return flattened_data
 
 
-def quick_col_rename(df):
+def quick_col_rename(df) -> pd.DataFrame:
+    """
+    Need to rename the columns following the flatten json function output
+    
+    This is because a lot of data was initially nested within "object_data"
+    
+    This will remove "object data." from the column names
+    
+    """
     df.columns = [col.replace("object_data.", "") if "object_data." in col else col for col in df.columns]
     return df
 
 
 def check_data_schema(zipped_chunks):
     """
-    Reads up to 10 JSON files from zipped chunks and returns a Pandas DataFrame.
-    This is so you can assess the data structure. 
+    Reads 50 JSON files from zipped chunks and returns a Pandas DataFrame.
+    
+    This is so you can assess the data structure and become familiar with it. 
     
     Args:
         zipped_chunks: Iterable of zipped chunks containing JSON files.
@@ -87,9 +98,9 @@ def check_data_schema(zipped_chunks):
 
 def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
     """
-    Streams data from DfT into mother duck. 
-    Process in batches of 50,000.
-    Usually around 1 million jsons to proccess. 
+    Streams data from DfT into MotherDuck. 
+    Process data in batches of 50,000.
+    Usually around 1 million jsons to proccess per month. 
     
     Args:
         data to be streamed 
@@ -119,23 +130,42 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
                 df = df.fillna('NULL')
                 df = quick_col_rename(df)
                 # Insert the batch into DuckDB
-                conn.execute(f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df""")
+                column_names = df.columns.tolist()
+                columns_sql = ', '.join(column_names)
+                placeholders = ', '.join([f"df.{name}" for name in column_names])
+                insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
+                conn.execute(insert_sql)
                 logger.success("Batch processed!")
                 # Reset the batch for the next iteration
                 flattened_data = []
                 batch_count = 0
 
         except Exception as e:
-            logger.warning(f"Error processing {file}: {e}")
+            logger.error(f"{e}")
+            logger.error(f"Error processing {file} with data: {flattened_item}")
+            debug_df = pd.DataFrame(flattened_item)
+            print(debug_df)
+            print(debug_df.dtypes)
             raise
 
-    # Insert any remaining data after exiting the loop
-    if flattened_data:
-        df = pd.DataFrame(flattened_data)
-        df = df.fillna('NULL')
-        df = quick_col_rename(df)
-        # Insert the remaining data into DuckDB
-        conn.execute(f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df""")
-        logger.success("Final batch processed!")
+    try:
+        if flattened_data:
+            df = pd.DataFrame(flattened_data)
+            df = df.fillna('NULL')
+            df = quick_col_rename(df)
+            # Insert the remaining data into DuckDB
+            column_names = df.columns.tolist()
+            columns_sql = ', '.join(column_names)
+            placeholders = ', '.join([f"df.{name}" for name in column_names])
+            insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
+            conn.execute(insert_sql)
+            logger.success("Batch processed!")
+        logger.success("Data processing complete - all batches have been processed")
 
-    logger.success("Data processing complete - all batches processed")
+    except Exception as e:
+        logger.error(f"{e}")
+        logger.error(f"Error processing {file} with data: {flattened_item}")
+        debug_df = pd.DataFrame(flattened_item)
+        print(debug_df)
+        print(debug_df.dtypes)
+        raise

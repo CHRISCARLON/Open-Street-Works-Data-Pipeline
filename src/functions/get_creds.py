@@ -5,7 +5,8 @@ from loguru import logger
 
 def get_secrets(secret_name, region_name="eu-west-2") -> json:
     """
-    Create a Secrets Manager client. 
+    Create an AWS Secrets Manager client. 
+    
     Returns a JSON with environment variables. 
 
     """

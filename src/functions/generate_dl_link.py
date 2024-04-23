@@ -3,7 +3,9 @@ from .date_month import current_year_month
 def generate_dl_link() -> str:
     """
     Function to generate download link. 
-    Returns the url required to download the street manager data. 
+    
+    Returns the url required to download the Street Manager data. 
+    
     """
     year_month = current_year_month()
     year, month = str(year_month[0]), str(year_month[1])

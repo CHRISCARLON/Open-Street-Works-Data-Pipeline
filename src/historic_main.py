@@ -22,11 +22,22 @@ from pydantic_model.street_manager_model import (
 @profile
 def main():
     
+    """
+    Historic Main will process a batch of months.
+    
+    Specify a time frame and process 1 to 12 months of data for a particular year.  
+    
+    generate_monthly_download_links(2023, 7, 13) = data for July 2023 to December 2023
+    
+    """
+    
     # Get initial memory usage
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
 
     # Generate links
-    links = generate_monthly_download_links(2023, 13)
+    # Pick a year, pick a starting month (e.g. 2 would be Feb), pick and end month (e.g. 13 would be Dec)
+    # 13 = December due to Python indexing 
+    links = generate_monthly_download_links(2023, 7, 13)
 
     # Credentials for MotherDuck
     secrets = get_secrets("streetmanagerpipeline")
@@ -55,7 +66,7 @@ def main():
         handle_validation_errors(validate)
         print(test_df.dtypes)
 
-        # Process permit data
+        # If checks pass, then process permit data
         permit_data = fetch_data(link)
         process_batch_and_insert_to_duckdb(permit_data, conn, schema, table)
         logger.success(f"Data for {table} has been processed!")

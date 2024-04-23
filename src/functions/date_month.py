@@ -12,7 +12,12 @@ def last_month() -> list:
     year, month = last_day_of_previous_month.year, f"{last_day_of_previous_month.month:02d}"
     return [year, month]
 
-def date_for_table():
+def date_for_table() -> str:
+    """
+    Creates a formatted string from a list with 2 elemnts a year and a date
+    Should return "03_2024" if you feed in [2024, "03"] as an arg
+    
+    """
     year_month = last_month()
     year = str(year_month[0])
     month_number = str(year_month[1])
@@ -22,15 +27,19 @@ def date_for_table():
 def month_to_abbrev(month: int) -> str:
     """
     Function to convert a month number to its abbreviation
-
+    Should return "Mar" if you feed in 3 as an arg
     """
     month_abbreviations = {
         1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr",
         5: "May", 6: "Jun", 7: "Jul", 8: "Aug",
         9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
     }
-    return month_abbreviations.get(month, "InvalidMonth")
+    return month_abbreviations.get(month, "Invalid Month: Input a number from 1 to 12")
 
 if __name__ == "__main__":
-    date = date_for_table()
-    print(date)
+    last_month_example = last_month()
+    print(last_month_example)
+    date_example = date_for_table()
+    print(date_example)
+    abbreviation_example = month_to_abbrev()
+    print(abbreviation_example)
