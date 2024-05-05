@@ -7,6 +7,7 @@ from functions.historic_main_links import generate_monthly_download_links
 from functions.motherduck_create_table import motherduck_create_table
 from functions.motherduck_connection import connect_to_motherduck
 from functions.get_creds import get_secrets
+from functions.creds import secret_name
 from functions.extract_load_data import (
     fetch_data, 
     process_batch_and_insert_to_duckdb, 
@@ -20,7 +21,7 @@ from pydantic_model.street_manager_model import (
 )
 
 @profile
-def main():
+def main(schema_name, year_int, start_month_int, end_month_int):
     
     """
     Historic Main will process a batch of months.
@@ -37,13 +38,13 @@ def main():
     # Generate links
     # Pick a year, pick a starting month (e.g. 2 would be Feb), pick and end month (e.g. 13 would be Dec)
     # 13 = December due to Python indexing 
-    links = generate_monthly_download_links(2023, 7, 13)
+    links = generate_monthly_download_links(year_int, start_month_int, end_month_int)
 
     # Credentials for MotherDuck
-    secrets = get_secrets("streetmanagerpipeline")
+    secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
-    schema = secrets["schema_23"]
+    schema = secrets[schema_name]
     
     # Initiate motherduck connection
     conn = connect_to_motherduck(token, database)
@@ -78,5 +79,6 @@ def main():
     logger.success("Data for all links have been processed!")
     print(f"Memory usage: {memory_usage_mb:.2f} MB")
 
-if __name__ =="__main__":
-    main()
+if __name__=="__main__":
+    # Define a schema, year (always same year as schema), a starting month, and an ending month!
+    main("schema_20", 2020, 7, 13)

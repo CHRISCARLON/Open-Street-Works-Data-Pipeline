@@ -164,6 +164,7 @@ pyrightconfig.json
 ruff.toml
 .ruff_cache
 .vscode
+creds.py
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

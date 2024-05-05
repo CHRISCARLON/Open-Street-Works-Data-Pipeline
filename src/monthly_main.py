@@ -7,6 +7,7 @@ from functions.date_month import date_for_table
 from functions.motherduck_create_table import motherduck_create_table
 from functions.motherduck_connection import connect_to_motherduck
 from functions.get_creds import get_secrets
+from functions.creds import secret_name
 from functions.extract_load_data import (
     fetch_data, 
     process_batch_and_insert_to_duckdb, 
@@ -21,7 +22,7 @@ from pydantic_model.street_manager_model import (
 
 
 @profile
-def main():
+def main(schema_name):
     
     """
     Monthly Main will process the latest month of data. 
@@ -43,10 +44,10 @@ def main():
     print(test_df.dtypes)
 
     # Credentials for MotherDuck
-    secrets = get_secrets("streetmanagerpipeline")
+    secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
-    schema = secrets["schema_24"]
+    schema = secrets[schema_name]
     
     # Create MotherDuck table date
     table = date_for_table()
@@ -73,4 +74,5 @@ def main():
 
 
 if __name__ =="__main__":
-    main()
+    # Define schema for current year
+    main("schema_24")
