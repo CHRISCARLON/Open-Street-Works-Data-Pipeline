@@ -115,6 +115,10 @@ For example..
 >[!NOTE]
 > For the most recent permit data use **monthly_permit_main.py** and for historic data use **historic_permit_main.py**.  
 
+>[!IMPORTANT]
+> Please make sure you have configured everything before running the pipeline. 
+> I'd recommend going through the 2 main.py files and become comfortable with them first. 
+
 ```bash
 python src/monthly_permit_main.py
 
