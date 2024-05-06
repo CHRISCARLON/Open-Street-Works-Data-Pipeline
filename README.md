@@ -95,7 +95,7 @@ Use the default 'my_db' that is provided with your new MotherDuck account and cr
 ### 6. Run the Pipeline
 
 >[!NOTE]
-> For the most recent permit data use "monthly_permit_main.py" for historic data use "historic_permit_main.py".  
+> For the most recent permit data use **monthly_permit_main.py** and for historic data use **historic_permit_main.py**.  
 
 ```bash
 python src/monthly_permit_main.py
