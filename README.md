@@ -51,9 +51,8 @@ It currently only processes Street Manager Permit data.
 ### 0. Pre-Requisites 
 
 1. You'll need Python installed locally on your system - I use Python 3.11.
-2. You'll need to pip install poetry to install the dependencies.
-3. You'll need a MotherDuck account. 
-4. You'll need an AWS service account. 
+2. You'll need a MotherDuck account - if you want to use MotherDuck as your end destination then you'll need to make sure that you have env variables set up that point to the correct databases and schemas when you start creating your own tables. 
+3. You'll need an AWS service account - if you want to use the same method as me for storing and retrieving env variables then you'll need to use AWS Secrets Manager. 
 
 ### 1. Clone the Repository
 
@@ -79,17 +78,19 @@ Poetry will read the pyproject.toml file and install the required packages into 
 
 ### 4. Set Up AWS Secrets Manager
 Create an [AWS account](https://aws.amazon.com) if you don't have one already.
-Navigate to the AWS Secrets Manager console and create a new secret to store your environment variables. Update the code to retrieve the secrets using the AWS SDK (boto3). Please note that there are charges when using AWS Secrets Manager. 
+Navigate to the AWS Secrets Manager console and create a new secret to store your environment variables. Call the below fucntion in the code to retrieve your secrets using the AWS SDK (boto3). 
+Please note that there are charges when using AWS Secrets Manager - but it's peanuts. 
 
-Alternatively, you can use a different method to manage environment variables, such as a .env file or another secrets management tool.
+<img width="808" alt="Screenshot 2024-05-06 at 20 34 00" src="https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/2a99f555-6b8f-4586-8b2f-a7471911bae1">
+
+**Alternatively, you can use a different method to manage environment variables, such as a .env file or another secrets management tool.**
 
 ### 5. Set Up MotherDuck
 Sign up for a MotherDuck account at [MotherDuck](https://motherduck.com).
 Obtain the necessary credentials and connection details for your MotherDuck account - a MotherDuck Token, for example.
+Use the default 'my_db' that is provided with your new MotherDuck account and create database schemas for each year - this is where you'll load your data tables for each month of the relevant year. 
 
-Create a data 
-
-Update the code to connect to MotherDuck using the provided credentials.
+![Screenshot 2024-05-06 at 20 28 45](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/d98e53ed-983d-41b4-ad17-ac99d1d59a98)
 
 ### 6. Run the Pipeline
 
