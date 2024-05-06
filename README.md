@@ -2,7 +2,7 @@
 
 **This repository contains an efficient ETL pipeline for processing DfT's Street Manager archived permit data.** 
 
-### DfT-Street-Manager-Pipeline in 3 points
+### DfT-Street-Manager-Pipeline in 3 points:
 
 1. **It's fast!** Process an entire month of archived permit data ready for analysis in around 5 minutes. Process an entire year of archived permit data ready for anylsis in around 1 hour. You could process all archived pemit data from 2020 to 2024 in the morning and be writing SQL queries to analyse the data in the afternoon. All of this will be kept 100% in memory so no need to deal with saving files to disk!. 
 
