@@ -26,7 +26,7 @@ Here are a few painpoints that I've experienced in the past:
 
     This means that:
 
-    - Processing times can become slow if you attempt to keep everyting in memory without proper batch processing techniques - especially if you're using a library such as Pandas. 
+    - Processing times can become slow if you attempt to keep everything in memory without proper batch processing techniques - especially if you're using a library such as Pandas. 
 
 ### Please follow the steps below to clone, set up, and run the project.
 
