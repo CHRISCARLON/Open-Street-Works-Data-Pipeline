@@ -87,7 +87,7 @@ Poetry will read the pyproject.toml file and install the required packages into 
 ### 4. Set Up AWS Secrets Manager
 Create an [AWS account](https://aws.amazon.com) if you don't have one already.
 
-If you're not comfortable using the AWS CLI the navigate to the AWS Secrets Manager console in your browser and create a new secret to store your environment variables. 
+If you're not comfortable using the AWS CLI then navigate to the AWS Secrets Manager console in your browser and create a new secret to store your environment variables. 
 
 At runtime, call the below function in the code to retrieve your secrets using the AWS SDK (boto3).
 
