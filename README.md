@@ -1,4 +1,4 @@
-# Quick Start Guide for DfT-Street-Manager-Pipeline
+# Quickstart Guide for DfT-Street-Manager-Pipeline
 
 **This repository contains an efficient ETL pipeline for processing DfT's Street Manager archived permit data.** 
 
@@ -22,13 +22,13 @@ Here are a few painpoints that I've experienced in the past:
 
     - You may need to manually download the file and use WinRAR (Windows) or Utility Arhive (Mac) to unzip it - this can take a while (30 minutes) and adds unwanted delays as well as taking up disk space.     
 
-2. Each month of archived permit data is around 1gb in size and contains around 1+ million individual json files representing permit notification records. 
+2. Each month of archived permit data is around 1gb in size and contains around 1+ million individual json files representing individual permit notification records. 
 
     This means that:
 
-    - Processing times can become slow if you try keep everyting in memory without proper batch processing techniques - especially if you're using a library such as Pandas. 
+    - Processing times can become slow if you attempt to keep everyting in memory without proper batch processing techniques - especially if you're using a library such as Pandas. 
 
-### Please follow the steps below to clone and set up the project.
+### Please follow the steps below to clone, set up, and run the project.
 
 > [!NOTE]  
 > **This project is under active construction**. 
@@ -41,18 +41,26 @@ It currently only processes Street Manager Permit data.
 - **Activity Data**: 🚫
 
 >[!NOTE]
-> **Instructions to deploy to the cloud (GCP) are coming soon!** 
-
+> **Instructions to deploy this ETL pipeline fully to the cloud (GCP Compute Engine) using Terraform are coming soon!** 
 
 > [!IMPORTANT]
-> This is only meant as a quick start guide!
+> This is only meant as a quickstart guide!
 > You will need to complete a few extra steps before being able to fully deploy this pipeline.
 
 ### 0. Pre-Requisites 
 
 1. You'll need Python installed locally on your system - I use Python 3.11.
-2. You'll need a MotherDuck account - if you want to use MotherDuck as your end destination then you'll need to make sure that you have env variables set up that point to the correct databases and schemas when you start creating your own tables. 
+2. You'll need a MotherDuck account.  
 3. You'll need an AWS service account - if you want to use the same method as me for storing and retrieving env variables then you'll need to use AWS Secrets Manager. 
+4. You'll need to ensure you have the correct environment variables. 
+
+    If you follow my set up you'll need...
+
+    - An AWS secret name (the secrets ID that you chose for your env variables and use to retrieve them).
+    - A MotherDuck connection token.
+    - A MotherDuck database name. 
+    
+    If you want to use MotherDuck as your end destination then you'll need to make sure that you have env variables set up that point to the correct database and schemas when you start creating your own tables.
 
 ### 1. Clone the Repository
 
@@ -78,7 +86,11 @@ Poetry will read the pyproject.toml file and install the required packages into 
 
 ### 4. Set Up AWS Secrets Manager
 Create an [AWS account](https://aws.amazon.com) if you don't have one already.
-Navigate to the AWS Secrets Manager console and create a new secret to store your environment variables. Call the below fucntion in the code to retrieve your secrets using the AWS SDK (boto3). 
+
+If you're not comfortable using the AWS CLI the navigate to the AWS Secrets Manager console in your browser and create a new secret to store your environment variables. 
+
+At runtime, call the below function in the code to retrieve your secrets using the AWS SDK (boto3).
+
 Please note that there are charges when using AWS Secrets Manager - but it's peanuts. 
 
 <img width="808" alt="Screenshot 2024-05-06 at 20 34 00" src="https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/2a99f555-6b8f-4586-8b2f-a7471911bae1">
@@ -87,8 +99,14 @@ Please note that there are charges when using AWS Secrets Manager - but it's pea
 
 ### 5. Set Up MotherDuck
 Sign up for a MotherDuck account at [MotherDuck](https://motherduck.com).
+
 Obtain the necessary credentials and connection details for your MotherDuck account - a MotherDuck Token, for example.
-Use the default 'my_db' that is provided with your new MotherDuck account and create database schemas for each year - this is where you'll load your data tables for each month of the relevant year. 
+
+You can use the default **my_db** that is provided with your new MotherDuck account, but I recommend that you create a specific database for your permit data. 
+
+Create database schemas for each year - this is where you'll load your data tables for each month of the relevant year. 
+
+For example..
 
 ![Screenshot 2024-05-06 at 20 28 45](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/d98e53ed-983d-41b4-ad17-ac99d1d59a98)
 
@@ -106,3 +124,9 @@ python src/historic_permit_main.py
 ```
 
 This will execute the pipeline, process the Street Manager permit data, and then load it into MotherDuck for further processing and/or analytics.
+
+### 7. Analyse the Street Manager permit data and/or perform further transformations
+
+Leverage MotherDuck's serverless execution to run analysis on your permit data and/or normalise it further and create new table relationships. 
+
+I recommend using the permit data in conjunction with Geo Place's [SWA Code list](https://www.geoplace.co.uk/local-authority-resources/street-works-managers/view-swa-codes) - enabling you to build sector level analysis. 
