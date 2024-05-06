@@ -1,4 +1,4 @@
-# Expermimental 
+# Experimental 
 
 This is a place to experiment with different approaches to processing Street Manager Open Data.
 
