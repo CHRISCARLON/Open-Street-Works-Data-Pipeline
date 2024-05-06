@@ -3,12 +3,12 @@ import os
 from memory_profiler import profile
 from loguru import logger
 
-from functions.historic_main_links import generate_monthly_download_links
-from functions.motherduck_create_table import motherduck_create_table
-from functions.motherduck_connection import connect_to_motherduck
-from functions.get_creds import get_secrets
-from functions.creds import secret_name
-from functions.extract_load_data import (
+from permit_functions.historic_main_links import generate_monthly_download_links
+from permit_functions.motherduck_create_table import motherduck_create_table
+from permit_functions.motherduck_connection import connect_to_motherduck
+from permit_functions.get_creds import get_secrets
+from permit_functions.creds import secret_name
+from permit_functions.extract_load_data import (
     fetch_data, 
     process_batch_and_insert_to_duckdb, 
     check_data_schema, 
@@ -24,12 +24,15 @@ from pydantic_model.street_manager_model import (
 def main(schema_name, year_int, start_month_int, end_month_int):
     
     """
-    Historic Main will process a batch of months.
+    Historic Permit Main will process batches of historic data.
     
-    Specify a time frame and process 1 to 12 months of data for a particular year.  
+    Specify a time period and process 1 to 12 months of data for a particular year and/or years.  
     
-    generate_monthly_download_links(2023, 7, 13) = data for July 2023 to December 2023
+    Example usgae:
     
+    main("schema_23", 2023, 1, 13) - will process all data from 2023 
+    
+    main("schema_21", 2021, 7, 13) - will only process data from July 2021 to December 2021
     """
     
     # Get initial memory usage
@@ -81,4 +84,8 @@ def main(schema_name, year_int, start_month_int, end_month_int):
 
 if __name__=="__main__":
     # Define a schema, year (always same year as schema), a starting month, and an ending month!
-    main("schema_20", 2020, 7, 13)
+    main("schema_21", 2021, 1, 13)
+    
+    # Process data accross multiple years if required. 
+    # main("schema_23", 2023, 1, 13)
+    # main("schema_22", 2022, 1, 13)

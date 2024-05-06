@@ -2,13 +2,13 @@ import psutil
 import os
 from memory_profiler import profile
 
-from functions.generate_dl_link import generate_dl_link
-from functions.date_month import date_for_table
-from functions.motherduck_create_table import motherduck_create_table
-from functions.motherduck_connection import connect_to_motherduck
-from functions.get_creds import get_secrets
-from functions.creds import secret_name
-from functions.extract_load_data import (
+from permit_functions.generate_dl_link import generate_dl_link
+from permit_functions.date_month import date_for_table
+from permit_functions.motherduck_create_table import motherduck_create_table
+from permit_functions.motherduck_connection import connect_to_motherduck
+from permit_functions.get_creds import get_secrets
+from permit_functions.creds import secret_name
+from permit_functions.extract_load_data import (
     fetch_data, 
     process_batch_and_insert_to_duckdb, 
     check_data_schema, 
@@ -25,9 +25,9 @@ from pydantic_model.street_manager_model import (
 def main(schema_name):
     
     """
-    Monthly Main will process the latest month of data. 
+    Monthly Permit Main will process the latest Street Manager Permit data. 
     
-    If you run this in April then you will generate the D/L link for the data from March.
+    If you run this in April then you will generate the D/L link for March's data.
     
     """
     
@@ -74,5 +74,6 @@ def main(schema_name):
 
 
 if __name__ =="__main__":
-    # Define schema for current year
+    # Define schema for the current year
     main("schema_24")
+
