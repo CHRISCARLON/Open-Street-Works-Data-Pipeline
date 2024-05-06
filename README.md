@@ -85,7 +85,9 @@ Alternatively, you can use a different method to manage environment variables, s
 
 ### 5. Set Up MotherDuck
 Sign up for a MotherDuck account at [MotherDuck](https://motherduck.com).
-Obtain the necessary credentials and connection details for your MotherDuck instance - a MotherDuck Token, for example.
+Obtain the necessary credentials and connection details for your MotherDuck account - a MotherDuck Token, for example.
+
+Create a data 
 
 Update the code to connect to MotherDuck using the provided credentials.
 
