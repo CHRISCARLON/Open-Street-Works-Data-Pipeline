@@ -2,6 +2,11 @@
 
 **This repository contains an efficient ETL pipeline for processing DfT's Street Manager archived permit data.** 
 
+>[!NOTE]
+> **Next Steps:**
+> 1. Deploy to a Google Compute Engine via Terraform.
+> 2. Integrate Scottish Road Works Register Open Data. 
+
 ### DfT-Street-Manager-Pipeline in 3 points:
 
 1. **It's fast!** Process an entire month of archived permit data ready for analysis in around 5 minutes. Process an entire year of archived permit data ready for anylsis in around 1 hour. You could process all archived pemit data from 2020 to 2024 in the morning and be writing SQL queries to analyse the data in the afternoon. All of this will be kept 100% in memory so no need to deal with saving files to disk!. 
@@ -20,7 +25,7 @@ Here are a few painpoints that I've experienced in the past:
 
     This means that:
 
-    - You may need to manually download the file and use WinRAR (Windows) or Utility Arhive (Mac) to unzip it - this can take a while (30 minutes) and adds unwanted delays as well as taking up disk space.     
+    - You may need to manually download the file and use WinRAR (Windows) or Utility Archive (Mac) to unzip it - this can take a while (30+ minutes) and adds unwanted delays as well as taking up disk space.     
 
 2. Each month of archived permit data is around 1gb in size and contains around 1+ million individual json files representing individual permit notification records. 
 
@@ -32,13 +37,8 @@ Here are a few painpoints that I've experienced in the past:
 
 > [!NOTE]  
 > **This project is under active construction**. 
-It currently only processes Street Manager Permit data.
-
-- **Permit Data**: ✅
-
-- **Section 58 Data**: 🚫
-
-- **Activity Data**: 🚫
+> It currently only processes Street Manager Permit data.
+> I may include Section 58 and Activity data in the future. 
 
 >[!NOTE]
 > **Instructions to deploy this ETL pipeline fully to the cloud (GCP Compute Engine) using Terraform are coming soon!** 
