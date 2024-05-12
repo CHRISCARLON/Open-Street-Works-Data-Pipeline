@@ -1,7 +1,7 @@
 from diagrams import Diagram, Cluster
 from diagrams.generic.blank import Blank
 
-with Diagram("Scottish Road Works Register", show=True, direction="TB"):
+with Diagram("Scottish Road Works Register", show=True, direction="TB", outformat="png", filename="src/diagrams_as_code/scottish_road_works_data"):
     with Cluster("000 – Licensing and Information"):
         rt_000 = Blank("Text")
         
