@@ -14,7 +14,7 @@ def main(schema_name, batch_limit):
     schema = secrets[schema_name]
     
     conn = connect_to_motherduck(token, database)
-    url = dl_link_creator("16")
+    url = dl_link_creator("14")
     dl_url = fetch_presigned_url(url)
     dl_data = fetch_data(dl_url)
     process_batches(dl_data, batch_limit, conn, schema)
