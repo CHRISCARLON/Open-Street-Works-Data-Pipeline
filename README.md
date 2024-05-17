@@ -1,5 +1,5 @@
 >[!CAUTION]
-> Work in progress - currently integrating Scottish Road Works Register. 
+> Currently integrating Scottish Road Works Register. 
 
 >[!NOTE]
 > Project will be renamed "Street Works Data Pipeline". 
