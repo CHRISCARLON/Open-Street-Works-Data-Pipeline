@@ -19,7 +19,7 @@ def fetch_data(dl_url):
     
     """
     with requests.get(dl_url, stream=True, timeout=30) as chunk:
-        yield from chunk.iter_content(chunk_size=6500)
+        yield from chunk.iter_content(chunk_size=1048576)
 
 
 def flatten_json(json_data) -> dict:
@@ -99,7 +99,7 @@ def check_data_schema(zipped_chunks):
 def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
     """
     Streams data from DfT into MotherDuck. 
-    Process data in batches of 50,000.
+    Process data in batches of 75,000.
     Usually around 1 million jsons to proccess per month. 
     
     Args:
@@ -109,7 +109,7 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
         table
     
     """
-    batch_limit = 50000
+    batch_limit = 75000
     batch_count = 0
     flattened_data = []
 
@@ -137,7 +137,7 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
                 conn.execute(insert_sql)
                 logger.success("Batch processed!")
                 # Reset the batch for the next iteration
-                flattened_data = []
+                flattened_data.clear()
                 batch_count = 0
 
         except Exception as e:
