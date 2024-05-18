@@ -14,11 +14,11 @@ def main(schema_name, batch_limit):
     schema = secrets[schema_name]
     
     conn = connect_to_motherduck(token, database)
-    url = dl_link_creator("14")
+    url = dl_link_creator("15")
     dl_url = fetch_presigned_url(url)
     dl_data = fetch_data(dl_url)
     process_batches(dl_data, batch_limit, conn, schema)
     print("DONE")
 
 if __name__ == "__main__":
-    main("scot_schema_24", 50000)
+    main("scot_schema_23", 10000)

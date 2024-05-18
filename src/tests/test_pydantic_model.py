@@ -1,4 +1,4 @@
-from ..permit_functions.extract_load_data import fetch_data, check_data_schema, quick_col_rename
+from ..street_manager_permit_functions.extract_load_data import fetch_data, check_data_schema, quick_col_rename
 from ..pydantic_model.street_manager_model import (
     StreetManagerPermitModel,
     validate_dataframe_sample,

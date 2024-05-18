@@ -2,13 +2,13 @@ import psutil
 import os
 from memory_profiler import profile
 
-from permit_functions.generate_dl_link import generate_dl_link
-from permit_functions.date_month import date_for_table
-from permit_functions.motherduck_create_table import motherduck_create_table
-from permit_functions.motherduck_connection import connect_to_motherduck
-from permit_functions.get_creds import get_secrets
-from permit_functions.creds import secret_name
-from permit_functions.extract_load_data import (
+from street_manager_permit_functions.generate_dl_link import generate_dl_link
+from street_manager_permit_functions.date_month import date_for_table
+from street_manager_permit_functions.motherduck_create_table import motherduck_create_table
+from general_functions.create_motherduck_connection import connect_to_motherduck
+from general_functions.get_creds import get_secrets
+from general_functions.creds import secret_name
+from street_manager_permit_functions.extract_load_data import (
     fetch_data, 
     process_batch_and_insert_to_duckdb, 
     check_data_schema, 
