@@ -155,4 +155,4 @@ def process_batches(zipped_chunks, limit_number, conn, schema):
         batch_counter += 1
         logger.success(f"All batches processed. {batch_counter} batches processed.")
 
-    logger.info("Finished processing CSV files into separate data frames based on keys.")
+    logger.info("Finished processing CSV file.")
