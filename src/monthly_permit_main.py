@@ -75,5 +75,5 @@ def main(schema_name, batch_limit):
 
 if __name__ =="__main__":
     # Define schema for the current year
-    main("schema_24")
+    main("schema_24", 75000)
 

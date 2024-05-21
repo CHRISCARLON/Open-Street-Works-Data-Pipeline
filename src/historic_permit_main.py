@@ -21,7 +21,7 @@ from pydantic_model.street_manager_model import (
 )
 
 @profile
-def main(schema_name, year_int, start_month_int, end_month_int):
+def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
     
     """
     Historic Permit Main will process batches of historic data.
@@ -72,7 +72,7 @@ def main(schema_name, year_int, start_month_int, end_month_int):
 
         # If checks pass, then process permit data
         permit_data = fetch_data(link)
-        process_batch_and_insert_to_motherduck(permit_data, conn, schema, table)
+        process_batch_and_insert_to_motherduck(permit_data, limit_number, conn, schema, table)
         logger.success(f"Data for {table} has been processed!")
 
     # Get final, high level memory usage
@@ -84,8 +84,8 @@ def main(schema_name, year_int, start_month_int, end_month_int):
 
 if __name__=="__main__":
     # Define a schema, year (always same year as schema), a starting month, and an ending month!
-    main("schema_21", 2021, 1, 13)
+    main("schema_21", 75000, 2021, 1, 13)
     
     # Process data accross multiple years if required. 
-    # main("schema_23", 2023, 1, 13)
-    # main("schema_22", 2022, 1, 13)
+    # main("schema_23", 75000, 2023, 1, 13)
+    # main("schema_22", 75000, 2022, 1, 13)
