@@ -1,0 +1,7 @@
+motherduck_profile:
+  outputs:
+    dev:
+      type: duckdb
+      path: "md:{{ env_var('MOTHERDUCK_DATABASE') }}?motherduck_token={{ env_var('MOTHERDUCK_TOKEN') }}"
+      schema: street_manager
+  target: dev
