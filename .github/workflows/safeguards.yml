@@ -3,7 +3,7 @@ name: Ruff Linter Check & Env File Safeguard
 on: [push]
 
 jobs:
-  ruff:
+  safeguards:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
