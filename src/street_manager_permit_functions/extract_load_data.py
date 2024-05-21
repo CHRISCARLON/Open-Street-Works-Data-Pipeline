@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 def fetch_data(dl_url):
     """
-    Stream data from DfT website for the street manager data you want
+    Stream data from DfT website for the Street Manager data you want
 
     Args: 
         takes the url for the street manager data for exmaple:
@@ -96,7 +96,28 @@ def check_data_schema(zipped_chunks):
     return df
 
 
-def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
+def insert_dataframe_to_motherduck(df, conn, schema, table):
+    """
+    Inserts a DataFrame into a DuckDB table.
+    
+    Args:
+        df: The DataFrame to be inserted.
+        conn: The MotherDuck connection.
+        schema: The schema of the table.
+        table: The name of the table.
+    """
+    try:
+        column_names = df.columns.tolist()
+        columns_sql = ', '.join(column_names)
+        placeholders = ', '.join([f"df.{name}" for name in column_names])
+        insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
+        conn.execute(insert_sql)
+    except Exception as e:
+        logger.error(f"Error inserting DataFrame into DuckDB: {e}")
+        raise
+
+
+def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, schema, table):
     """
     Streams data from DfT into MotherDuck. 
     Process data in batches of 75,000.
@@ -109,7 +130,7 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
         table
     
     """
-    batch_limit = 75000
+    batch_limit = limit_numbner
     batch_count = 0
     flattened_data = []
 
@@ -129,12 +150,8 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
                 df = pd.DataFrame(flattened_data)
                 df = df.fillna('NULL')
                 df = quick_col_rename(df)
-                # Insert the batch into DuckDB
-                column_names = df.columns.tolist()
-                columns_sql = ', '.join(column_names)
-                placeholders = ', '.join([f"df.{name}" for name in column_names])
-                insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
-                conn.execute(insert_sql)
+                # Insert the batch into MothertDuck
+                insert_dataframe_to_motherduck(df, conn, schema, table)
                 logger.success("Batch processed!")
                 # Reset the batch for the next iteration
                 flattened_data.clear()
@@ -152,13 +169,9 @@ def process_batch_and_insert_to_duckdb(zipped_chunks, conn, schema, table):
         if flattened_data:
             df = pd.DataFrame(flattened_data)
             df = df.fillna('NULL')
-            df = quick_col_rename(df)
-            # Insert the remaining data into DuckDB
-            column_names = df.columns.tolist()
-            columns_sql = ', '.join(column_names)
-            placeholders = ', '.join([f"df.{name}" for name in column_names])
-            insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
-            conn.execute(insert_sql)
+            df = quick_col_rename(df, conn, schema, table)
+            # Insert the batch into MothertDuck
+            insert_dataframe_to_motherduck(df)
             logger.success("Batch processed!")
         logger.success("Data processing complete - all batches have been processed")
 

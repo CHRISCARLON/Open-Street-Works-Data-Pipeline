@@ -165,6 +165,13 @@ ruff.toml
 .ruff_cache
 .vscode
 creds.py
+.user.yml
+/logs
+/dbt/logs
+/dbt/target/
+/dbt/dbt_packages/
+dev.duckdb
+
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

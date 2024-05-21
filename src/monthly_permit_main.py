@@ -10,7 +10,7 @@ from general_functions.get_creds import get_secrets
 from general_functions.creds import secret_name
 from street_manager_permit_functions.extract_load_data import (
     fetch_data, 
-    process_batch_and_insert_to_duckdb, 
+    process_batch_and_insert_to_motherduck, 
     check_data_schema, 
     quick_col_rename
     )
@@ -22,7 +22,7 @@ from pydantic_model.street_manager_model import (
 
 
 @profile
-def main(schema_name):
+def main(schema_name, batch_limit):
     
     """
     Monthly Permit Main will process the latest Street Manager Permit data. 
@@ -59,7 +59,7 @@ def main(schema_name):
     # Start data processing
     link = generate_dl_link()
     data = fetch_data(link)
-    process_batch_and_insert_to_duckdb(data, conn, schema, table)
+    process_batch_and_insert_to_motherduck(data, batch_limit, conn, schema, table)
 
     # Get the final memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss

@@ -58,6 +58,8 @@ def load_data_to_db(collected_rows, conn, schema, table_name):
     005      list of lists containing values 
     
     Use begin transaction and commit as you're loading in batches of data within a loop. 
+    
+    We can use DBT later to create the necessary tables after the initial load. 
     """
     try:
         full_table_name = f'"{schema}"."{table_name}"'

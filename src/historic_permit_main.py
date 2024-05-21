@@ -10,7 +10,7 @@ from general_functions.get_creds import get_secrets
 from general_functions.creds import secret_name
 from street_manager_permit_functions.extract_load_data import (
     fetch_data, 
-    process_batch_and_insert_to_duckdb, 
+    process_batch_and_insert_to_motherduck, 
     check_data_schema, 
     quick_col_rename
     )
@@ -72,7 +72,7 @@ def main(schema_name, year_int, start_month_int, end_month_int):
 
         # If checks pass, then process permit data
         permit_data = fetch_data(link)
-        process_batch_and_insert_to_duckdb(permit_data, conn, schema, table)
+        process_batch_and_insert_to_motherduck(permit_data, conn, schema, table)
         logger.success(f"Data for {table} has been processed!")
 
     # Get final, high level memory usage
