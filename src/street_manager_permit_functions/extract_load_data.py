@@ -169,9 +169,9 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
         if flattened_data:
             df = pd.DataFrame(flattened_data)
             df = df.fillna('NULL')
-            df = quick_col_rename(df, conn, schema, table)
+            df = quick_col_rename(df)
             # Insert the batch into MothertDuck
-            insert_dataframe_to_motherduck(df)
+            insert_dataframe_to_motherduck(df, conn, schema, table)
             logger.success("Batch processed!")
         logger.success("Data processing complete - all batches have been processed")
 

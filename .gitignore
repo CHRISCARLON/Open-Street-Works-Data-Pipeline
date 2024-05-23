@@ -171,7 +171,15 @@ creds.py
 /dbt/target/
 /dbt/dbt_packages/
 dev.duckdb
-
+variables.tf
+terraform.tfvars
+.terraform.lock.hcl
+LICENSE.txt
+terraform-provider-aws_v5.50.0_x5
+terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/5.50.0/darwin_arm64
+terraform.tfstate
+terraform.tfstate.backup
+tfplan
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
