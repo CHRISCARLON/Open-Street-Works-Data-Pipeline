@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'street_manager_analysis'
+name: 'street_manager_street_works_analysis'
 version: '1.0.0'
 
 # This setting configures which "profile" dbt uses for this project.
@@ -30,11 +30,13 @@ clean-targets:
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 
+vars:
+  year: "{{ run_started_at.strftime('%Y') }}"
+  month: "{{ run_started_at.strftime('%m') }}"
+
 models:
-  +materialized: table
-  aggregated_collab_works_24_25:
-    +materialized: table
-    +schema: street_manager
-  aggregated_urgent_emergency_works:
-    +materialized: table
-    +schema: street_manager
+  street_manager_street_works_analysis:
+    completed_works_count:
+      +tags: ["monthly"]
+    completed_works_by_type_count:
+      +tags: ["monthly"]
