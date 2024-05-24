@@ -1,5 +1,7 @@
 # Open Street Works Data Pipeline
-<img width="1376" alt="Screenshot 2024-05-23 at 22 47 14" src="https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/a75e214b-d5a9-43bf-b57e-2e96f4153daf">
+
+![dataflow](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/ec5f4d55-f0fb-4897-a52b-09a221534790)
+
 
 >[!IMPORTANT]
 > Currently integrating Scottish Road Works Register. 
