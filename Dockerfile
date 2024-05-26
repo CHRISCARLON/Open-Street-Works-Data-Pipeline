@@ -8,6 +8,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src ./src
 COPY dbt ./dbt
 
-RUN chmod +x ./dbt/street_manager_street_works_analysis/run_dbt_collab_24_25.sh
+RUN chmod +x ./dbt/street_manager_street_works_analysis/run_dbt_jobs.sh
 
-CMD ["sh", "-c", "python ./src/monthly_permit_main.py && cd ./dbt/street_manager_street_works_analysis && ./run_dbt_collab_24_25.sh"]
+CMD ["sh", "-c", "python ./src/monthly_permit_main.py && cd ./dbt/street_manager_street_works_analysis && ./run_dbt_jobs.sh"]

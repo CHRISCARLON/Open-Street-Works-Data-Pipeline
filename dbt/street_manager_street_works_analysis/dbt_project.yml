@@ -36,7 +36,13 @@ vars:
 
 models:
   street_manager_street_works_analysis:
-    completed_works_count:
-      +tags: ["monthly"]
-    completed_works_by_type_count:
-      +tags: ["monthly"]
+    long_term_snaps:
+      collab_overview:
+      collab_vs_non_collab:
+      completed_works_by_borough:
+      completed_works_by_type_borough:
+      completed_works_by_type:
+      completed_works:
+    month_snaps:
+      collab_month_overview:
+      completed_month_overview:

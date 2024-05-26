@@ -3,6 +3,7 @@ import os
 from memory_profiler import profile
 
 from street_manager_permit_functions.generate_dl_link import generate_dl_link
+from street_manager_permit_functions.schema_name_trigger import get_raw_data_year
 from street_manager_permit_functions.date_month import date_for_table
 from street_manager_permit_functions.motherduck_create_table import motherduck_create_table
 from general_functions.create_motherduck_connection import connect_to_motherduck
@@ -22,7 +23,7 @@ from pydantic_model.street_manager_model import (
 
 
 @profile
-def main(schema_name, batch_limit):
+def main(batch_limit):
     
     """
     Monthly Permit Main will process the latest Street Manager Permit data. 
@@ -47,7 +48,7 @@ def main(schema_name, batch_limit):
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
-    schema = secrets[schema_name]
+    schema = get_raw_data_year()
     
     # Create MotherDuck table date
     table = date_for_table()
@@ -75,5 +76,5 @@ def main(schema_name, batch_limit):
 
 if __name__ =="__main__":
     # Define schema for the current year
-    main("test_schema", 50000)
+    main(75000)
 

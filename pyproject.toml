@@ -26,6 +26,7 @@ diagrams = "^0.23.4"
 graphviz = "^0.20.3"
 dbt-duckdb = "^1.8.0"
 python-dotenv = "^1.0.1"
+pytest = "^8.2.1"
 
 
 [build-system]
