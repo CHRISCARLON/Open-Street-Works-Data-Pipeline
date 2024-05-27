@@ -1,35 +1,34 @@
-{% set table_alias = 'collab_vs_non_collab_overview_count_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'future_planned_works_list_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 
-WITH unioned_data AS (
-{% for table in get_tables() %}
-    SELECT
-        highway_authority,
-        promoter_organisation,
-        work_category,
-        activity_type,
-        is_ttro_required,
-        collaborative_working,
-        work_status_ref
-    FROM {{ table }}
-    {% if not loop.last %}UNION ALL{% endif %}
-{% endfor %}
-)
+{% set current_schema = 'raw_data_' ~ var('year') %}
+
+{% set current_table = '"' ~ var('month') ~ '_' ~ var('year') ~ '"' %}
 
 SELECT
-    highway_authority,
+    event_type,
+    event_time,
+    permit_reference_number,
     promoter_organisation,
+    promoter_swa_code,
+    highway_authority,
+    highway_authority_swa_code,
     work_category,
+    proposed_start_date,
+    proposed_end_date,
+    collaborative_working,
     activity_type,
     is_ttro_required,
-    COUNT(CASE WHEN collaborative_working = 'Yes' THEN 1 END) AS collab_works_count,
-    COUNT(CASE WHEN collaborative_working = 'No' THEN 1 END) AS non_collab_works_count
+    street_name,
+    usrn,
+    road_category,
+    work_status_ref
 FROM
-    unioned_data
+    {{ current_schema }}.{{ current_table }} AS t1
 WHERE
-    work_status_ref = 'completed'
-    AND highway_authority IN (
+    t1.work_status_ref = 'planned'
+    AND t1.highway_authority IN (
         'LONDON BOROUGH OF BARNET',
         'TRANSPORT FOR LONDON (TFL)',
         'LONDON BOROUGH OF HARROW',
@@ -65,9 +64,28 @@ WHERE
         'CITY OF LONDON CORPORATION',
         'LONDON BOROUGH OF BROMLEY'
     )
+    AND t1.permit_reference_number NOT IN (
+        SELECT permit_reference_number
+        FROM {{ current_schema }}.{{ current_table }}
+        WHERE
+            work_status_ref IN ('in_progress', 'completed')
+            AND highway_authority = t1.highway_authority
+    )
 GROUP BY
-    highway_authority,
+    event_type,
+    event_time,
+    permit_reference_number,
     promoter_organisation,
+    promoter_swa_code,
+    highway_authority,
+    highway_authority_swa_code,
     work_category,
+    proposed_start_date,
+    proposed_end_date,
+    collaborative_working,
     activity_type,
-    is_ttro_required
+    is_ttro_required,
+    street_name,
+    usrn,
+    road_category,
+    work_status_ref

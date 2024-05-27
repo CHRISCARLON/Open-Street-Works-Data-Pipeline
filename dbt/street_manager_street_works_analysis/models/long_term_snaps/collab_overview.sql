@@ -1,4 +1,4 @@
-{% set table_alias = 'collab_overview_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'collab_overview_list_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 
@@ -8,6 +8,7 @@ WITH unioned_data AS (
         permit_reference_number,
         highway_authority,
         promoter_organisation,
+        promoter_swa_code,
         actual_start_date_time,
         actual_end_date_time,
         street_name,
@@ -25,6 +26,7 @@ SELECT
     permit_reference_number,
     highway_authority,
     promoter_organisation,
+    promoter_swa_code,
     actual_start_date_time,
     actual_end_date_time,
     street_name,
@@ -78,6 +80,7 @@ GROUP BY
     permit_reference_number,
     highway_authority,
     promoter_organisation,
+    promoter_swa_code,
     actual_start_date_time,
     actual_end_date_time,
     street_name,

@@ -31,8 +31,8 @@ clean-targets:
 # files using the `{{ config(...) }}` macro.
 
 vars:
-  year: "{{ run_started_at.strftime('%Y') }}"
-  month: "{{ run_started_at.strftime('%m') }}"
+  year: "{{ (run_started_at - modules.datetime.timedelta(days=32)).strftime('%Y') }}"
+  month: "{{ (run_started_at - modules.datetime.timedelta(days=32)).strftime('%m') }}"
 
 models:
   street_manager_street_works_analysis:
@@ -44,5 +44,12 @@ models:
       completed_works_by_type:
       completed_works:
     month_snaps:
+      collab_list:
       collab_month_overview:
+      completed_list:
+      completed_month_by_type_borough:
       completed_month_overview:
+      future_planned_list:
+      future_planned_works_count:
+      in_progress_not_complete_count:
+      in_progress_not_complete_list:

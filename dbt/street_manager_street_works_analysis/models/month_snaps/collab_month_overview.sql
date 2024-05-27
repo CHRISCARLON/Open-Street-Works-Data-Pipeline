@@ -1,4 +1,4 @@
-{% set table_alias = 'collab_monthly_overview' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'collab_monthly_overview_count_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 
@@ -6,17 +6,12 @@
 {% set current_table = '"' ~ var('month') ~ '_' ~ var('year') ~ '"' %}
 
 SELECT
-    permit_reference_number,
     highway_authority,
     promoter_organisation,
-    actual_start_date_time,
-    actual_end_date_time,
-    street_name,
-    area_name,
     work_category,
     activity_type,
     collaborative_working,
-    COUNT(*) AS completed_works_count
+    COUNT(*) AS collab_completed_works_count
 FROM
     {{ current_schema }}.{{ current_table }}
 WHERE
@@ -59,13 +54,8 @@ WHERE
         'LONDON BOROUGH OF BROMLEY'
     )
 GROUP BY
-    permit_reference_number,
     highway_authority,
     promoter_organisation,
-    actual_start_date_time,
-    actual_end_date_time,
-    street_name,
-    area_name,
     work_category,
     activity_type,
     collaborative_working,

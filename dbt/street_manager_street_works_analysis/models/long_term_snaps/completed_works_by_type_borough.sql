@@ -7,7 +7,9 @@ WITH unioned_data AS (
     SELECT
         work_status_ref,
         highway_authority, 
-        work_category
+        work_category, 
+        activity_type, 
+        is_ttro_required
     FROM {{ table }}
     {% if not loop.last %}UNION ALL{% endif %}
 {% endfor %}
@@ -16,6 +18,8 @@ WITH unioned_data AS (
 SELECT
     highway_authority,
     work_category,
+    activity_type,
+    is_ttro_required,
     COUNT(*) AS completed_works_count
 FROM
     unioned_data
@@ -59,4 +63,6 @@ WHERE
     )
 GROUP BY
     highway_authority,
-    work_category
+    work_category,
+    activity_type, 
+    is_ttro_required
