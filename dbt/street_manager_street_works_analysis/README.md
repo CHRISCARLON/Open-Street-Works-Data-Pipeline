@@ -2,7 +2,7 @@
 
 DBT integration to automate the creation of analysis tables.
 
-## What do these things do?
+## Folders/files and what they do
 
 - Macros Folder
 

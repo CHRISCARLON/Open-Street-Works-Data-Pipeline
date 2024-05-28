@@ -37,14 +37,23 @@ jobs:
             ".terraform.lock.hcl" "LICENSE.txt" "terraform-provider-aws_v5.50.0_x5"
             "terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/5.50.0/darwin_arm64"
             "terraform.tfstate" "terraform.tfstate.backup" "tfplan"
-            ".idea/" ".pytest_cache"
+            ".idea/" ".pytest_cache" ".vscode" "logs" "poetry.lock" "ruff.toml"
           )
 
-          for file in "${UNWANTED_FILES[@]}"; do
-            if find . -type f -name "$file" | grep -q .; then
-              echo "Unwanted files found:"
-              find . -type f -name "$file"
-              exit 1
+          unwanted_found=false
+
+          for pattern in "${UNWANTED_PATTERNS[@]}"; do
+            if find . \( -type f -o -type d \) -name "$pattern" | grep -q .; then
+              if [ "$unwanted_found" = false ]; then
+                echo "Unwanted files and directories found:"
+                unwanted_found=true
+              fi
+              find . \( -type f -o -type d \) -name "$pattern"
             fi
           done
-          echo "No unwanted files found."
+
+          if [ "$unwanted_found" = true ]; then
+            exit 1
+          else
+            echo "No unwanted files or directories found."
+          fi
