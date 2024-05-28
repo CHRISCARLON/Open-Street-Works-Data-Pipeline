@@ -1,7 +1,11 @@
+# DEFINE PROVIDER AND AWS_REGION USE TFVARS FILE
 provider "aws" {
   region = var.aws_region
 }
 
+#### 1
+#### DEFINE ECS EXCECUTION ROLE, ECS EXECUTION POLICIES, ASSIGN POLICIES TO ROLE
+####
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs-task-execution-role"
 
@@ -47,6 +51,10 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_secrets_policy_att
   policy_arn = aws_iam_policy.ecs_task_execution_policy.arn
 }
 
+
+#### 2
+#### DEFINE ECS TASK ROLE, ECS TASK POLICIES, ASSIGN POLICIES TO ROLE
+####
 resource "aws_iam_role" "ecs_task_role" {
   name = "ecs-task-role"
 
@@ -81,14 +89,26 @@ resource "aws_iam_role_policy_attachment" "ecs_task_secrets_policy_attachment" {
   policy_arn = aws_iam_policy.ecs_task_secrets_policy.arn
 }
 
+#### 3
+#### DEFINE ECS CLUSTER
+####
+
 resource "aws_ecs_cluster" "main" {
-  name = "my-ecs-cluster"
+  name = var.ecs_cluster_name
 }
+
+#### 4
+#### DEFINE CLOUDWATCH LOGS
+####
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name              = "/ecs/my-ecs-task"
   retention_in_days = 7
 }
+
+#### 5
+#### DEFINE ECS TASK/CONTAINER CONFIG SETTINGS - MAKE SURE TO INCLUDE THE EXECUTION AND TASK ROLES HERE
+####
 
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.task_definition_name
@@ -127,6 +147,11 @@ resource "aws_ecs_task_definition" "task_definition" {
   ])
 }
 
+#### 6
+#### DEFINE DEFAULT SECURITY GROUPINGS HERE
+####
+
+
 resource "aws_security_group" "default" {
   name        = "ecs-task-sg"
   description = "Security group for ECS task"
@@ -150,6 +175,11 @@ data "aws_subnets" "default" {
     values = [data.aws_vpc.default.id]
   }
 }
+
+
+#### 7
+#### CALL AWS PROFILE AND PULL SECRETS IN AS ENV VARIABLES
+####
 
 data "aws_secretsmanager_secret" "pipes" {
   name = var.secret_name
