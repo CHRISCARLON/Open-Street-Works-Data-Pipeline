@@ -1,6 +1,7 @@
 # Open Street Works Data Pipeline
+Progress: `█████████████████████████████████████████████████░░░░░` (90%)
 
-![dataflow](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/ec5f4d55-f0fb-4897-a52b-09a221534790)
+![permit-pipeline-data-flow](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/87b303c8-fa0a-4e6c-8714-cbbce1b7637c)
 
 
 >[!IMPORTANT]
