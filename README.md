@@ -12,9 +12,6 @@ Progress: `███████████████████████
 > Currently working on finalising Evidence dashboard.  
 
 
->[!NOTE]
-> Repo will be renamed "Open Street Works Data Pipeline". 
-
 # Quickstart Guide
 
 **This repository contains an efficient data pipeline for processing:**
