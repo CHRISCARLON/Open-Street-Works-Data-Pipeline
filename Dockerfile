@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:3.11.3
+FROM --platform=linux/amd64 python:3.11.7
 
 WORKDIR /app
 

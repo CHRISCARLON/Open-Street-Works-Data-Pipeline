@@ -1,4 +1,4 @@
-{% set table_alias = 'in_progress_not_complete_list_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'ST_in_progress_not_complete_list_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 
@@ -15,7 +15,8 @@ SELECT
     highway_authority,
     highway_authority_swa_code,
     work_category,
-    proposed_end_date,
+    proposed_start_date,
+    actual_start_date_time,
     collaborative_working,
     activity_type,
     is_ttro_required,
@@ -79,11 +80,12 @@ GROUP BY
     highway_authority,
     highway_authority_swa_code,
     work_category,
-    proposed_end_date,
+    proposed_start_date,
+    actual_start_date_time,
     collaborative_working,
     activity_type,
     is_ttro_required,
     street_name,
     usrn,
     road_category,
-    work_status_ref,
+    work_status_ref

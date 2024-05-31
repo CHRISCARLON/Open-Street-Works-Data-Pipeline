@@ -1,4 +1,4 @@
-{% set table_alias = 'completed_monthly_overview_count_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'ST_completed_month_overview_count_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 

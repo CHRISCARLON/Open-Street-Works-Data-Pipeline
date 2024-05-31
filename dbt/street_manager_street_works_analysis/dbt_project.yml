@@ -39,6 +39,7 @@ models:
     long_term_snaps:
       collab_overview:
       collab_vs_non_collab:
+      completed_collab_list:
       completed_works_by_borough:
       completed_works_by_type_borough:
       completed_works_by_type:

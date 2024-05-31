@@ -1,4 +1,4 @@
-{% set table_alias = 'collab_completed_month_list_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'ST_collab_completed_month_list_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 

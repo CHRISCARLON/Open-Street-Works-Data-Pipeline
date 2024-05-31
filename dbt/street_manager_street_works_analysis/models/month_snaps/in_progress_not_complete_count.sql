@@ -1,4 +1,4 @@
-{% set table_alias = 'in_progress_not_complete_count_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'ST_in_progress_not_complete_count_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 
@@ -69,4 +69,4 @@ GROUP BY
     promoter_organisation,
     promoter_swa_code,
     highway_authority,
-    collaborative_working,
+    collaborative_working

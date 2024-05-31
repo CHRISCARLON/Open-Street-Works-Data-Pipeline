@@ -12,7 +12,7 @@ Progress: `███████████████████████
 > Currently working on finalising Evidence dashboard.  
 
 
-# Quickstart Guide
+# Quickstart Guide:
 
 **This repository contains an efficient data pipeline for processing:**
 

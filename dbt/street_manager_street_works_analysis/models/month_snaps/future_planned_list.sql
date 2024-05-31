@@ -1,4 +1,4 @@
-{% set table_alias = 'future_planned_works_list_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'ST_future_planned_works_list_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 

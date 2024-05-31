@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "dft-street-manager-pipeline"
+name = "Open-Street-Works-Data-Pipeline"
 version = "0.1.0"
 description = ""
 authors = ["christophercarlon <cmcarleone@gmail.com>"]

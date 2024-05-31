@@ -1,34 +1,48 @@
-{% set table_alias = 'LT_completed_collab_vs_non_collab_count_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'LT_completed_collab_list_' ~ var('year') ~ '_' ~ var('month') %}
 
 {{ config(materialized='table', alias=table_alias) }}
 
 WITH unioned_data AS (
 {% for table in get_tables() %}
     SELECT
+        permit_reference_number,
         highway_authority,
         promoter_organisation,
+        promoter_swa_code,
+        proposed_start_date,
+        proposed_end_date,
+        actual_start_date_time,
+        actual_end_date_time,
+        street_name,
+        area_name,
         work_category,
         activity_type,
-        is_ttro_required,
         collaborative_working,
-        work_status_ref
+        work_status_ref,
     FROM {{ table }}
     {% if not loop.last %}UNION ALL{% endif %}
 {% endfor %}
 )
 
 SELECT
+    permit_reference_number,
     highway_authority,
     promoter_organisation,
+    promoter_swa_code,
+    proposed_start_date,
+    proposed_end_date,
+    actual_start_date_time,
+    actual_end_date_time,
+    street_name,
+    area_name,
     work_category,
     activity_type,
-    is_ttro_required,
-    COUNT(CASE WHEN collaborative_working = 'Yes' THEN 1 END) AS collab_works_count,
-    COUNT(CASE WHEN collaborative_working = 'No' THEN 1 END) AS non_collab_works_count
+    collaborative_working,
 FROM
     unioned_data
 WHERE
     work_status_ref = 'completed'
+    AND collaborative_working = 'Yes'
     AND highway_authority IN (
         'LONDON BOROUGH OF BARNET',
         'TRANSPORT FOR LONDON (TFL)',
@@ -66,8 +80,16 @@ WHERE
         'LONDON BOROUGH OF BROMLEY'
     )
 GROUP BY
+    permit_reference_number,
     highway_authority,
     promoter_organisation,
+    promoter_swa_code,
+    proposed_start_date,
+    proposed_end_date,
+    actual_start_date_time,
+    actual_end_date_time,
+    street_name,
+    area_name,
     work_category,
     activity_type,
-    is_ttro_required
+    collaborative_working,
