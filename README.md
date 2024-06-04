@@ -154,13 +154,12 @@ For example...
 
 ```bash
 python src/monthly_permit_main.py
-
-or if you want to use Docker 
-
-docker-compose up 
-
-This docker-compose.yml is already set up and so is the Dockerfile. 
 ```
+or if you want to use Docker 
+```
+docker-compose up 
+```
+This docker-compose.yml is already set up and so is the Dockerfile. 
 
 This will execute the pipeline, process the Street Manager permit data, and then load it into MotherDuck for further processing and/or analytics.
 
@@ -176,9 +175,9 @@ To run the dbt shell script open up your terminal cd into the DBT folder and run
 
 ```
 chmod +x run_dbt_jobs.sh
-
+```
 and then 
-
+```
 ./run_dbt_jobs.sh
 ```
 
