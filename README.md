@@ -170,7 +170,7 @@ This project leverages the power of DBT to make analysis quick, easy, and scalab
 
 If you run this in a Python venv then you will need to run the run_dbt_jobs.sh seperately to run the DBT models. If don't run the DBT models you will only have the raw data tables in  MotherDuck.   
 
-There are 10+ DBT models that automate the creation of different aggregated analysis tables - each one is focused on a different typ of insight. 
+There are 10+ DBT models that automate the creation of different aggregated analysis tables - each one is focused on a different type of insight. 
 
 To run the dbt shell script open up your terminal cd into the DBT folder and run:
 
