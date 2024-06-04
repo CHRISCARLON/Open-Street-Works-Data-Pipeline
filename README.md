@@ -59,9 +59,10 @@ This equates to a lot of data and processing it can be slow and painful if you'r
 
 **This project can help you:**
 
-- Maintain a consistent and structured way to develop and deploy street work data pipelines. 
+- Maintain a consistent and structured way to develop, test, and deploy street work permit data pipelines. 
 - Automate your development and deployment so you can focus on analysis and delivering value from the data. 
-- Utilise the power of Cloud Compute and process data faster. 
+- Utilise the power of Cloud Compute to process data faster. 
+- Utilise elements of the Modern Data Stack to allow for easy Dashboarding. 
 
 
 ### Please follow the steps below to clone, set up, and run the project.
