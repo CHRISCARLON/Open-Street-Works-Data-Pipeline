@@ -6,7 +6,12 @@ Street Manager Monthly Permit Pipeline example:
 
 
 >[!IMPORTANT]
-> Currently working on (i) finalising the Evidence dashboard, (ii) integrating Geoplace's SWA Code List, and (iii) speeding up SRWR processing and improving its integration into the project. 
+> Currently working on
+> 1. Finalising the Evidence dashboard. 
+>
+> 2. Integrating Geoplace's SWA Code List.
+>
+> 3. Speeding up SRWR processing and improving its integration into the project. 
 
 
 # Quickstart Guide:
@@ -21,6 +26,7 @@ Street Manager Monthly Permit Pipeline example:
 
 >[!NOTE]
 > The aim of this project is simple... 
+>
 > Reduce the time it takes to deliver value from open street works data.
 
 1. **It's fast** 
@@ -45,13 +51,13 @@ Street Manager Monthly Permit Pipeline example:
 
 ### Why use this Project?  
 
-Both DfT's Street Manager and Scotland's SRWR are the authoritative sources of street works data for England and Scotland. 
+Both DfT's Street Manager and Scotland's SRWR are the authoritative sources of street work permit data for England and Scotland. 
 
-They make available large quantities of archived permit data every month and have done so far several years. 
+They make available large quantities of archived permit data every month and have done so for several years. 
 
-This represents a lot of data and processing it can be slow and painful if you're not careful. 
+This equates to a lot of data and processing it can be slow and painful if you're not careful. 
 
-This project can help you:
+**This project can help you:**
 
 - Maintain a consistent and structured way to develop and deploy street work data pipelines. 
 - Automate your development and deployment so you can focus on analysis and delivering value from the data. 
@@ -61,8 +67,9 @@ This project can help you:
 ### Please follow the steps below to clone, set up, and run the project.
 
 > [!IMPORTANT]
-> This is only meant as a quickstart guide!
-> You will need to complete a few extra steps before being able to fully deploy this pipeline so please read the pre-requisites.
+> This is only meant as a quickstart guide.
+> It's not perfect and I'll try to make it more detailed as time goes on 😁
+> You will need to complete a few extra steps before being able to fully use this pipeline so please read the pre-requisites.
 
 # Local Deployment
 ### 0. Pre-Requisites (if you want to follow the Street Manager Monthly Permit Pipeline example)
@@ -153,9 +160,11 @@ This will execute the pipeline, process the Street Manager permit data, and then
 
 ### 7. Analyse the Street Manager permit data and/or perform further transformations
 
+This project leverages the power of DBT to make analysis quick, easy, and scalable. 
+
 If you run this in a Python venv then you will need to run the run_dbt_jobs.sh seperately to run the DBT models. If don't run the DBT models you will only have the raw data tables in  MotherDuck.   
 
-There are 10+ DBT models that automate the creation of aggregated analysis tables. 
+There are 10+ DBT models that automate the creation of different aggregated analysis tables - each one is focused on a different typ of insight. 
 
 To run the dbt shell script open up your terminal cd into the DBT folder and run:
 
@@ -175,9 +184,14 @@ MotherDuck connects into many modern BI tools such as HEX and Preset if you want
 
 Check out the videos below from MotherDuck for some cool tutorials on how to build dashboards with data in MotherDuck.
 
-https://www.youtube.com/watch?v=F9yHuAO50PQ
-https://www.youtube.com/watch?v=gemksL8YvOQ 
+1. https://www.youtube.com/watch?v=F9yHuAO50PQ
+
+2. https://www.youtube.com/watch?v=gemksL8YvOQ 
 
 # Deployment
 >[!NOTE]
 > I'm still writing this up!
+
+It will contain instructions on:
+    - Deploying a Docker Container to an AWS ECR (making use the of the handy Makefile!)
+    - Using Terraform to configure and deploy an AWS Fargate Task on AWS ECS. 
