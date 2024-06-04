@@ -152,7 +152,7 @@ For example...
 >
 > Ensure that your MotherDuck token is accessible at runtime and that you have the correct schemas set up. For local development, you could EXPORT the token via the terminal. 
 
-**Run the following commands to launch the pipeline and process you data.**
+**Run the following commands to launch the pipeline and process your data.**
 
 ```bash
 python src/monthly_permit_main.py
