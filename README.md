@@ -190,10 +190,12 @@ Check out the videos below from MotherDuck for some cool tutorials on how to bui
 
 2. https://www.youtube.com/watch?v=gemksL8YvOQ 
 
-# Deployment
+# Cloud Deployment
 >[!NOTE]
 > I'm still writing this up!
 
-It will contain instructions on:
-    - Deploying a Docker Container to an AWS ECR (making use the of the handy Makefile!)
-    - Using Terraform to configure and deploy an AWS Fargate Task on AWS ECS. 
+**It will contain instructions on:**
+
+- Deploying a Docker Container to an AWS ECR (making use the of the handy Makefile!)
+
+- Using Terraform to configure and deploy an AWS Fargate Task on AWS ECS. 
