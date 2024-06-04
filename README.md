@@ -180,9 +180,9 @@ and then
 
 If you run this in Docker then the DBT models automatically run. 
 
-You can use MotherDuck's UI to run further queries on the data if you so whish. 
+You can use MotherDuck's UI to run further queries on the data if you'd like to! 
 
-MotherDuck connects into many modern BI tools such as HEX and Preset if you want. 
+MotherDuck connects into many modern BI tools such as HEX and Preset.  
 
 Check out the videos below from MotherDuck for some cool tutorials on how to build dashboards with data in MotherDuck.
 
