@@ -1,3 +1,4 @@
+# This is currently set up to deloy on AWS Fargate, remove the linux/amd64 platform for local dev.
 FROM --platform=linux/amd64 python:3.11.7
 
 WORKDIR /app

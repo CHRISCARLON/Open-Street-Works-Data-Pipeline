@@ -1,15 +1,12 @@
 # Open Street Works Data Pipeline
 Progress: `█████████████████████████████████████████████████░░░░░` (90%)
 
+Street Manager Monthly Permit Pipeline example: 
 ![permit-pipeline-data-flow](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/87b303c8-fa0a-4e6c-8714-cbbce1b7637c)
 
 
 >[!IMPORTANT]
-> The README file is currently being rewritten so expect changes!
->
-> Currently integrating Scottish Road Works Register.
->
-> Currently working on finalising Evidence dashboard.  
+> Currently working on (i) finalising the Evidence dashboard, (ii) integrating Geoplace's SWA Code List, and (iii) speeding up SRWR processing and improving its integration into the project. 
 
 
 # Quickstart Guide:
@@ -18,7 +15,7 @@ Progress: `███████████████████████
 
 1. DfT's Street Manager archived permit data.
 
-2. Scottish Road Works Register archived permit data. 
+2. Scottish Road Works Register (SRWR) archived permit data. 
 
 ### Open Street Works Data Pipeline in 3 points:
 
@@ -26,67 +23,72 @@ Progress: `███████████████████████
 > The aim of this project is simple... 
 > Reduce the time it takes to deliver value from open street works data.
 
-1. **It's fast!** Process an entire month of archived permit data ready for analysis in around 5 minutes. Process an entire year of archived permit data ready for anylsis in around 1 hour. You could process all archived pemit data from 2020 to 2024 in the morning and be writing SQL queries to analyse the data in the afternoon. All of this will be kept 100% in memory so no need to deal with saving files to disk!. 
+1. **It's fast** 
+- Process an entire month of Street Manager archived permit data ready for analysis in 5 minutes. 
+- Process an entire year of Street Manager archived permit data ready for anylsis in around 1 hour. 
+- Process all Street Manager archived pemit data from 2020 to 2024 in the morning and be ready to analyse the data in the afternoon. 
+- The pipeline utilises batch processing so no need to download, unzip, and deal with saving files to disk - everything is kept in memory. 
 
-2. **It's not fussy!** Run it where you want! Run it locally, on an AWS Lambda Function (with some caveats), or a Google Compute Engine - it's up to you. 
+2. **It's not fussy** 
+- Run it where you want! 
+- Run it locally with Docker or a Python Venv if you want.
+- Run it on a Google Cloud Function/AWS Lambda Function (with some caveats). 
+- Run it as Fargate Task on AWS or a Google Compute Engine.
 
-3. **It's flexible!** The project is modular so you can customise it to fit your own needs. Don't want to use AWS Secrets Manager for environment variables? Fine! Use another provider or a .env file. Don't want to use MotherDuck as your data warehouse? Fine! Add in a function so the end destination is Google Big Query instead. 
+3. **It's flexible** 
+- The project is modular so you can customise it to fit your own needs. 
+- Don't want to use AWS Secrets Manager for environment variables? Fine! Use another provider or a simple .env file (recommended for local dev only). 
+- Don't want to use MotherDuck as your data warehouse? Fine! Add in a function so the end destination is Google Big Query instead. 
+- Only want to focus on Street Manager data? Fine! Launch the entry point that doesn't process SRWR data.  
+- You can integrate other tools from the Modern Data Stack such as DLT, DBT, or orchestrators like Airflow and Mage if you want more functionality. 
+- You can run several instances of the project for different purposes.  
 
 ### Why use this Project?  
 
-Processing Street Manager archived permit data can be slow and painful if you're not careful.  
+Both DfT's Street Manager and Scotland's SRWR are the authoritative sources of street works data for England and Scotland. 
 
-Here are a few painpoints that I've experienced in the past:
+They make available large quantities of archived permit data every month and have done so far several years. 
 
-1. The standard Python Zip library can't unzip the type of zip file provided by the Dft [here](https://department-for-transport-streetmanager.github.io/street-manager-docs/archived-notifications/#permit/2024/). 
+This represents a lot of data and processing it can be slow and painful if you're not careful. 
 
-    This means that:
+This project can help you:
 
-    - You may need to manually download the file and use WinRAR (Windows) or Utility Archive (Mac) to unzip it - this can take a while (30+ minutes) and adds unwanted delays as well as taking up disk space.     
+- Maintain a consistent and structured way to develop and deploy street work data pipelines. 
+- Automate your development and deployment so you can focus on analysis and delivering value from the data. 
+- Utilise the power of Cloud Compute and process data faster. 
 
-2. Each month of archived permit data is around 1gb in size and contains around 1+ million individual json files representing individual permit notification records. 
-
-    This means that:
-
-    - Processing times can become slow if you attempt to keep everything in memory without proper batch processing techniques - especially if you're using a library such as Pandas. 
 
 ### Please follow the steps below to clone, set up, and run the project.
 
-> [!NOTE]  
-> **This project is under active construction**. 
-> It currently only processes Street Manager Permit data.
-> I may include Section 58 and Activity data in the future. 
-
->[!NOTE]
-> **Instructions to deploy this ETL pipeline fully to the cloud (GCP Compute Engine) using Terraform are coming soon!** 
-
 > [!IMPORTANT]
 > This is only meant as a quickstart guide!
-> You will need to complete a few extra steps before being able to fully deploy this pipeline.
+> You will need to complete a few extra steps before being able to fully deploy this pipeline so please read the pre-requisites.
 
-### 0. Pre-Requisites 
+# Local Deployment
+### 0. Pre-Requisites (if you want to follow the Street Manager Monthly Permit Pipeline example)
 
 1. You'll need Python installed locally on your system - I use Python 3.11.
 2. You'll need a MotherDuck account.  
-3. You'll need an AWS service account - if you want to use the same method as me for storing and retrieving env variables then you'll need to use AWS Secrets Manager. 
-4. You'll need to ensure you have the correct environment variables. 
+3. You'll need an AWS service account. 
+4. You'll need both the AWS CLI and Terraform correctly configured on your local system. 
+5. You'll need to ensure that you have the correct environment variables. 
 
     If you follow my set up you'll need...
 
-    - An AWS secret name (the secrets ID that you chose for your env variables and use to retrieve them).
+    - AWS Secret Manager.
     - A MotherDuck connection token.
     - A MotherDuck database name. 
     
-    If you want to use MotherDuck as your end destination then you'll need to make sure that you have env variables set up that point to the correct database and schemas when you start creating your own tables.
+    If you want to use MotherDuck as your end destination then you'll need to make sure that you have env variables set up that point to the correct database and schemas. 
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline.git
+git clone https://github.com/CHRISCARLON/Open-Street-Works-Data-Pipeline.git
 
-cd DfT-Street-Manager-Pipeline
+cd Open-Street-Works-Data-Pipeline
 ```
-This will create a local copy of the repository on your machine.
+This will create a local copy of the repository on your machine and take you into it.
 
 ### 2. Create a Virtual Environment
 ```bash
@@ -99,7 +101,7 @@ source venv/bin/activate
 pip install poetry
 poetry install
 ```
-Poetry will read the pyproject.toml file and install the required packages into your newly created virtual environment.
+Poetry will read the pyproject.toml file and install the required packages in your newly created virtual environment.
 
 ### 4. Set Up AWS Secrets Manager
 Create an [AWS account](https://aws.amazon.com) if you don't have one already.
@@ -123,31 +125,59 @@ You can use the default **my_db** that is provided with your new MotherDuck acco
 
 Create database schemas for each year - this is where you'll load your data tables for each month of the relevant year. 
 
-For example..
+For example... 
 
 ![Screenshot 2024-05-06 at 20 28 45](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/d98e53ed-983d-41b4-ad17-ac99d1d59a98)
 
 ### 6. Run the Pipeline
 
 >[!NOTE]
-> For the most recent permit data use **monthly_permit_main.py** and for historic data use **historic_permit_main.py**.  
+> For the most recent permit data use **monthly_permit_main.py** and for bulk historic data use **historic_permit_main.py**. For this example use the most recent permit data. 
 
 >[!IMPORTANT]
-> Please make sure you have configured everything before running the pipeline. 
-> I'd recommend going through the 2 main.py files and become comfortable with them first. 
+> Make sure that you have configured everything before running. 
+> I'd recommend going through the monthly_permit_main.py file and become comfortable with it first. 
+> Ensure that your MotherDuck token is accessible at runtime and that you have the correct schemas set up. For local development, you could EXPORT the token via the terminal. 
 
 ```bash
 python src/monthly_permit_main.py
 
-or 
+or if you want to use Docker 
 
-python src/historic_permit_main.py
+docker-compose up 
+
+This docker-compose.yml is already set up and so is the Dockerfile. 
 ```
 
 This will execute the pipeline, process the Street Manager permit data, and then load it into MotherDuck for further processing and/or analytics.
 
 ### 7. Analyse the Street Manager permit data and/or perform further transformations
 
-Leverage MotherDuck's serverless execution to run analysis on your permit data and/or normalise it further and create new table relationships. 
+If you run this in a Python venv then you will need to run the run_dbt_jobs.sh seperately to run the DBT models. If don't run the DBT models you will only have the raw data tables in  MotherDuck.   
 
-I recommend using the permit data in conjunction with Geo Place's [SWA Code list](https://www.geoplace.co.uk/local-authority-resources/street-works-managers/view-swa-codes) - enabling you to build sector level analysis. 
+There are 10+ DBT models that automate the creation of aggregated analysis tables. 
+
+To run the dbt shell script open up your terminal cd into the DBT folder and run:
+
+```
+chmod +x run_dbt_jobs.sh
+
+and then 
+
+./run_dbt_jobs.sh
+```
+
+If you run this in Docker then the DBT models automatically run. 
+
+You can use MotherDuck's UI to run further queries on the data if you so whish. 
+
+MotherDuck connects into many modern BI tools such as HEX and Preset if you want. 
+
+Check out the videos below from MotherDuck for some cool tutorials on how to build dashboards with data in MotherDuck.
+
+https://www.youtube.com/watch?v=F9yHuAO50PQ
+https://www.youtube.com/watch?v=gemksL8YvOQ 
+
+# Deployment
+>[!NOTE]
+> I'm still writing this up!
