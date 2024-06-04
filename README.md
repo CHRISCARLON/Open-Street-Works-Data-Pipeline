@@ -141,11 +141,15 @@ For example...
 ### 6. Run the Pipeline
 
 >[!NOTE]
-> For the most recent permit data use **monthly_permit_main.py** and for bulk historic data use **historic_permit_main.py**. For this example use the most recent permit data. 
+> For the most recent permit data use **monthly_permit_main.py** and for bulk historic data use **historic_permit_main.py**. 
+>
+>For this example use the most recent permit data. 
 
 >[!IMPORTANT]
 > Make sure that you have configured everything before running. 
+>
 > I'd recommend going through the monthly_permit_main.py file and become comfortable with it first. 
+>
 > Ensure that your MotherDuck token is accessible at runtime and that you have the correct schemas set up. For local development, you could EXPORT the token via the terminal. 
 
 ```bash
