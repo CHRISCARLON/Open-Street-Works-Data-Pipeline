@@ -69,7 +69,8 @@ This equates to a lot of data and processing it can be slow and painful if you'r
 
 > [!IMPORTANT]
 > This is only meant as a quickstart guide.
-> It's not perfect and I'll try to make it more detailed as time goes on 😁
+> It's not perfect and I'll try to make it more detailed as time goes on :)
+>
 > You will need to complete a few extra steps before being able to fully use this pipeline so please read the pre-requisites.
 
 # Local Deployment
