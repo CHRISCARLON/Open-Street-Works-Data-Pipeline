@@ -181,6 +181,7 @@ terraform.tfstate
 terraform.tfstate.backup
 tfplan
 .pytest_cache
+/open_street_works_dashboard
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
