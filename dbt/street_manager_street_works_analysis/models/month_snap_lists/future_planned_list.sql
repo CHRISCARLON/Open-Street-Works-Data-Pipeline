@@ -1,24 +1,32 @@
-{% set table_alias = 'ST_in_progress_not_complete_count_' ~ var('year') ~ '_' ~ var('month') %}
-
+{% set table_alias = 'future_planned_works_list_' ~ var('year') ~ '_' ~ var('month') %}
 {{ config(materialized='table', alias=table_alias) }}
 
 {% set current_schema = 'raw_data_' ~ var('year') %}
-
 {% set current_table = '"' ~ var('month') ~ '_' ~ var('year') ~ '"' %}
 
 SELECT
-    work_category,
-    activity_type,
-    is_ttro_required,
-    promoter_organisation,
-    promoter_swa_code,
-    highway_authority,
-    collaborative_working,
-    COUNT(*) AS in_progress_works_count
-FROM
-    {{ current_schema }}.{{ current_table }} AS t1
-WHERE
-    t1.work_status_ref = 'in_progress'
+    t1.event_type,
+    t1.event_time,
+    t1.permit_reference_number,
+    t1.promoter_organisation,
+    t1.promoter_swa_code,
+    t1.highway_authority,
+    t1.highway_authority_swa_code,
+    t1.work_category,
+    t1.proposed_start_date,
+    t1.proposed_end_date,
+    t1.collaborative_working,
+    t1.activity_type,
+    t1.is_traffic_sensitive,
+    t1.is_ttro_required,
+    t1.street_name,
+    t1.usrn,
+    t1.road_category,
+    t1.work_status_ref,
+    u.geometry
+FROM {{ current_schema }}.{{ current_table }} AS t1
+LEFT JOIN os_open_usrns.open_usrns_latest u ON t1.usrn = u.usrn
+WHERE t1.work_status_ref = 'planned'
     AND t1.highway_authority IN (
         'LONDON BOROUGH OF BARNET',
         'TRANSPORT FOR LONDON (TFL)',
@@ -58,15 +66,27 @@ WHERE
     AND t1.permit_reference_number NOT IN (
         SELECT permit_reference_number
         FROM {{ current_schema }}.{{ current_table }}
-        WHERE
-            work_status_ref = 'completed'
+        WHERE (work_status_ref IN ('in_progress', 'completed')
+            OR event_type IN ('PERMIT_REFUSED', 'PERMIT_REVOKED', 'PERMIT_CANCELLED'))
             AND highway_authority = t1.highway_authority
     )
 GROUP BY
-    work_category,
-    activity_type,
-    is_ttro_required,
-    promoter_organisation,
-    promoter_swa_code,
-    highway_authority,
-    collaborative_working
+    t1.event_type,
+    t1.event_time,
+    t1.permit_reference_number,
+    t1.promoter_organisation,
+    t1.promoter_swa_code,
+    t1.highway_authority,
+    t1.highway_authority_swa_code,
+    t1.work_category,
+    t1.proposed_start_date,
+    t1.proposed_end_date,
+    t1.collaborative_working,
+    t1.activity_type,
+    t1.is_traffic_sensitive,
+    t1.is_ttro_required,
+    t1.street_name,
+    t1.usrn,
+    t1.road_category,
+    t1.work_status_ref,
+    u.geometry

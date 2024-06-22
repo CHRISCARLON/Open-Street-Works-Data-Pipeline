@@ -36,21 +36,14 @@ vars:
 
 models:
   street_manager_street_works_analysis:
-    long_term_snaps:
-      collab_overview:
-      collab_vs_non_collab:
-      completed_collab_list:
-      completed_works_by_borough:
-      completed_works_by_type_borough:
-      completed_works_by_type:
-      completed_works:
-    month_snaps:
-      collab_list:
-      collab_month_overview:
+    month_snap_lists:
       completed_list:
-      completed_month_by_type_borough:
-      completed_month_overview:
       future_planned_list:
-      future_planned_works_count:
-      in_progress_not_complete_count:
       in_progress_not_complete_list:
+      impact_scores_acute_legacy:
+      impact_scores:
+      future_impact_score:
+      acute_vs_legacy_completed:
+      acute_vs_legacy_in_progress:
+      future_by_period:
+

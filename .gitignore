@@ -182,6 +182,9 @@ terraform.tfstate.backup
 tfplan
 .pytest_cache
 /open_street_works_dashboard
+src/os_open_usrn_functions/open_usrns.duckdb
+src/os_open_usrn_functions/osopenusrn_202406.gpkg
+src/os_open_usrn_functions/explore_and_prep.py
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

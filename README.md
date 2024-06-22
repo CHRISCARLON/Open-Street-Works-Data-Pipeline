@@ -6,13 +6,15 @@ Street Manager Monthly Permit Pipeline example:
 
 
 >[!IMPORTANT]
-> Currently working on
-> 1. Finalising the Evidence dashboard. 
+> Word on the Street using **Evidence** can now be foud [here](https://word-on-the-street.evidence.app)
+>
+> **Currently working on**
+>
+> 1. Integrating OS' Open USRNs data *(complete and now testing)*
 >
 > 2. Integrating Geoplace's SWA Code List.
 >
 > 3. Speeding up SRWR processing and improving its integration into the project. 
-
 
 # Quickstart Guide:
 
@@ -21,6 +23,10 @@ Street Manager Monthly Permit Pipeline example:
 1. DfT's Street Manager archived permit data.
 
 2. Scottish Road Works Register (SRWR) archived permit data. 
+
+3. OS' Open USRN data
+
+**The goal is to create a flexible, easily deployable pipeline to produce insights from street work data**
 
 ### Open Street Works Data Pipeline in 3 points:
 

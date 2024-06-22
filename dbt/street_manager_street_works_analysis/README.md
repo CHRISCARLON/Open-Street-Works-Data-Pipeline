@@ -13,3 +13,6 @@ DBT integration to automate the creation of analysis tables.
 - profiles.yml
 
 - run_dbt_jobs.sh
+
+- **Currently keeping the 'long_term_snaps' directory out of the models folder until I know what I want to do with it. Current report only requires monthly data**
+

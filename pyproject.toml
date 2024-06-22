@@ -27,6 +27,9 @@ graphviz = "^0.20.3"
 dbt-duckdb = "^1.8.0"
 python-dotenv = "^1.0.1"
 pytest = "^8.2.1"
+geopandas = "^0.14.4"
+httpx = "^0.27.0"
+pyogrio = "^0.8.0"
 
 
 [build-system]

@@ -1,18 +1,35 @@
-{% set table_alias = 'ST_completed_month_overview_count_' ~ var('year') ~ '_' ~ var('month') %}
-
+{% set table_alias = 'completed_works_list_' ~ var('year') ~ '_' ~ var('month') %}
 {{ config(materialized='table', alias=table_alias) }}
 
 {% set current_schema = 'raw_data_' ~ var('year') %}
-
 {% set current_table = '"' ~ var('month') ~ '_' ~ var('year') ~ '"' %}
 
-SELECT
-    COUNT(*) AS completed_works_count
-FROM
-    {{ current_schema }}.{{ current_table }}
-WHERE
-    work_status_ref = 'completed'
-    AND highway_authority IN (
+SELECT 
+    w.event_type,
+    w.event_time,
+    w.permit_reference_number,
+    w.promoter_organisation,
+    w.promoter_swa_code,
+    w.highway_authority,
+    w.highway_authority_swa_code,
+    w.work_category,
+    w.proposed_start_date,
+    w.proposed_end_date,
+    w.actual_start_date_time,
+    w.actual_end_date_time,
+    w.collaborative_working,
+    w.activity_type,
+    w.is_traffic_sensitive,
+    w.is_ttro_required,
+    w.street_name,
+    w.usrn,
+    w.road_category,
+    w.work_status_ref,
+    u.geometry
+FROM {{ current_schema }}.{{ current_table }} w
+LEFT JOIN os_open_usrns.open_usrns_latest u ON w.usrn = u.usrn
+WHERE w.work_status_ref = 'completed'
+    AND w.highway_authority IN (
         'LONDON BOROUGH OF BARNET',
         'TRANSPORT FOR LONDON (TFL)',
         'LONDON BOROUGH OF HARROW',
@@ -48,3 +65,25 @@ WHERE
         'CITY OF LONDON CORPORATION',
         'LONDON BOROUGH OF BROMLEY'
     )
+GROUP BY
+    w.event_type,
+    w.event_time,
+    w.permit_reference_number,
+    w.promoter_organisation,
+    w.promoter_swa_code,
+    w.highway_authority,
+    w.highway_authority_swa_code,
+    w.work_category,
+    w.proposed_start_date,
+    w.proposed_end_date,
+    w.actual_start_date_time,
+    w.actual_end_date_time,
+    w.collaborative_working,
+    w.activity_type,
+    w.is_traffic_sensitive,
+    w.is_ttro_required,
+    w.street_name,
+    w.usrn,
+    w.road_category,
+    w.work_status_ref,
+    u.geometry

@@ -12,3 +12,5 @@ requests==2.31.0
 dbt-duckdb==1.8.0
 python-dotenv==1.0.1
 tqdm==4.66.4
+geopandas==0.14.4
+fiona==1.9.6
