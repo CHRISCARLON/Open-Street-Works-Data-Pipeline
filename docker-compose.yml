@@ -2,9 +2,11 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - ./src:/app/src
       - ./dbt:/app/dbt
     tty: true
     stdin_open: true
+    env_file:
+      - .env

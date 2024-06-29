@@ -48,7 +48,8 @@ def main(batch_limit):
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
-    schema = get_raw_data_year()
+    # schema = get_raw_data_year()
+    schema = "test_raw_data"
     
     # Create MotherDuck table date
     table = date_for_table()
@@ -72,9 +73,10 @@ def main(batch_limit):
     # Convert memory usage to megabytes
     memory_usage_mb = memory_usage / (1024 * 1024)
     print(f"Memory usage: {memory_usage_mb:.2f} MB")
+    print("MONTHLY PERMIT MAIN COMPLETE")
 
 
 if __name__ =="__main__":
-    # Define schema for the current year
+    # Define batch limit - currently 75,000 files per batch
     main(75000)
 

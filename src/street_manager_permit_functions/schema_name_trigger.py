@@ -8,7 +8,3 @@ def get_raw_data_year():
         return f"raw_data_{current_year - 1}"
     else:
         return f"raw_data_{current_year}"
-
-if __name__ == "__main__":
-    x = get_raw_data_year()
-    print(x)

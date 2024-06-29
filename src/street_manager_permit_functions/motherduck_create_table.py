@@ -7,7 +7,7 @@ def motherduck_create_table(conn, schema, table):
     """
     if conn:
         try:
-            table_command = f"""CREATE TABLE "{schema}"."{table}" (
+            table_command = f"""CREATE OR REPLACE TABLE "{schema}"."{table}" (
                 version BIGINT,
                 event_reference BIGINT,
                 event_type VARCHAR,

@@ -1,9 +1,9 @@
 import duckdb
 from loguru import logger
 
-def connect_to_motherduck(token: str, database: str) -> duckdb.connect:
+def connect_to_motherduck(token: str, database: str) -> duckdb.DuckDBPyConnection:
     """
-    Create connection object to MotherDuck. 
+    Creates a connection object to MotherDuck. 
     
     Requires a token and database name. 
     

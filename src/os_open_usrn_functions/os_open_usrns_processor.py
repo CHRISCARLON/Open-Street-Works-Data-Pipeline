@@ -13,6 +13,11 @@ from .process_into_motherduck import process_chunk
 
 
 def load_geopackage_open_usrns(url, conn):
+    """
+    Function to load OS open usrn data in batches of 50,000 rows.
+    
+    It taskes a duckdb connection object and the download url required. 
+    """
     
     chunk_size=50000
     
@@ -59,7 +64,8 @@ def load_geopackage_open_usrns(url, conn):
                                 geom = shape(feature['geometry'])
                                 feature['properties']['geometry'] = wkt.dumps(geom)
                             except Exception as e:
-                                # If there's an error converting the geometry, set it to None and log the index of the feature that failed
+                                # If there's an error converting the geometry, set it to None 
+                                # and log the index of the feature that failed so we can track this over time
                                 feature['properties']['geometry'] = None
                                 error_msg = f"Error converting geometry for feature {i}: {e}"
                                 logger.warning(error_msg)

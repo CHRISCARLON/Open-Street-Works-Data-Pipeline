@@ -15,8 +15,7 @@ def fetch_data(dl_url):
         takes the url for the street manager data for exmaple:
         "https://opendata.manage-roadworks.service.gov.uk/permit/2024/03.zip"
     
-    It should return chunks of the data to be processed further
-    
+    It should return chunks of the data to be processed further.
     """
     with requests.get(dl_url, stream=True, timeout=30) as chunk:
         yield from chunk.iter_content(chunk_size=1048576)

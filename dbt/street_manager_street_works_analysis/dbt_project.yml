@@ -46,4 +46,6 @@ models:
       acute_vs_legacy_completed:
       acute_vs_legacy_in_progress:
       future_by_period:
-
+      impact_score_usrn_map:
+      future_impact_score_usrn_map:
+      wiltshire_example:

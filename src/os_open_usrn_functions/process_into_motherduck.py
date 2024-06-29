@@ -1,9 +1,8 @@
 from loguru import logger
-from general_functions.creds import open_usrn_schema
 
 def process_chunk(df, conn):
     
-    schema = open_usrn_schema
+    schema = "os_open_usrns"
 
     if conn:
         try:

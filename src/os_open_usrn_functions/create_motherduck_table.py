@@ -1,4 +1,16 @@
-def create_table(conn, schema): 
+import duckdb
+from loguru import logger
+
+def create_table(conn): 
+    
+    """
+    Creates a new table for the latest open usrn data every month.
+    This will replace the table that is already there.
+    Takes a connection object. 
+    
+    """
+    
+    schema = "os_open_usrns"
     
     if conn:
         try:
@@ -8,7 +20,7 @@ def create_table(conn, schema):
                 usrn BIGINT
             );"""
             conn.execute(table_command)
-            print("MotherDuck Table created successfully.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+            logger.success("MotherDuck Table created successfully.")
+        except (duckdb.ConnectionException, duckdb.DataError, duckdb.Error, Exception) as e:
+            logger.error(f"An error occurred: {e}")
             raise

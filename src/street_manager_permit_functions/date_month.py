@@ -35,11 +35,3 @@ def month_to_abbrev(month: int) -> str:
         9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
     }
     return month_abbreviations.get(month, "Invalid Month: Input a number from 1 to 12")
-
-if __name__ == "__main__":
-    last_month_example = last_month()
-    print(last_month_example)
-    date_example = date_for_table()
-    print(date_example)
-    abbreviation_example = month_to_abbrev()
-    print(abbreviation_example)
