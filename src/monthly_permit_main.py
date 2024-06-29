@@ -48,8 +48,7 @@ def main(batch_limit):
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
-    # schema = get_raw_data_year()
-    schema = "test_raw_data"
+    schema = get_raw_data_year()
     
     # Create MotherDuck table date
     table = date_for_table()
