@@ -15,6 +15,8 @@ Street Manager Monthly Permit Pipeline example:
 > 3. Updating flow chart with new data flows.
 >
 > 4. Integrating more robust unit testing across all aspects of the project.
+>
+> 5. Improving data quality checks and observability
 
 # Quickstart Guide:
 
