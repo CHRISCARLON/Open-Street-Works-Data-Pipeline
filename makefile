@@ -35,7 +35,8 @@ git-add:
 	git add .
 
 git-commit:
-	git commit -m "updates $(DATE)"
+	@read -p "Please enter an additional commit message: " msg; \
+	git commit -m "updates $(DATE) - $$msg"
 
 git-push:
 	git push
