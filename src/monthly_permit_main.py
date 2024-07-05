@@ -24,9 +24,8 @@ from pydantic_model.street_manager_model import (
 
 @profile
 def main(batch_limit):
-    
     """
-    Monthly Permit Main will process the latest Street Manager Permit data. 
+    Monthly permit main will process the latest Street Manager Permit data. 
     
     If you run this in April then you will generate the D/L link for March's data.
     
@@ -73,9 +72,3 @@ def main(batch_limit):
     memory_usage_mb = memory_usage / (1024 * 1024)
     print(f"Memory usage: {memory_usage_mb:.2f} MB")
     print("MONTHLY PERMIT MAIN COMPLETE")
-
-
-if __name__ =="__main__":
-    # Define batch limit - currently 75,000 files per batch
-    main(75000)
-

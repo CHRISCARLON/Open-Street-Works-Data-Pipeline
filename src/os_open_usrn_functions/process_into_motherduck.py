@@ -1,7 +1,11 @@
 from loguru import logger
 
 def process_chunk(df, conn):
+    """
+    Takes a conncection object and a dataframe
     
+    Processes dataframe into MotherDuck table    
+    """
     schema = "os_open_usrns"
 
     if conn:

@@ -11,6 +11,11 @@ from os_open_usrn_functions.create_motherduck_table import create_table
 
 @profile
 def main():
+    """
+    OS open usrns main will process the latest OS open usrn data. 
+    
+    USRN = Unique Street Reference Number
+    """
     
     # Get the initial memory usage
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
@@ -34,7 +39,3 @@ def main():
     memory_usage_mb = memory_usage / (1024 * 1024)
     print(f"Memory usage: {memory_usage_mb:.2f} MB")
     print("OS OPEN USRNS MAIN COMPLETE")
-
-if __name__=="__main__":
-    # Might include setting the batch limit here in the future for more visibility
-    main()

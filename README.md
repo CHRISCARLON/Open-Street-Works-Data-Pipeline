@@ -1,20 +1,20 @@
 # Open Street Works Data Pipeline
-Progress: `█████████████████████████████████████████████████░░░░░` (90%)
 
-Street Manager Monthly Permit Pipeline example: 
+Street Manager Monthly Permit Pipeline example:
 ![permit-pipeline-data-flow](https://github.com/CHRISCARLON/DfT-Street-Manager-Pipeline/assets/138154138/87b303c8-fa0a-4e6c-8714-cbbce1b7637c)
-
 
 >[!IMPORTANT]
 > Word on the Street using **Evidence** can now be foud [here](https://word-on-the-street.evidence.app)
 >
 > **Currently working on**
 >
-> 1. Integrating OS' Open USRNs data *(complete and now testing)*
+> 1. Integrating Geoplace's SWA Code List.
 >
-> 2. Integrating Geoplace's SWA Code List.
+> 2. Speeding up SRWR processing and improving its integration into the project.
 >
-> 3. Speeding up SRWR processing and improving its integration into the project. 
+> 3. Updating flow chart with new data flows.
+>
+> 4. Integrating more robust unit testing across all aspects of the project.
 
 # Quickstart Guide:
 
@@ -149,7 +149,7 @@ For example...
 >[!NOTE]
 > For the most recent permit data use **monthly_permit_main.py** and for bulk historic data use **historic_permit_main.py**. 
 >
->For this example use the most recent permit data. 
+>For this example use the most recent permit data.
 
 >[!IMPORTANT]
 > Make sure that you have configured everything before running. 

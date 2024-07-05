@@ -19,7 +19,8 @@ def load_geopackage_open_usrns(url, conn):
     It taskes a duckdb connection object and the download url required. 
     """
     
-    chunk_size=50000
+    # This can be changed based on how much memory you want to use overall
+    chunk_size=75000
     
     # List to store errors
     errors = []  
@@ -76,7 +77,6 @@ def load_geopackage_open_usrns(url, conn):
                             if len(features) == chunk_size:
                                 # Process the chunk
                                 df_chunk = pd.DataFrame(features)
-                                print(df_chunk.head(5))
                                 process_chunk(df_chunk, conn)
                                 logger.info(f"Processed features {i-chunk_size+1} to {i}")
                                 features = []
@@ -86,6 +86,7 @@ def load_geopackage_open_usrns(url, conn):
                             df_chunk = pd.DataFrame(features)
                             process_chunk(df_chunk, conn)
                             logger.info(f"Processed remaining features up to {i}")
+                            features = []
 
                 except Exception as e:
                     error_msg = f"Error processing GeoPackage: {e}"

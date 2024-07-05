@@ -1,23 +1,41 @@
 # Make the deployment of updated docker containers quick and easy!
 # If you're not using AWS then replace aws commands with GCP commands for exmaple - or other cloud providers. 
+# Make pushing to github repo quick and easy
 
 include .env
 
-.PHONY: login build tag push verify all
+# Docker and AWS section
+.PHONY: docker-login docker-build docker-tag docker-push docker-verify docker-all
 
-all: login build tag push verify
+docker-all: docker-login docker-build docker-tag docker-push docker-verify
 
-login:
+docker-login:
 	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
 
-build:
+docker-build:
 	docker build -t $(REPO_NAME) .
 
-tag:
+docker-tag:
 	docker tag $(REPO_NAME):latest $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/$(REPO_NAME):latest
 
-push:
+docker-push:
 	docker push $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/$(REPO_NAME):latest
 
-verify:
+docker-verify:
 	aws ecr describe-images --repository-name $(REPO_NAME) --region $(REGION)
+
+# Git section
+.PHONY: git-all git-add git-commit git-push
+
+DATE := $(shell date +%Y-%m-%d)
+
+git-all: git-add git-commit git-push
+
+git-add:
+	git add .
+
+git-commit:
+	git commit -m "updates $(DATE)"
+
+git-push:
+	git push
