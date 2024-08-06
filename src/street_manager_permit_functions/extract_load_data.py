@@ -50,7 +50,6 @@ def quick_col_rename(df) -> pd.DataFrame:
     This is because a lot of data was initially nested within "object_data"
     
     This will remove "object data." from the column names
-    
     """
     df.columns = [col.replace("object_data.", "") if "object_data." in col else col for col in df.columns]
     return df
@@ -60,11 +59,10 @@ def check_data_schema(zipped_chunks):
     """
     Reads 50 JSON files from zipped chunks and returns a Pandas DataFrame.
     
-    This is so you can assess the data structure and become familiar with it. 
+    This is so you can assess the data structure and validate part of it against the Pydantic model. 
     
     Args:
         zipped_chunks: Iterable of zipped chunks containing JSON files.
-    
     """
     max_files = 50
     file_count = 0
@@ -99,6 +97,8 @@ def insert_dataframe_to_motherduck(df, conn, schema, table):
     """
     Inserts a DataFrame into a DuckDB table.
     
+    This function also ensures that the order of the columns is always the same.
+    
     Args:
         df: The DataFrame to be inserted.
         conn: The MotherDuck connection.
@@ -127,7 +127,6 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
         connection to md
         schema 
         table
-    
     """
     batch_limit = limit_numbner
     batch_count = 0
