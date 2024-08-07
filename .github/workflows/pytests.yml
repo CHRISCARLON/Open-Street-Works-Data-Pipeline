@@ -21,9 +21,9 @@ jobs:
           pip install pytest pytest-cov
           pip install -r requirements.txt
       - name: Run pytest with coverage
-        run: pytest -v --cov=./ --cov-report=xml:coverage.xml tests/street_manager_tests
+        run: pytest --cov=./ --cov-report=xml tests/street_manager_tests
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           verbose: true
