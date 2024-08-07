@@ -1,5 +1,5 @@
-from monthly_permit_main import main as monthly_permit_main
-from os_open_usrns_main import main as os_open_usrns_main
+from src.pipeline_launch.monthly_permit_main import main as monthly_permit_main
+from src.pipeline_launch.os_open_usrns_main import main as os_open_usrns_main
 
 def main():
     """

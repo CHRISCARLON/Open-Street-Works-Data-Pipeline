@@ -1,6 +1,6 @@
 from datetime import datetime
 from unittest.mock import patch
-from src.street_manager_permit_functions.schema_name_trigger import get_raw_data_year
+from src.street_manager.schema_name_trigger import get_raw_data_year
 
 @patch('src.street_manager_permit_functions.schema_name_trigger.datetime')
 def test_get_raw_data_year_january(mock_datetime):

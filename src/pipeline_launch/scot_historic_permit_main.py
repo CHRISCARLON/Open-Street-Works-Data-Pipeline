@@ -1,8 +1,8 @@
 from general_functions.create_motherduck_connection import connect_to_motherduck
-from general_functions.get_creds import get_secrets
+from src.general_functions.get_credentials import get_secrets
 from general_functions.creds import secret_name
-from scottish_permit_functions.generate_dl_links import dl_link_creator
-from scottish_permit_functions.experimental_extract_load_data import fetch_presigned_url, fetch_data, process_batches
+from scottish_road_works_register.generate_dl_links import dl_link_creator
+from scottish_road_works_register.experimental_extract_load_data import fetch_presigned_url, fetch_data, process_batches
 
 
 def main(schema_name, batch_limit):

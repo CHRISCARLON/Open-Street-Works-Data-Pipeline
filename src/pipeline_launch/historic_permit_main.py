@@ -3,12 +3,12 @@ import os
 from memory_profiler import profile
 from loguru import logger
 
-from street_manager_permit_functions.historic_main_links import generate_monthly_download_links
-from street_manager_permit_functions.motherduck_create_table import motherduck_create_table
+from street_manager.historic_main_links import generate_monthly_download_links
+from street_manager.motherduck_create_table import motherduck_create_table
 from general_functions.create_motherduck_connection import connect_to_motherduck
-from general_functions.get_creds import get_secrets
+from src.general_functions.get_credentials import get_secrets
 from general_functions.creds import secret_name
-from street_manager_permit_functions.extract_load_data import (
+from street_manager.extract_load_data import (
     fetch_data, 
     process_batch_and_insert_to_motherduck, 
     check_data_schema, 

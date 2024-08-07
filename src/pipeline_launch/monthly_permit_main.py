@@ -1,25 +1,26 @@
 import psutil
 import os
+
 from memory_profiler import profile
 
-from street_manager_permit_functions.generate_dl_link import generate_dl_link
-from street_manager_permit_functions.schema_name_trigger import get_raw_data_year
-from street_manager_permit_functions.date_month import date_for_table
-from street_manager_permit_functions.motherduck_create_table import motherduck_create_table
+from street_manager.generate_dl_link import generate_dl_link
+from street_manager.schema_name_trigger import get_raw_data_year
+from street_manager.date_month import date_for_table
+from street_manager.motherduck_create_table import motherduck_create_table
 from general_functions.create_motherduck_connection import connect_to_motherduck
-from general_functions.get_creds import get_secrets
+from src.general_functions.get_credentials import get_secrets
 from general_functions.creds import secret_name
-from street_manager_permit_functions.extract_load_data import (
-    fetch_data, 
+from street_manager.extract_load_data import (
     process_batch_and_insert_to_motherduck, 
-    check_data_schema, 
     quick_col_rename
     )
+from street_manager.stream_zipped_data import fetch_data
+from street_manager.validate_data_model import check_data_schema
 from pydantic_model.street_manager_model import (
     StreetManagerPermitModel,
     validate_dataframe_sample,
     handle_validation_errors
-)
+    )
 
 
 @profile

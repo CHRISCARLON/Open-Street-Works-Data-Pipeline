@@ -1,7 +1,7 @@
 # unit_test/test_col_rename.py
 
 import pandas as pd 
-from src.street_manager_permit_functions.extract_load_data import quick_col_rename
+from src.street_manager.extract_load_data import quick_col_rename
 
 def test_quick_col_rename():
     # Create a sample DataFrame with nested column names

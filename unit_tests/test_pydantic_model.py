@@ -3,7 +3,7 @@
 import pytest
 import pandas as pd
 
-from src.street_manager_permit_functions.extract_load_data import fetch_data, check_data_schema, quick_col_rename
+from src.street_manager.extract_load_data import fetch_data, check_data_schema, quick_col_rename
 from src.pydantic_model.street_manager_model import (
     StreetManagerPermitModel,
     validate_dataframe_sample,
