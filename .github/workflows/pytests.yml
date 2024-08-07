@@ -1,15 +1,10 @@
 name: Pytest Street Manager Tests
 
-on:
-  workflow_run:
-    workflows: ["Ruff Linter Check & Env File Safeguard"]
-    types:
-      - completed
+on: [push, pull_request]
 
 jobs:
   pytest:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -26,6 +21,6 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
-          verbose: true 
+          verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
