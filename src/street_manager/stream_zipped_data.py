@@ -1,10 +1,4 @@
-import json
 import requests
-import pandas as pd
-
-from stream_unzip import stream_unzip
-from loguru import logger
-from tqdm import tqdm
 
 
 def fetch_data(dl_url):
