@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-from flatten_street_manager_data import flatten_json
+from .flatten_street_manager_data import flatten_json
 
 from stream_unzip import stream_unzip
 from loguru import logger

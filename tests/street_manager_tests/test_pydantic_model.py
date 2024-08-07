@@ -1,9 +1,10 @@
 # unit_test/test_pydantic_model.py
-
 import pytest
 import pandas as pd
 
-from src.street_manager.extract_load_data import fetch_data, check_data_schema, quick_col_rename
+from src.street_manager.extract_load_data import quick_col_rename
+from src.street_manager.validate_data_model import check_data_schema
+from src.street_manager.stream_zipped_data import fetch_data
 from src.pydantic_model.street_manager_model import (
     StreetManagerPermitModel,
     validate_dataframe_sample,

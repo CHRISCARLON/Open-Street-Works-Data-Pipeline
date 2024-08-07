@@ -1,5 +1,4 @@
 from loguru import logger
-import pprint
 
 
 def generate_monthly_download_links(year: int, start_month_index: int, end_month_index: int) -> list:
@@ -18,7 +17,3 @@ def generate_monthly_download_links(year: int, start_month_index: int, end_month
         links.append(url)
     logger.success("Download Links Generated")
     return links
-
-if __name__ == "__main__":
-    test_links = generate_monthly_download_links(2023, 7, 13)
-    pprint.pprint(test_links)

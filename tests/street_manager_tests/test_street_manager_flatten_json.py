@@ -1,6 +1,6 @@
 # unit_test/test_street_manager_flatten_json.py
 
-from src.street_manager.extract_load_data import flatten_json
+from src.street_manager.flatten_street_manager_data import flatten_json
 
 def test_flatten_json():
     # Test case 1: Nested JSON object with the provided test data
