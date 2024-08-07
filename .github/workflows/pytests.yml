@@ -21,10 +21,11 @@ jobs:
           pip install pytest pytest-cov
           pip install -r requirements.txt
       - name: Run pytest with coverage
-        run: pytest tests/street_manager_tests --cov-report=xml
+        run: pytest -v --cov=./ --cov-report=xml:coverage.xml tests/street_manager_tests
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
+          file: ./coverage.xml
           verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
