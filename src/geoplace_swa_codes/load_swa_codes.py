@@ -3,7 +3,7 @@ import duckdb
 from loguru import logger
 
 
-def create_table_swa_cdoes_motherduck(conn, table_name):
+def create_table_swa_codes_motherduck(conn, table_name):
     """
     Creates a new table for the latest open usrn data every month.
     This will replace the table that is already there.
@@ -38,7 +38,7 @@ def create_table_swa_cdoes_motherduck(conn, table_name):
             raise
 
 
-def load_swa_code_data_motherduck(df, conn, schema, table):
+def load_swa_code_data_motherduck(data, conn, table):
     """
     Inserts a DataFrame into a DuckDB table.
     
@@ -50,12 +50,12 @@ def load_swa_code_data_motherduck(df, conn, schema, table):
         schema: The schema of the table.
         table: The name of the table.
     """
+    df = data
+    schema = "geoplace_swa_codes"
+    
     try:
-        column_names = df.columns.tolist()
-        columns_sql = ', '.join(column_names)
-        placeholders = ', '.join([f"df.{name}" for name in column_names])
-        insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
+        insert_sql = f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df"""
         conn.execute(insert_sql)
-    except Exception as e:
+    except (duckdb.DataError, duckdb.Error, Exception) as e:
         logger.error(f"Error inserting DataFrame into DuckDB: {e}")
         raise
