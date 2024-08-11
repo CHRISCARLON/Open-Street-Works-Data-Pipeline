@@ -2,8 +2,13 @@
 def motherduck_create_table(conn, schema, table):
     """
     This function creates a database table based using the below Street Manager Permit data schema.
+    
     It takes a connection object, a schema name, and a table name.
+    
     Please note that the schema should already EXIST in the database.
+    
+    It creates and empty table in MotherDuck.
+    
     """
     if conn:
         try:

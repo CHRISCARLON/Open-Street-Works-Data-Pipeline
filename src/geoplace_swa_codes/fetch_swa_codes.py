@@ -13,8 +13,10 @@ from pydantic_model.swa_codes_model import SWACodeModel
 def get_link():
     """
     Scrape download link from website
-    """
     
+    Returns: 
+        Download link
+    """
     url = "https://www.geoplace.co.uk/local-authority-resources/street-works-managers/view-swa-codes"
     
     try: 
@@ -90,7 +92,6 @@ def validate_data_model() -> List[SWACodeModel]:
             validated_data.append(validated_item)
         except ValidationError as e:
             errors.append(f"Error in record {idx}: {str(e)}")
-    
     logger.success(f"Successfully validated {len(validated_data)} out of {len(data_dicts)} records.")
     logger.info(f"There were {len(errors)} errors")
     return validated_data, errors, df

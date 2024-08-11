@@ -3,8 +3,9 @@ from datetime import date, timedelta
 def last_month() -> list:
     """
     Subtract one day from the first day of the current month to get a day in the previous month
-    Should return [2024, 3] if you run it in April 2024
-
+    
+    Returns:
+        [2024, 3] if you run it in April 2024
     """
     current_date = date.today()
     first_day_of_current_month = date(current_date.year, current_date.month, 1)
@@ -15,8 +16,9 @@ def last_month() -> list:
 def date_for_table() -> str:
     """
     Creates a formatted string from a list with 2 elemnts a year and a date
-    Should return "03_2024" if you feed in [2024, "03"] as an arg
     
+    Returns:
+        "03_2024" if you feed in [2024, "03"] as an arg
     """
     year_month = last_month()
     year = str(year_month[0])
@@ -27,7 +29,9 @@ def date_for_table() -> str:
 def month_to_abbrev(month: int) -> str:
     """
     Function to convert a month number to its abbreviation
-    Should return "Mar" if you feed in 3 as an arg
+    
+    Returns:
+        "Mar" if you feed in 3 as an arg
     """
     month_abbreviations = {
         1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr",

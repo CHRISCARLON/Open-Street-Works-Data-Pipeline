@@ -22,7 +22,7 @@ def quick_col_rename(df) -> pd.DataFrame:
 
 def insert_dataframe_to_motherduck(df, conn, schema, table):
     """
-    Inserts a DataFrame into a DuckDB table.
+    Inserts a DataFrame into a MotherDuck table.
     
     This function also ensures that the order of the columns is always the same.
     
@@ -46,7 +46,7 @@ def insert_dataframe_to_motherduck(df, conn, schema, table):
 def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, schema, table):
     """
     Streams data from DfT into MotherDuck. 
-    Process data in batches of 75,000.
+    Process data in batches of [whatever you decide].
     Usually around 1 million jsons to proccess per month. 
     
     Args:
@@ -89,7 +89,8 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
             print(debug_df)
             print(debug_df.dtypes)
             raise
-
+    
+    # Process the remaining data
     try:
         if flattened_data:
             df = pd.DataFrame(flattened_data)

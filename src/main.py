@@ -15,9 +15,13 @@ def main():
     link = get_link()
     table_name = get_table_name(link)
     
+    validate_data_model()
+    
+    df = fetch_swa_codes()
+    
     with MotherDuckConnector(token, database) as conn:
         conn.execute_query(f"""CREATE OR REPLACE TABLE "{schema}"."{table_name}" (
-                    "SWA Code" INT,
+                    "SWA Code" VARCHAR,
                     "Account Name" VARCHAR,
                     "Prefix" VARCHAR,
                     "Account Type" VARCHAR,
@@ -33,8 +37,9 @@ def main():
                     "Ofcom Licence" VARCHAR,
                     "Ofwat Licence" VARCHAR,
                     "Company Subsumed By" VARCHAR,
-                    "SWA Code of New Company" INT
-                );""")
+                    "SWA Code of New Company" VARCHAR
+                );"""),
+        conn.execute_query(f"""INSERT INTO "{schema}"."{table_name}" SELECT * FROM df""")
 
 if __name__ == "__main__":
     main()

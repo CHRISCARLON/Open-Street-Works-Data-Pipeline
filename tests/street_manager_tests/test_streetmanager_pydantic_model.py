@@ -21,6 +21,7 @@ def test_check_data_schema(sample_data):
     df = check_data_schema(sample_data)
     assert isinstance(df, pd.DataFrame)
     assert not df.empty
+    assert len(df) == 500
 
 def test_quick_col_rename(sample_data):
     df = check_data_schema(sample_data)

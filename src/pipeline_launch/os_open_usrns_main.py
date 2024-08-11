@@ -2,12 +2,12 @@ import psutil
 import os
 from memory_profiler import profile
 
-from ..general_functions.create_motherduck_connection import connect_to_motherduck
-from ..general_functions.get_credentials import get_secrets
-from ..general_functions.creds import secret_name
-from ..os_open_usrn.get_redirect_url import fetch_redirect_url
-from ..os_open_usrn.os_open_usrns_processor import load_geopackage_open_usrns
-from ..os_open_usrn.create_motherduck_table import create_table
+from general_functions.create_motherduck_connection import connect_to_motherduck
+from general_functions.get_credentials import get_secrets
+from general_functions.creds import secret_name
+from os_open_usrn.get_redirect_url import fetch_redirect_url
+from os_open_usrn.os_open_usrns_processor import load_geopackage_open_usrns
+from os_open_usrn.create_motherduck_table import create_table
 
 @profile
 def main():

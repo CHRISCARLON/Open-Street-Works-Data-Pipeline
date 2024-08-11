@@ -16,7 +16,7 @@ def check_data_schema(zipped_chunks):
     Args:
         zipped_chunks: Iterable of zipped chunks containing JSON files.
     """
-    max_files = 50
+    max_files = 500
     file_count = 0
     data_list = []
 
