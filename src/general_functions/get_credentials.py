@@ -1,6 +1,8 @@
 import json
 import boto3
+
 from loguru import logger
+# from creds import secret_name
 
 
 def get_secrets(secret_name, region_name="eu-west-2") -> json:
@@ -22,3 +24,7 @@ def get_secrets(secret_name, region_name="eu-west-2") -> json:
     else:
         secret = get_secret_value_response['SecretString']
         return json.loads(secret)
+
+# if __name__ == "__main__":
+#     v = get_secrets(secret_name)
+#     print(v)

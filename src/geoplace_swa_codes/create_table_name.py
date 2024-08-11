@@ -1,4 +1,5 @@
 import re
+from loguru import logger
 
 def get_table_name(url):
     """
@@ -11,5 +12,6 @@ def get_table_name(url):
     
     match = re.search(pattern, url_link)
     if match:
+        logger.success("Table name created")
         result = match.group()
         return result

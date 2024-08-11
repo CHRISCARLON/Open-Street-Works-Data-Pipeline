@@ -8,7 +8,7 @@ from msoffcrypto import OfficeFile
 from pydantic import ValidationError
 from typing import List
 
-from ..pydantic_model.swa_codes_model import SWACodeModel
+from pydantic_model.swa_codes_model import SWACodeModel
 
 def get_link():
     """
@@ -23,6 +23,7 @@ def get_link():
         download_link = soup.find('a', class_='download-item__download-link')
 
         if download_link:
+            logger.success("Download link generated")
             href = download_link.get('href')
             return href
 
@@ -59,6 +60,7 @@ def fetch_swa_codes():
         # Load into excel
         df = pd.read_excel(decrypted_file, header=1, engine='xlrd')
         df = df.astype(str).replace('nan', None)
+        logger.success(f"Df created successfully: {df.head(10)}")
 
         return df
     except Exception as e:
