@@ -1,26 +1,30 @@
 from geoplace_swa_codes.create_table_name import get_table_name
-from geoplace_swa_codes.fetch_swa_codes import get_link, fetch_swa_codes, validate_data_model
-from geoplace_swa_codes.load_swa_codes import create_table_swa_codes_motherduck, load_swa_code_data_motherduck
+from geoplace_swa_codes.fetch_swa_codes import (
+    get_link,
+    fetch_swa_codes,
+    validate_data_model,
+)
 
-from general_functions.create_motherduck_connection import connect_to_motherduck, MotherDuckConnector
+from general_functions.create_motherduck_connection import MotherDuckConnector
 from general_functions.creds import secret_name
 from general_functions.get_credentials import get_secrets
 
+
 def main():
-    
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
     schema = "geoplace_swa_codes"
     link = get_link()
     table_name = get_table_name(link)
-    
+
     validate_data_model()
-    
+
     df = fetch_swa_codes()
-    
+
     with MotherDuckConnector(token, database) as conn:
-        conn.execute_query(f"""CREATE OR REPLACE TABLE "{schema}"."{table_name}" (
+        (
+            conn.execute_query(f"""CREATE OR REPLACE TABLE "{schema}"."{table_name}" (
                     "SWA Code" VARCHAR,
                     "Account Name" VARCHAR,
                     "Prefix" VARCHAR,
@@ -39,7 +43,11 @@ def main():
                     "Company Subsumed By" VARCHAR,
                     "SWA Code of New Company" VARCHAR
                 );"""),
-        conn.execute_query(f"""INSERT INTO "{schema}"."{table_name}" SELECT * FROM df""")
+        )
+        conn.execute_query(
+            f"""INSERT INTO "{schema}"."{table_name}" SELECT * FROM df"""
+        )
+
 
 if __name__ == "__main__":
     main()

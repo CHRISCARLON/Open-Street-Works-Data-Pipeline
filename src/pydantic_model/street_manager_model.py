@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ValidationError, Field
 from typing import Optional
-from typing_extensions import Annotated
 import pandas as pd
 from loguru import logger
+
 
 class StreetManagerPermitModel(BaseModel):
     event_reference: Optional[int]
@@ -52,29 +52,35 @@ class StreetManagerPermitModel(BaseModel):
     collaboration_type: Optional[str] = Field(default=None)
     collaboration_type_ref: Optional[str] = Field(default=None)
 
+
 # Validate a small sample against the model
-def validate_dataframe_sample(df: pd.DataFrame, model: StreetManagerPermitModel, sample_size: int = 500) -> list:
+def validate_dataframe_sample(
+    df: pd.DataFrame, model: StreetManagerPermitModel, sample_size: int = 500
+) -> list:
     errors = []
     # Ensure sample size is not larger than the DataFrame
     sample_size = min(sample_size, len(df))
     # Sample rows
     sample_df = df.sample(n=sample_size)
-    # Need to fill nan values - otherwise the model fails 
+    # Need to fill nan values - otherwise the model fails
     sample_df = sample_df.fillna("None")
     for index, row in sample_df.iterrows():
         try:
             model.model_validate(row.to_dict())
         except ValidationError as e:
             # Record validation errors with the index from the original DataFrame
-            errors.append({'index': index, 'errors': e.errors()})
+            errors.append({"index": index, "errors": e.errors()})
     return errors
+
 
 # Raise a ValueError if the list returned contains something - if empty continue as normal as no error
 def handle_validation_errors(validation_errors: list):
     if validation_errors:
         # Log each validation error
         for error in validation_errors:
-            logger.error(f"Validation error at index {error['index']}: {error['errors']}")
+            logger.error(
+                f"Validation error at index {error['index']}: {error['errors']}"
+            )
         # Raise an exception to indicate validation failure
         raise ValueError("Validation errors detected in sample of data.")
     else:
