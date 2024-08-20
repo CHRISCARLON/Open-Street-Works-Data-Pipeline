@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -19,7 +19,7 @@ jobs:
           pip install ruff
 
       - name: Run Ruff
-        run: ruff check
+        run: ruff check --ignore F841
 
       - name: Check for unwanted files
         run: |

@@ -1,19 +1,21 @@
-# How do all functions slot togeter?
+# How does everything slot together?
 
 - General Functions
 
-- Os_open_usrn_functions
+- Geoplace SWA Codes
+
+- OS open usrn
+
+- Pipeline Assets
 
 - Practice
 
-- Pydantic_model
+- Pydantic model
 
-- Scottish_permit_functions
+- Scottish road works register
 
-- Street_manager_permit_functions
+- Street manager
 
-- Tests
-
-- Main.py files ('launch pads' depending on what you want to do)
+- Main.py file ('launch pad' depending on what you want to do)
 
 ## Detail TBC

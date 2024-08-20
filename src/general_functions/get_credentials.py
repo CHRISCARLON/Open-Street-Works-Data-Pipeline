@@ -3,7 +3,6 @@ import boto3
 import boto3.session
 
 from loguru import logger
-# from creds import secret_name
 
 
 def get_secrets(secret_name, region_name="eu-west-2") -> dict:
@@ -12,7 +11,11 @@ def get_secrets(secret_name, region_name="eu-west-2") -> dict:
 
     Returns a JSON with environment variables.
 
+    Args:
+        Secret name (value used to retreive secret from aws secrets manager)
+        Region name
     """
+
     session = boto3.session.Session()
     client = session.client(service_name="secretsmanager", region_name=region_name)
 
@@ -24,8 +27,3 @@ def get_secrets(secret_name, region_name="eu-west-2") -> dict:
     else:
         secret = get_secret_value_response["SecretString"]
         return json.loads(secret)
-
-
-# if __name__ == "__main__":
-#     v = get_secrets(secret_name)
-#     print(v)

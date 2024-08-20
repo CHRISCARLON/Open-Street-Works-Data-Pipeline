@@ -3,8 +3,12 @@ from loguru import logger
 def process_chunk(df, conn):
     """
     Takes a conncection object and a dataframe
-    
-    Processes dataframe into MotherDuck table    
+
+    Processes dataframe into MotherDuck table
+
+    Args:
+        Dataframe
+        Connection object
     """
     schema = "os_open_usrns"
 
@@ -15,4 +19,4 @@ def process_chunk(df, conn):
         except Exception as e:
             logger.error(f"Error inserting DataFrame into DuckDB: {e}")
             raise
-    return None 
+    return None

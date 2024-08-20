@@ -1,3 +1,4 @@
+# Dockerfile for pipeline deployment
 # This is currently set up to deloy on AWS Fargate
 FROM --platform=linux/amd64 python:3.11
 

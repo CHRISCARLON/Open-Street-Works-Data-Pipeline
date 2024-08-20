@@ -12,23 +12,28 @@ from loguru import logger
 from .process_into_motherduck import process_chunk
 
 
-def load_geopackage_open_usrns(url, conn):
+def load_geopackage_open_usrns(url, conn, limit):
     """
     Function to load OS open usrn data in batches of 50,000 rows.
-    
-    It taskes a duckdb connection object and the download url required. 
+
+    It taskes a duckdb connection object and the download url required.
+
+    Args:
+        Url for data
+        Connection object
     """
-    
+
     # This can be changed based on how much memory you want to use overall
-    chunk_size=75000
-    
+    chunk_size = limit
+
     # List to store errors
-    errors = []  
+    errors = []
 
     try:
         # Download the zip file
         response = requests.get(url)
         response.raise_for_status()
+
         # Create a temporary directory
         with tempfile.TemporaryDirectory() as temp_dir:
             # Write the zip file to the temporary directory
@@ -51,41 +56,50 @@ def load_geopackage_open_usrns(url, conn):
                 try:
                     # Open the GeoPackage file
                     with fiona.open(gpkg_file, 'r') as src:
-                        # Print some of the metadata to check 
+                        # Print some of the metadata to check everything is OK
                         crs = src.crs
                         schema = src.schema
-                        
+
                         logger.info(f"The CRS is: {crs}")
                         logger.info(f"The Schema is: {schema}")
-                        
+
+                        # List to store extracted features for DataFrame processing
                         features = []
+
                         for i, feature in enumerate(src):
                             try:
                                 # Convert geometry to WKT string
                                 geom = shape(feature['geometry'])
                                 feature['properties']['geometry'] = wkt.dumps(geom)
                             except Exception as e:
-                                # If there's an error converting the geometry, set it to None 
-                                # and log the index of the feature that failed so we can track this over time
+                                # If there's an error converting the geometry, set it to None
+                                # and log the index of the feature that failed so we're aware of what features failed
+                                # This could be made better - could we store these errors somewhere for future use?
                                 feature['properties']['geometry'] = None
                                 error_msg = f"Error converting geometry for feature {i}: {e}"
                                 logger.warning(error_msg)
                                 errors.append(error_msg)
-                            
+
+                            # Append each feature to the list
                             features.append(feature['properties'])
-                            
+
+                            # When the list hits the limit size - e.g. 75,000
+                            # Process list into DataFrame
                             if len(features) == chunk_size:
                                 # Process the chunk
                                 df_chunk = pd.DataFrame(features)
                                 process_chunk(df_chunk, conn)
                                 logger.info(f"Processed features {i-chunk_size+1} to {i}")
+
+                                # Empty the list
                                 features = []
-                        
+
+                        # Process any remaining features outside the loop
                         if features:
-                            # Process any remaining features outside the loop
                             df_chunk = pd.DataFrame(features)
                             process_chunk(df_chunk, conn)
-                            logger.info(f"Processed remaining features up to {i}")
+                            logger.info("Processed remaining features")
+                            # Empty the list
                             features = []
 
                 except Exception as e:
@@ -104,7 +118,7 @@ def load_geopackage_open_usrns(url, conn):
         errors.append(error_msg)
         raise
     finally:
-        # Print all errors at the end + total
+        # Print all errors + total amount of errors
         if errors:
             logger.error(f"Total errors encountered: {len(errors)}")
             for error in errors:

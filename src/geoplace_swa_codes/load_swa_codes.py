@@ -1,13 +1,14 @@
-import duckdb 
-
+import duckdb
 from loguru import logger
-
 
 def create_table_swa_codes_motherduck(conn, table_name):
     """
     Creates a new table for the latest open usrn data every month.
     This will replace the table that is already there.
-    Takes a connection object.
+
+    Args:
+        Connection object
+        Table name
     """
     schema = "geoplace_swa_codes"
     if conn:
@@ -41,9 +42,9 @@ def create_table_swa_codes_motherduck(conn, table_name):
 def load_swa_code_data_motherduck(data, conn, table):
     """
     Inserts a DataFrame into a DuckDB table.
-    
+
     This function also ensures that the order of the columns is always the same.
-    
+
     Args:
         df: The DataFrame to be inserted.
         conn: The MotherDuck connection.
@@ -52,7 +53,7 @@ def load_swa_code_data_motherduck(data, conn, table):
     """
     df = data
     schema = "geoplace_swa_codes"
-    
+
     try:
         insert_sql = f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df"""
         conn.execute(insert_sql)

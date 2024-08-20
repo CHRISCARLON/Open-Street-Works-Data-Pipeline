@@ -1,53 +1,9 @@
-from geoplace_swa_codes.create_table_name import get_table_name
-from geoplace_swa_codes.fetch_swa_codes import (
-    get_link,
-    fetch_swa_codes,
-    validate_data_model,
-)
-
-from general_functions.create_motherduck_connection import MotherDuckConnector
-from general_functions.creds import secret_name
-from general_functions.get_credentials import get_secrets
-
+from pipeline_assets import monthly_permit_main, os_open_usrns_main, swa_codes_main
 
 def main():
-    secrets = get_secrets(secret_name)
-    token = secrets["motherduck_token"]
-    database = secrets["motherdb"]
-    schema = "geoplace_swa_codes"
-    link = get_link()
-    table_name = get_table_name(link)
-
-    validate_data_model()
-
-    df = fetch_swa_codes()
-
-    with MotherDuckConnector(token, database) as conn:
-        (
-            conn.execute_query(f"""CREATE OR REPLACE TABLE "{schema}"."{table_name}" (
-                    "SWA Code" VARCHAR,
-                    "Account Name" VARCHAR,
-                    "Prefix" VARCHAR,
-                    "Account Type" VARCHAR,
-                    "Registered for Street Manager" VARCHAR,
-                    "Account Status" VARCHAR,
-                    "Companies House Number" VARCHAR,
-                    "Previous Company Names" VARCHAR,
-                    "Linked/Parent Company" VARCHAR,
-                    "Website" VARCHAR,
-                    "Plant Enquiries" VARCHAR,
-                    "Ofgem Electricity Licence" VARCHAR,
-                    "Ofgem Gas Licence" VARCHAR,
-                    "Ofcom Licence" VARCHAR,
-                    "Ofwat Licence" VARCHAR,
-                    "Company Subsumed By" VARCHAR,
-                    "SWA Code of New Company" VARCHAR
-                );"""),
-        )
-        conn.execute_query(
-            f"""INSERT INTO "{schema}"."{table_name}" SELECT * FROM df"""
-        )
-
+    monthly_permit_main.main(100000)
+    os_open_usrns_main.main(100000)
+    swa_codes_main.main()
 
 if __name__ == "__main__":
     main()
