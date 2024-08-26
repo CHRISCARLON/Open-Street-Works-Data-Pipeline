@@ -1,22 +1,25 @@
 # Open Street Works Data Pipeline
-
 [![codecov](https://codecov.io/github/CHRISCARLON/Open-Street-Works-Data-Pipeline/branch/new-data-dev-branch/graph/badge.svg?token=T4PLSPAXDE)](https://codecov.io/github/CHRISCARLON/Open-Street-Works-Data-Pipeline)
+
+**Example pipeline processing Street Manager permit data, Ordnance Survey Open USRN Data, and Geoplace SWA Code data.**
+
+![StreetManagerPipeline](https://github.com/user-attachments/assets/b169f3b3-64bf-4129-9021-135a56726d3a)
+
+**Example dashboard product can be found here: [Word on The Street](https://word-on-the-street.evidence.app)**
 
 ## Overview
 
-**This repository contains an efficient data pipeline for processing:**
+**This repository contains an efficient data pipeline for processing and analysing:**
 
 1. DfT's Street Manager archived permit data
 
 2. Ordnance Survey's Open USRN data
 
-3. Geoplace's SWA Code list
+3. Geoplace's SWA Code data
 
 4. Scottish Road Works Register (SRWR) archived permit data (TBC)
 
-**The goal is to create a flexible, easily deployable pipeline to produce insights from street work data**
-
-### Open Street Works Data Pipeline in 3 points:
+## Open Street Works Data Pipeline in 3 points:
 
 >[!NOTE]
 > The aim of this project is simple.
@@ -43,11 +46,13 @@
 - You can integrate other tools from the Modern Data Stack such as DLT, DBT, or orchestrators like Airflow and Mage if you want more functionality.
 - You can run several instances of the project for analytical requirments.
 
-### Why did I create this Project?
+## Why did I create this Project?
 
 Both DfT's Street Manager and Scotland's SRWR are the authoritative sources of street work permit data for England and Scotland.
 
 They make available large quantities of archived permit data every month and have done so for several years.
+
+Both data sources also need to be combined with other data sources for meaningful analysis.
 
 This equates to a lot of data and processing it can be slow and painful if you're not careful.
 
