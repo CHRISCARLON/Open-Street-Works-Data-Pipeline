@@ -40,4 +40,5 @@ def main(schema_name, batch_limit):
     # Get the final memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss
     print(final_memory)
+
     logger.success("HISTORIC SCOTTISH ROAD WORKS REGISTER DATA PROCESSED")

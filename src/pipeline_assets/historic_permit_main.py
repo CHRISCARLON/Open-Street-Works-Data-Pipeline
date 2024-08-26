@@ -80,4 +80,5 @@ def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
     # Get final, high level memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss
     print(final_memory)
+
     logger.success("HISTORIC DATA HAS BEEN PROCESSED")

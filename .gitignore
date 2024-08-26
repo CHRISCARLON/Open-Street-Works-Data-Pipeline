@@ -185,6 +185,8 @@ tfplan
 src/os_open_usrn_functions/open_usrns.duckdb
 src/os_open_usrn_functions/osopenusrn_202406.gpkg
 src/os_open_usrn_functions/explore_and_prep.py
+Dockerfile.dev
+dev_run_dbt_jobs.sh*
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

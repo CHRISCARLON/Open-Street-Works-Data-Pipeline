@@ -11,9 +11,9 @@ from tqdm import tqdm
 def quick_col_rename(df) -> pd.DataFrame:
     """
     Need to rename the columns following the flatten json function output
-    
+
     This is because a lot of data was initially nested within "object_data"
-    
+
     This will remove "object data." from the column names
     """
     df.columns = [col.replace("object_data.", "") if "object_data." in col else col for col in df.columns]
@@ -23,9 +23,9 @@ def quick_col_rename(df) -> pd.DataFrame:
 def insert_dataframe_to_motherduck(df, conn, schema, table):
     """
     Inserts a DataFrame into a MotherDuck table.
-    
+
     This function also ensures that the order of the columns is always the same.
-    
+
     Args:
         df: The DataFrame to be inserted.
         conn: The MotherDuck connection.
@@ -45,14 +45,14 @@ def insert_dataframe_to_motherduck(df, conn, schema, table):
 
 def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, schema, table):
     """
-    Streams data from DfT into MotherDuck. 
+    Streams data from DfT into MotherDuck.
     Process data in batches of [whatever you decide].
-    Usually around 1 million jsons to proccess per month. 
-    
+    Usually around 1 million jsons to proccess per month.
+
     Args:
-        data to be streamed 
+        data to be streamed
         connection to md
-        schema 
+        schema
         table
     """
     batch_limit = limit_numbner
@@ -89,7 +89,7 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
             print(debug_df)
             print(debug_df.dtypes)
             raise
-    
+
     # Process the remaining data
     try:
         if flattened_data:

@@ -17,3 +17,10 @@ def get_table_name(url):
         return result
     else:
         logger.error("The required pattern was not found")
+
+def table_name_latest():
+    """
+    Create table name for latest active
+    """
+
+    return "LATEST_ACTIVE"

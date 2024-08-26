@@ -9,10 +9,10 @@ from tqdm import tqdm
 
 def check_data_schema(zipped_chunks):
     """
-    Reads 50 JSON files from zipped chunks and returns a Pandas DataFrame.
-    
-    This is so you can assess the data structure and validate part of it against the Pydantic model. 
-    
+    Reads 500 JSON files from zipped chunks and returns a Pandas DataFrame.
+
+    This is so you can assess the data structure and validate part of it against the Pydantic model.
+
     Args:
         zipped_chunks: Iterable of zipped chunks containing JSON files.
     """

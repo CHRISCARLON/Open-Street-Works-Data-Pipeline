@@ -2,7 +2,7 @@
 # If you're not using AWS then replace aws commands with GCP commands for exmaple - or other cloud providers.
 # Make pushing to github repo quick and easy
 
-# include .env <- Don't think this is needed anymore.
+include .env
 
 # Docker and AWS section
 .PHONY: docker-login docker-build docker-tag docker-push docker-verify docker-all

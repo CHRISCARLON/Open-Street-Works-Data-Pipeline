@@ -1,6 +1,10 @@
 import duckdb
 from loguru import logger
 
+# This is deprecated and has been replaced by
+# src/general_functions/create_motherduck_connection.py
+# MotherDuck Connector
+
 def create_table_swa_codes_motherduck(conn, table_name):
     """
     Creates a new table for the latest open usrn data every month.
@@ -14,7 +18,7 @@ def create_table_swa_codes_motherduck(conn, table_name):
     if conn:
         try:
             table_command = f"""CREATE OR REPLACE TABLE "{schema}"."{table_name}" (
-                "SWA Code" INT,
+                "SWA Code" VARCHAR,
                 "Account Name" VARCHAR,
                 "Prefix" VARCHAR,
                 "Account Type" VARCHAR,

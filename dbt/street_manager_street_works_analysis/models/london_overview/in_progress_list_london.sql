@@ -1,33 +1,39 @@
-{% set table_alias = 'in_progress_not_complete_works_list_' ~ var('year') ~ '_' ~ var('month') %}
+{% set table_alias = 'in_progress_works_list_london_latest' %}
 {{ config(materialized='table', alias=table_alias) }}
 
 {% set current_schema = 'raw_data_' ~ var('year') %}
 {% set current_table = '"' ~ var('month') ~ '_' ~ var('year') ~ '"' %}
 
 SELECT
-    t1.event_type,
-    t1.event_time,
-    t1.permit_reference_number,
-    t1.promoter_organisation,
-    t1.promoter_swa_code,
-    t1.highway_authority,
-    t1.highway_authority_swa_code,
-    t1.work_category,
-    t1.proposed_start_date,
-    t1.actual_start_date_time,
-    t1.collaborative_working,
-    t1.activity_type,
-    t1.is_traffic_sensitive,
-    t1.is_ttro_required,
-    t1.street_name,
-    t1.usrn,
-    t1.road_category,
-    t1.work_status_ref,
-    u.geometry
-FROM {{ current_schema }}.{{ current_table }} AS t1
-LEFT JOIN os_open_usrns.open_usrns_latest u ON t1.usrn = u.usrn
-WHERE t1.work_status_ref = 'in_progress'
-    AND t1.highway_authority IN (
+    permit_table.event_type,
+    permit_table.event_time,
+    permit_table.permit_reference_number,
+    permit_table.promoter_organisation,
+    permit_table.promoter_swa_code,
+    permit_table.highway_authority,
+    permit_table.highway_authority_swa_code,
+    permit_table.work_category,
+    permit_table.proposed_start_date,
+    permit_table.actual_start_date_time,
+    permit_table.collaborative_working,
+    permit_table.activity_type,
+    permit_table.is_traffic_sensitive,
+    permit_table.is_ttro_required,
+    permit_table.street_name,
+    permit_table.usrn,
+    permit_table.road_category,
+    permit_table.work_status_ref,
+    open_usrn.geometry,
+    geo_place.ofgem_electricity_licence,
+    geo_place.ofgem_gas_licence,
+    geo_place.ofcom_licence,
+    geo_place.ofwat_licence,
+    {{ current_timestamp() }} AS date_processed
+FROM {{ current_schema }}.{{ current_table }} AS permit_table
+LEFT JOIN os_open_usrns.open_usrns_latest AS open_usrn ON permit_table.usrn = open_usrn.usrn
+LEFT JOIN geoplace_swa_codes.LATEST_ACTIVE AS geo_place ON CAST(permit_table.promoter_swa_code AS INT) = CAST(geo_place.swa_code AS INT)
+WHERE permit_table.work_status_ref = 'in_progress'
+    AND permit_table.highway_authority IN (
         'LONDON BOROUGH OF BARNET',
         'TRANSPORT FOR LONDON (TFL)',
         'LONDON BOROUGH OF HARROW',
@@ -63,29 +69,9 @@ WHERE t1.work_status_ref = 'in_progress'
         'CITY OF LONDON CORPORATION',
         'LONDON BOROUGH OF BROMLEY'
     )
-    AND t1.permit_reference_number NOT IN (
+    AND permit_table.permit_reference_number NOT IN (
         SELECT permit_reference_number
         FROM {{ current_schema }}.{{ current_table }}
         WHERE work_status_ref = 'completed'
-            AND highway_authority = t1.highway_authority
+            AND highway_authority = permit_table.highway_authority
     )
-GROUP BY
-    t1.event_type,
-    t1.event_time,
-    t1.permit_reference_number,
-    t1.promoter_organisation,
-    t1.promoter_swa_code,
-    t1.highway_authority,
-    t1.highway_authority_swa_code,
-    t1.work_category,
-    t1.proposed_start_date,
-    t1.actual_start_date_time,
-    t1.collaborative_working,
-    t1.activity_type,
-    t1.is_traffic_sensitive,
-    t1.is_ttro_required,
-    t1.street_name,
-    t1.usrn,
-    t1.road_category,
-    t1.work_status_ref,
-    u.geometry

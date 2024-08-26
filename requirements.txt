@@ -18,5 +18,5 @@ shapely==2.0.4
 geopandas==0.14.4
 fiona==1.9.6
 beautifulsoup4==4.12.3
-xlrd ==2.0.1
-msoffcrypto-tool ==5.4.1
+xlrd==2.0.1
+msoffcrypto-tool==5.4.1

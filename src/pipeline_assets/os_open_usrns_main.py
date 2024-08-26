@@ -4,12 +4,12 @@ import os
 from memory_profiler import profile
 from loguru import logger
 
-from ..general_functions.create_motherduck_connection import connect_to_motherduck
-from ..general_functions.get_credentials import get_secrets
-from ..general_functions.creds import secret_name
-from ..os_open_usrn.get_redirect_url import fetch_redirect_url
-from ..os_open_usrn.os_open_usrns_processor import load_geopackage_open_usrns
-from ..os_open_usrn.create_motherduck_table import create_table
+from general_functions.create_motherduck_connection import connect_to_motherduck
+from general_functions.get_credentials import get_secrets
+from general_functions.creds import secret_name
+from os_open_usrn.get_redirect_url import fetch_redirect_url
+from os_open_usrn.os_open_usrns_processor import load_geopackage_open_usrns
+from os_open_usrn.create_motherduck_table import create_table
 
 @profile
 def main(batch_limit: int):
@@ -44,4 +44,4 @@ def main(batch_limit: int):
     final_memory = psutil.Process(os.getpid()).memory_info().rss
     print(final_memory)
 
-    logger.success("OS OPEN USRNS MAIN COMPLETE")
+    logger.success("OS OPEN USRN DATA PROCESSED")

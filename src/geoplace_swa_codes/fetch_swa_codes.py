@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 
+from datetime import datetime
 from bs4 import BeautifulSoup, Tag
 from io import BytesIO
 from loguru import logger
@@ -8,7 +9,7 @@ from msoffcrypto import OfficeFile
 from pydantic import ValidationError
 from typing import List, Tuple, Optional
 
-from ..pydantic_model.swa_codes_model import SWACodeModel
+from pydantic_model.swa_codes_model import SWACodeModel
 
 def get_link() -> Optional[str]:
     """
@@ -63,8 +64,15 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
         office_file.decrypt(decrypted_file)
         decrypted_file.seek(0)
 
+        # Read in and do some basic renames and transformation
         df = pd.read_excel(decrypted_file, header=1, engine='xlrd')
         df = df.astype(str).replace('nan', None)
+        df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
+
+        # Add date time processed column
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        df['date_time_processed'] = current_time
+
         logger.success(f"DataFrame created successfully: {df.head(10)}")
 
         return df
@@ -101,6 +109,7 @@ def validate_data_model() -> Optional[Tuple[List[SWACodeModel], List[str], pd.Da
     validated_data = []
     errors = []
 
+    # Iterate through and validate
     for idx, item in enumerate(data_dicts):
         try:
             # Validate the item
