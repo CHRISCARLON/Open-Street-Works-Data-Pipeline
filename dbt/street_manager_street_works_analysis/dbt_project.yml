@@ -1,12 +1,11 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'street_manager_street_works_analysis'
-version: '1.0.0'
+name: "street_manager_street_works_analysis"
+version: "1.0.0"
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'motherduck_profile'
+profile: "motherduck_profile"
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -19,7 +18,7 @@ macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
 # directories to be removed by `dbt clean`
-clean-targets: 
+clean-targets:
   - "target"
   - "dbt_packages"
 
@@ -36,16 +35,11 @@ vars:
 
 models:
   street_manager_street_works_analysis:
-    month_snap_lists:
-      completed_list:
-      future_planned_list:
-      in_progress_not_complete_list:
-      impact_scores_acute_legacy:
-      impact_scores:
-      future_impact_score:
-      acute_vs_legacy_completed:
-      acute_vs_legacy_in_progress:
-      future_by_period:
-      impact_score_usrn_map:
-      future_impact_score_usrn_map:
-      wiltshire_example:
+    england_overview:
+      completed_list_england:
+      in_progress_list_england:
+      impact_scores_england:
+    london_overview:
+      completed_list_london:
+      in_progress_list_london:
+      impact_scores_london:

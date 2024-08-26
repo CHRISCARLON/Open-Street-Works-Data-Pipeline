@@ -13,7 +13,10 @@ dbt-duckdb==1.8.0
 python-dotenv==1.0.1
 tqdm==4.66.4
 numpy==1.26.4
-GDAL==3.6.2
+GDAL==3.4.1
 shapely==2.0.4
 geopandas==0.14.4
 fiona==1.9.6
+beautifulsoup4==4.12.3
+xlrd==2.0.1
+msoffcrypto-tool==5.4.1

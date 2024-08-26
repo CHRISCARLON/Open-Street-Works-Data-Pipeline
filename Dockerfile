@@ -1,9 +1,10 @@
-# This is currently set up to deloy on AWS Fargate
+# Dockerfile for AWS deployment
 FROM --platform=linux/amd64 python:3.11
 
 # Install system dependencies
 RUN apt-get -y update
 
+# This needs to be done in order for GeoPandas to work correctly
 RUN apt-get install -y \
     libgdal-dev \
     gdal-bin \

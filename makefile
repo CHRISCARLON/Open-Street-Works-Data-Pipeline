@@ -1,5 +1,5 @@
 # Make the deployment of updated docker containers quick and easy!
-# If you're not using AWS then replace aws commands with GCP commands for exmaple - or other cloud providers. 
+# If you're not using AWS then replace aws commands with GCP commands for exmaple - or other cloud providers.
 # Make pushing to github repo quick and easy
 
 include .env

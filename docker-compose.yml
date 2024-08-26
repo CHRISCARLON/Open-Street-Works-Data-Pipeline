@@ -1,5 +1,7 @@
+# For local development and testing
 services:
   app:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -8,5 +10,8 @@ services:
       - ./dbt:/app/dbt
     tty: true
     stdin_open: true
-    env_file:
-      - .env
+    environment:
+      - PYTHONPATH=/app
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
