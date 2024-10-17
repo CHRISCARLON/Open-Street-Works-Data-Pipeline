@@ -7,7 +7,7 @@ provider "aws" {
 #### DEFINE ECS EXCECUTION ROLE, ECS EXECUTION POLICIES, ASSIGN POLICIES TO ROLE
 ####
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecs-task-execution-role"
+  name = "ecs-task-execution-role-${var.project_name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -22,7 +22,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 }
 
 resource "aws_iam_policy" "ecs_task_execution_policy" {
-  name = "ecs_task_execution_policy"
+  name = "ecs_task_execution_policy-${var.project_name}"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -56,7 +56,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_secrets_policy_att
 #### DEFINE ECS TASK ROLE, ECS TASK POLICIES, ASSIGN POLICIES TO ROLE
 ####
 resource "aws_iam_role" "ecs_task_role" {
-  name = "ecs-task-role"
+  name = "ecs-task-role-${var.project_name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -71,7 +71,7 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 
 resource "aws_iam_policy" "ecs_task_secrets_policy" {
-  name   = "ecs_task_secrets_policy"
+  name = "ecs_task_secrets_policy-${var.project_name}"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -102,7 +102,7 @@ resource "aws_ecs_cluster" "main" {
 ####
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name              = "/ecs/my-ecs-task"
+  name              = "/ecs/${var.project_name}"
   retention_in_days = 7
 }
 
@@ -121,10 +121,10 @@ resource "aws_ecs_task_definition" "task_definition" {
 
   container_definitions = jsonencode([
     {
-      name         = var.container_name
-      image        = var.docker_image
-      stopTimeout  = 15
-      essential    = true
+      name        = var.container_name
+      image       = var.docker_image
+      stopTimeout = 15
+      essential   = true
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -153,7 +153,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 
 
 resource "aws_security_group" "default" {
-  name        = "ecs-task-sg"
+  name        = "ecs-task-sg-${var.project_name}"
   description = "Security group for ECS task"
   vpc_id      = data.aws_vpc.default.id
 
