@@ -82,7 +82,7 @@ SELECT
   is_traffic_sensitive,
   is_ttro_required,
   geometry,
-  SUM(impact_level) AS 'Acute & Legacy Impact Score',
+  SUM(impact_level) AS 'total_impact_level',
   COUNT(CASE WHEN work_category = 'Major' THEN 1 END) AS 'Major Works',
   COUNT(CASE WHEN work_category = 'Major' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Major Works on Traffic Sensitive Streets',
   COUNT(CASE WHEN work_category = 'Major' AND is_ttro_required = 'Yes' THEN 1 END) AS 'Major Works Needing TTRO',
