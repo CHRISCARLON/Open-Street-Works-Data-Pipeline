@@ -5,7 +5,9 @@
 
 ![StreetManagerPipeline](https://github.com/user-attachments/assets/b169f3b3-64bf-4129-9021-135a56726d3a)
 
-**Example dashboard product can be found here: [Word on The Street](https://word-on-the-street.evidence.app)**
+**This is a an end to end analytical pipeline that ingests 3 data sources, performs the relevant transformations, and runs the required DBT models for analytics - it takes around 40 minutes to run.**
+
+**This pipeline feeds an Evidence dashboard that is updated monthly - it can be found here: [Word on The Street](https://word-on-the-street.evidence.app)**
 
 ## Overview
 
