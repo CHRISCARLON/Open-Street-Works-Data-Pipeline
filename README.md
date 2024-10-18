@@ -62,5 +62,5 @@ This equates to a lot of data and processing it can be slow and painful if you'r
 
 - Maintain a consistent and structured way to develop, test, and deploy street work permit data pipelines.
 - Automate your development and deployment so you can focus on analysis and delivering value from the data.
-- Utilise the power of Cloud Compute to process data faster.
-- Utilise elements of the Modern Data Stack to allow for easy Dashboarding.
+- Utilise the power of cloud compute to process data faster.
+- Utilise elements of the Modern Data Stack that allow for slick reporting and BI.
