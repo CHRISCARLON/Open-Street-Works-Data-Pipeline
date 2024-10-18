@@ -46,7 +46,7 @@
 - Don't want to use MotherDuck as your data warehouse? Add in a function so the end destination is Google Big Query instead.
 - Only want to focus on Street Manager data? Launch the entry point that doesn't process SRWR data.
 - You can integrate other tools from the Modern Data Stack such as DLT, DBT, or orchestrators like Airflow and Mage if you want more functionality.
-- You can run several instances of the project for analytical requirments.
+- You can run several instances of the project for different analytical requirements.
 
 ## Why did I create this Project?
 
