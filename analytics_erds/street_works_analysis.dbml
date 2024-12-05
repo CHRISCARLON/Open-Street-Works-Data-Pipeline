@@ -1,0 +1,92 @@
+Table OS_Open_USRNs {
+    usrn varchar [primary key]
+    street_name varchar
+}
+
+Table Street_Manager_Permit_Data{
+    version integer
+    event_reference varchar
+    event_type varchar
+    event_time timestamp
+    object_type varchar
+    object_reference varchar
+    work_reference_number varchar
+    work_category varchar
+    work_category_ref varchar
+    work_status varchar
+    work_status_ref varchar
+    activity_type varchar
+    permit_reference_number varchar [unique]
+    permit_status varchar
+    permit_conditions text
+    collaborative_working boolean
+    collaboration_type varchar
+    collaboration_type_ref varchar
+    promoter_swa_code varchar
+    promoter_organisation varchar
+    highway_authority varchar
+    highway_authority_swa_code varchar
+    works_location_coordinates geography
+    works_location_type varchar
+    town varchar
+    street_name varchar
+    usrn varchar
+    road_category varchar
+    area_name varchar
+    traffic_management_type varchar
+    traffic_management_type_ref varchar
+    current_traffic_management_type varchar
+    current_traffic_management_type_ref varchar
+    current_traffic_management_update_date timestamp
+    proposed_start_date date
+    proposed_start_time time
+    proposed_end_date date
+    proposed_end_time time
+    actual_start_date_time timestamp
+    actual_end_date_time timestamp
+    is_ttro_required boolean
+    is_covid_19_response boolean
+    is_traffic_sensitive boolean
+    is_deemed boolean
+    close_footway varchar
+    close_footway_ref varchar
+}
+
+Table GeoPlace_SWA_Codes {
+    swa_code varchar [primary key]
+    account_name varchar
+    region varchar
+    authority_type varchar
+}
+
+Table DfT_LAs_API {
+    id integer [primary key]
+    name varchar
+    ons_code varchar
+    account_name varchar
+    authority_type varchar
+}
+
+Table DfT_Road_Lengths {
+    id integer [primary key]
+    ons_code varchar
+    major_roads_km decimal
+    minor_roads_km decimal
+    total_road_length_km decimal
+    year integer
+}
+
+Table DfT_Traffic_Flows {
+    id integer [primary key]
+    dft_la_id integer
+    count_point_ref varchar
+    annual_avg_daily_flow integer
+    year integer
+    road_category varchar
+}
+
+Ref: Street_Manager_Permit_Data.usrn > OS_Open_USRNs.usrn // many-to-one
+Ref: Street_Manager_Permit_Data.highway_authority_swa_code > GeoPlace_SWA_Codes.swa_code // many-to-one
+Ref: DfT_LAs_API.account_name > GeoPlace_SWA_Codes.account_name // one-to-one
+Ref: DfT_Road_Lengths.ons_code > DfT_LAs_API.ons_code // many-to-one
+Ref: DfT_Traffic_Flows.dft_la_id > DfT_LAs_API.id // many-to-OS_Open_USRNs
