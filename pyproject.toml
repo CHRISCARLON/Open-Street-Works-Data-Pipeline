@@ -36,6 +36,7 @@ polars = "^1.4.1"
 fastexcel = "^0.11.5"
 msoffcrypto-tool = "^5.4.1"
 beautifulsoup4 = "^4.12.3"
+odfpy = "^1.4.1"
 
 
 [build-system]

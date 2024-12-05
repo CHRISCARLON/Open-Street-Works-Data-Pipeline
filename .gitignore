@@ -188,6 +188,8 @@ src/os_open_usrn_functions/explore_and_prep.py
 Dockerfile.dev
 dev_run_dbt_jobs.sh*
 .terraform
+/test_data
+
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
