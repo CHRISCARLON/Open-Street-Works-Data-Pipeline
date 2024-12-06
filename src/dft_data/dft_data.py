@@ -89,8 +89,8 @@ def fetch_traffic_flows() -> Optional[pd.DataFrame]:
 
         df = df.astype(str)
         df.columns = (df.columns
-                    .str.replace(r'_\[note_8\]', '')  # Remove _[note_8]
-                    .str.replace(r'_\[note_8\]_\[r\]', '')  # Remove _[note_8]_[r]
+                    .str.replace(r'_\[note_8\]', '')
+                    .str.replace(r'_\[note_8\]_\[r\]', '')
                     .str.replace('Integrated Transport Authority (ITA)', 'Integrated Transport Authority')
                     .str.strip()
         )

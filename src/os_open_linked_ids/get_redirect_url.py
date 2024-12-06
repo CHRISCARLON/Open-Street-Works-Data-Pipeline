@@ -6,7 +6,7 @@ def fetch_redirect_url() -> str:
     Call the redirect url and then fetch the actual download url.
     This is suboptimal and will change in future versions.
     """
-    url = "https://api.os.uk/downloads/v1/products/OpenUSRN/downloads?area=GB&format=GeoPackage&redirect"
+    url = "https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-11_csv_BLPU-UPRN-Street-USRN-11.zip&redirect"
     try:
         response = requests.get(url)
         response.raise_for_status()

@@ -10,11 +10,11 @@ def process_chunk(df, conn):
         Dataframe
         Connection object
     """
-    schema = "os_open_usrns"
+    schema = "os_open_linked_identifiers"
 
     if conn:
         try:
-            insert_sql = f"""INSERT INTO "{schema}"."open_usrns_latest" SELECT * FROM df"""
+            insert_sql = f"""INSERT INTO "{schema}"."os_open_linked_identifiers_latest" SELECT * FROM df"""
             conn.execute(insert_sql)
         except Exception as e:
             logger.error(f"Error inserting DataFrame into DuckDB: {e}")
