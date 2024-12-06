@@ -35,6 +35,37 @@ def get_link() -> Optional[str]:
         logger.error(f"Error in get_link: {e}")
         raise ValueError(f"Failed to get download link: {e}")
 
+def clean_name(x: str):
+    """
+    Used to clean names columns ready for left join in the future
+
+    # usage: df.loc[:, "account_name"] = df.loc[:, "account_name"].apply(clean_name)
+    """
+    x = x.replace("LONDON BOROUGH OF", "").strip()
+    x = x.replace("COUNCIL", "").strip()
+    x = x.replace("COUNTY COUNCIL", "").strip()
+    x = x.replace("COUNTY", "").strip()
+    x = x.replace("BOROUGH COUNCIL", "").strip()
+    x = x.replace("BOROUGH", "").strip()
+    x = x.replace("CITY", "").strip()
+    x = x.replace("CITY COUNCIL", "").strip()
+    x = x.replace("METROPOLITAN", "").strip()
+    x = x.replace("CITY OF", "").strip()
+    x = x.replace("DISTRICT", "").strip()
+    x = x.replace("ROYAL BOROUGH OF", "").strip()
+    x = x.replace("CORPORATION", "").strip()
+    x = x.replace("COUNCIL OF THE", "").strip()
+    x = x.replace(", City of", "").strip()
+    x = x.replace("City of", "").strip()
+    x = x.replace(", County of", "").strip()
+    x = x.replace("upon tyne", "").strip()
+    x = x.replace("&", "and").strip()
+    x = x.replace(",", "").strip()
+    x = x.replace("excluding Isles of Scilly", "").strip()
+    x = x.replace("Kingston upon", "").strip()
+    x = str(x).lower()
+    return x
+
 def fetch_swa_codes() -> Optional[pd.DataFrame]:
     """
     Use download link to fetch data.
@@ -68,6 +99,7 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
         df = pd.read_excel(decrypted_file, header=1, engine='xlrd')
         df = df.astype(str).replace('nan', None)
         df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
+        df.loc[:, "account_name"] = df.loc[:, "account_name"].apply(clean_name)
 
         # Add date time processed column
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

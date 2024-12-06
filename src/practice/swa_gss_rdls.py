@@ -169,7 +169,7 @@ def process_data() -> Optional[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]]:
     df_3 = pd.read_parquet("test_data/rdls_codes_20241205_172714.parquet")
 
     # Validate data
-    if df is None or df_2 is None:
+    if df is None or df_2 is None or df_3 is None:
         print("Error: One or both dataframes are None")
         return None
 
