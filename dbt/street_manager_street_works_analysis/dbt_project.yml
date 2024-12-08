@@ -34,6 +34,10 @@ vars:
   month: "{{ (run_started_at - modules.datetime.timedelta(days=32)).strftime('%m') }}"
 
 models:
+  uprn_usrn_counts:
+    uprn_usrn_count:
+  dft_data:
+    dft_data_joins:
   street_manager_street_works_analysis:
     england_overview:
       completed_list_england:

@@ -4,7 +4,7 @@
 {% set current_schema = 'raw_data_' ~ var('year') %}
 {% set current_table = '"' ~ var('month') ~ '_' ~ var('year') ~ '"' %}
 
-SELECT
+SELECT DISTINCT ON (permit_table.permit_reference_number)
     permit_table.event_type,
     permit_table.event_time,
     permit_table.permit_reference_number,
@@ -13,6 +13,7 @@ SELECT
     permit_table.highway_authority,
     permit_table.highway_authority_swa_code,
     permit_table.work_category,
+    permit_table.works_location_type,
     permit_table.proposed_start_date,
     permit_table.proposed_end_date,
     permit_table.actual_start_date_time,
@@ -21,7 +22,9 @@ SELECT
     permit_table.activity_type,
     permit_table.is_traffic_sensitive,
     permit_table.is_ttro_required,
+    permit_table.traffic_management_type_ref,
     permit_table.street_name,
+    permit_table.road_category,
     permit_table.usrn,
     permit_table.road_category,
     permit_table.work_status_ref,
@@ -39,4 +42,5 @@ WHERE permit_table.work_status_ref = 'in_progress'
         SELECT permit_reference_number
         FROM {{ current_schema }}.{{ current_table }}
         WHERE work_status_ref = 'completed'
+        AND permit_table.event_type = 'WORK_STOP'
     )

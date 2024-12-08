@@ -15,10 +15,10 @@ def create_table(conn):
         try:
             table_command = f"""CREATE OR REPLACE TABLE "{schema}"."os_open_linked_identifiers_latest" (
             CORRELATION_ID VARCHAR,
-            IDENTIFIER_1_UPRN BIGINT,
+            IDENTIFIER_1 BIGINT,
             VERSION_NUMBER_1 VARCHAR,
             VERSION_DATE_1 BIGINT,
-            IDENTIFIER_2_USRN BIGINT,
+            IDENTIFIER_2 BIGINT,
             VERSION_NUMBER_2 VARCHAR,
             VERSION_DATE_2 BIGINT,
             CONFIDENCE VARCHAR

@@ -33,9 +33,11 @@ def load_csv_data(url: str, conn, batch_limit: int):
     total_rows_processed = 0
 
     try:
+        # Get url
         response = requests.get(url)
         response.raise_for_status()
 
+        # Create the temp dir as the OS download has several files in it
         with tempfile.TemporaryDirectory() as temp_dir:
             zip_path = os.path.join(temp_dir, 'temp.zip')
             with open(zip_path, 'wb') as zip_file:
@@ -44,6 +46,7 @@ def load_csv_data(url: str, conn, batch_limit: int):
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(temp_dir)
 
+            # Get the csv file that has the data in it
             csv_file = next(
                 (os.path.join(temp_dir, f) for f in os.listdir(temp_dir) if f.endswith('.csv')),
                 None
