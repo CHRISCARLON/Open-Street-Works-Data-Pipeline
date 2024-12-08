@@ -3,7 +3,6 @@ import tempfile
 import zipfile
 import requests
 import csv
-import io
 import pandas as pd
 from loguru import logger
 from .process_into_motherduck import process_chunk
