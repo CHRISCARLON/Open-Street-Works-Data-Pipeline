@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: impact_scores_england
+    columns:
+      - name: total_impact_level
+        data_tests:
+          - not_null

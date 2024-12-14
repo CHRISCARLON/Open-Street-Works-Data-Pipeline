@@ -1,0 +1,12 @@
+version: 2
+
+models:
+  - name: completed_list_england
+    columns:
+      - name: permit_reference_number
+        data_tests:
+          - unique
+          - not_null
+      - name: uprn_count
+        data_tests:
+          - not_null

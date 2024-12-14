@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# Set this to run after a monthly permit pipeline to automate the creation of analysis tables
+# Exit on any error
+set -e
 
-# Run dbt run with the specified model
+echo "Starting dbt run..."
+# Run dbt models
 dbt run --vars "{motherduck_token: $MOTHERDUCK_TOKEN, motherduck_db_name: $MOTHERDB}"
+
+echo "Starting dbt tests..."
+# Run dbt tests
+dbt test

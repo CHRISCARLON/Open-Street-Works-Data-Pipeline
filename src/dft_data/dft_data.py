@@ -18,8 +18,8 @@ def fetch_road_lengths() -> Optional[pd.DataFrame]:
 
         df = df.astype(str)
         df.columns = (df.columns
-                     .str.replace("'", "")
-                     .str.strip()
+                    .str.replace("'", "")
+                    .str.strip()
         )
         df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
         print(df.head(15))
@@ -28,24 +28,10 @@ def fetch_road_lengths() -> Optional[pd.DataFrame]:
     except Exception as e:
         raise Exception(f"Failed to fetch road length data: {str(e)}")
 
-def clean_name(x: str):
+def clean_name_gss(x: str):
     """
     Used to clean names columns ready for left join in the future
     """
-    x = x.replace("LONDON BOROUGH OF", "").strip()
-    x = x.replace("COUNCIL", "").strip()
-    x = x.replace("COUNTY COUNCIL", "").strip()
-    x = x.replace("COUNTY", "").strip()
-    x = x.replace("BOROUGH COUNCIL", "").strip()
-    x = x.replace("BOROUGH", "").strip()
-    x = x.replace("CITY", "").strip()
-    x = x.replace("CITY COUNCIL", "").strip()
-    x = x.replace("METROPOLITAN", "").strip()
-    x = x.replace("CITY OF", "").strip()
-    x = x.replace("DISTRICT", "").strip()
-    x = x.replace("ROYAL BOROUGH OF", "").strip()
-    x = x.replace("CORPORATION", "").strip()
-    x = x.replace("COUNCIL OF THE", "").strip()
     x = x.replace(", City of", "").strip()
     x = x.replace("City of", "").strip()
     x = x.replace(", County of", "").strip()
@@ -65,11 +51,16 @@ def fetch_gss_codes() -> Optional[pd.DataFrame]:
         df = pd.DataFrame(reponse)
         df = df.astype(str)
         df.columns = (df.columns
-                     .str.lower()
-                     .str.replace(' ', '_')
-                     .str.replace('/', '_')
-                     .str.strip())
-        df.loc[:, "name"] = df.loc[:, "name"].apply(clean_name)
+                    .str.lower()
+                    .str.replace(' ', '_')
+                    .str.replace('/', '_')
+                    .str.strip())
+        df.loc[:, "name"] = df.loc[:, "name"].apply(clean_name_gss)
+        df.loc[df["name"] == "newcastle upon tyne", "name"] = "newcastle"
+        df.loc[df["name"] == "thames", "name"] = "kingston upon thames"
+        df.loc[df["name"] == "isle of wight", "name"] = "isle wight"
+        df.loc[df["name"] == "east riding of yorkshire", "name"] = "eastridingyorkshire"
+
         print(df)
         return df
     except Exception as e:

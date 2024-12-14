@@ -12,7 +12,7 @@ profile: "motherduck_profile"
 # found in the "models/" directory. You probably won't need to change these!
 model-paths: ["models"]
 analysis-paths: ["analyses"]
-test-paths: ["tests"]
+test-paths: ["data_tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
@@ -34,11 +34,11 @@ vars:
   month: "{{ (run_started_at - modules.datetime.timedelta(days=32)).strftime('%m') }}"
 
 models:
-  uprn_usrn_counts:
-    uprn_usrn_count:
-  dft_data:
-    dft_data_joins:
   street_manager_street_works_analysis:
+    uprn_usrn_counts:
+      uprn_usrn_count:
+    dft_data:
+      dft_data_joins:
     england_overview:
       completed_list_england:
       in_progress_list_england:

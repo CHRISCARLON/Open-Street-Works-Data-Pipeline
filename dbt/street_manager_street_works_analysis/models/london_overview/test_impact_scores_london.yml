@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: impact_scores_london
+    columns:
+      - name: total_impact_level
+        tests:
+          - not_null

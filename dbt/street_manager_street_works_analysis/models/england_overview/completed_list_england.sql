@@ -26,16 +26,17 @@ SELECT DISTINCT ON (permit_table.permit_reference_number)
     permit_table.street_name,
     permit_table.road_category,
     permit_table.usrn,
-    permit_table.road_category,
     permit_table.work_status_ref,
     open_usrn.geometry,
     geo_place.ofgem_electricity_licence,
     geo_place.ofgem_gas_licence,
     geo_place.ofcom_licence,
     geo_place.ofwat_licence,
+    COALESCE(uprn_counts.uprn_count, 0) as uprn_count,
     {{ current_timestamp() }} AS date_processed
 FROM {{ current_schema }}.{{ current_table }} AS permit_table
 LEFT JOIN os_open_usrns.open_usrns_latest AS open_usrn ON permit_table.usrn = open_usrn.usrn
 LEFT JOIN geoplace_swa_codes.LATEST_ACTIVE AS geo_place ON CAST(permit_table.promoter_swa_code AS INT) = CAST(geo_place.swa_code AS INT)
+LEFT JOIN {{ ref('uprn_usrn_count') }} as uprn_counts ON permit_table.usrn = uprn_counts.usrn
 WHERE permit_table.work_status_ref = 'completed'
 AND permit_table.event_type = 'WORK_STOP'

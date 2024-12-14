@@ -43,11 +43,12 @@ SELECT
 
 FROM geoplace_swa_codes.LATEST_ACTIVE g
 LEFT JOIN dft_las_gss_code.dft_las_gss_code_latest d
-    ON LOWER(TRIM(g.account_name)) = LOWER(TRIM(d.name))
+    ON REGEXP_REPLACE(REGEXP_REPLACE(LOWER(TRIM(g.account_name)), '\s+', ' '), '\s+$', '') = 
+    REGEXP_REPLACE(REGEXP_REPLACE(LOWER(TRIM(d.name)), '\s+', ' '), '\s+$', '')
 LEFT JOIN dft_road_lengths.dft_road_lengths_latest r
     ON TRIM(d.ons_code) = TRIM(r.ons_area_code)
 LEFT JOIN dft_traffic_flows.dft_traffic_flows_latest t
     ON TRIM(d.ons_code) = TRIM(t.local_authority_or_region_code)
 WHERE d.name IS NOT NULL
     AND g.account_type != 'Welsh Unitary'
-    AND d.ons_code != 'E10000009';
+    AND d.ons_code != 'E10000009'

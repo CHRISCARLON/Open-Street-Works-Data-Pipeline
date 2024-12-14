@@ -35,34 +35,27 @@ def get_link() -> Optional[str]:
         logger.error(f"Error in get_link: {e}")
         raise ValueError(f"Failed to get download link: {e}")
 
-def clean_name(x: str):
+def clean_name_geoplace(x: str):
     """
     Used to clean names columns ready for left join in the future
 
     # usage: df.loc[:, "account_name"] = df.loc[:, "account_name"].apply(clean_name)
     """
     x = x.replace("LONDON BOROUGH OF", "").strip()
-    x = x.replace("COUNCIL", "").strip()
     x = x.replace("COUNTY COUNCIL", "").strip()
-    x = x.replace("COUNTY", "").strip()
     x = x.replace("BOROUGH COUNCIL", "").strip()
+    x = x.replace("CITY COUNCIL", "").strip()
+    x = x.replace("COUNCIL", "").strip()
+    x = x.replace("ROYAL BOROUGH OF", "").strip()
+    x = x.replace("COUNCIL OF THE", "").strip()
+    x = x.replace("CITY OF", "").strip()
+    x = x.replace("COUNTY", "").strip()
     x = x.replace("BOROUGH", "").strip()
     x = x.replace("CITY", "").strip()
-    x = x.replace("CITY COUNCIL", "").strip()
     x = x.replace("METROPOLITAN", "").strip()
-    x = x.replace("CITY OF", "").strip()
     x = x.replace("DISTRICT", "").strip()
-    x = x.replace("ROYAL BOROUGH OF", "").strip()
     x = x.replace("CORPORATION", "").strip()
-    x = x.replace("COUNCIL OF THE", "").strip()
-    x = x.replace(", City of", "").strip()
-    x = x.replace("City of", "").strip()
-    x = x.replace(", County of", "").strip()
-    x = x.replace("upon tyne", "").strip()
-    x = x.replace("&", "and").strip()
-    x = x.replace(",", "").strip()
-    x = x.replace("excluding Isles of Scilly", "").strip()
-    x = x.replace("Kingston upon", "").strip()
+    x = x.replace("OF", "").strip()
     x = str(x).lower()
     return x
 
@@ -99,7 +92,15 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
         df = pd.read_excel(decrypted_file, header=1, engine='xlrd')
         df = df.astype(str).replace('nan', None)
         df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
-        df.loc[:, "account_name"] = df.loc[:, "account_name"].apply(clean_name)
+        df.loc[:, "account_name"] = df.loc[:, "account_name"].apply(clean_name_geoplace)
+        df.loc[df["account_name"] == "peter", "account_name"] = "peterborough"
+        df.loc[df["account_name"] == "bournemouth, christchurch and poole", "account_name"] = "bournemouth christchurch and poole"
+        df.loc[df["account_name"] == "brighton & hove", "account_name"] = "brighton and hove"
+        df.loc[df["account_name"] == "telford & wrekin", "account_name"] = "telford and wrekin"
+        df.loc[df["account_name"] == "hammersmith & fulham", "account_name"] = "hammersmith and fulham"
+        df.loc[df["account_name"] == "cheshire east", "account_name"] = "east cheshire"
+        df.loc[df["account_name"] == "cheshire west and chester", "account_name"] = "west cheshire"
+        df.loc[df["account_name"] == "east riding  yorkshire", "account_name"] = "eastridingyorkshire"
 
         # Add date time processed column
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
