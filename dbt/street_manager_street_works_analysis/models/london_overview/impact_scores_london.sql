@@ -2,7 +2,7 @@
 {{ config(materialized='table', alias=table_alias) }}
 
 WITH join_completed_and_in_progress AS (
-SELECT
+  SELECT
     usrn,
     street_name,
     highway_authority,
@@ -11,107 +11,89 @@ SELECT
     work_category,
     is_ttro_required,
     is_traffic_sensitive,
+    traffic_management_type_ref,
+    uprn_count,
     geometry,
+    -- Base impact from work category
     CASE
-    WHEN work_category = 'Standard' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 2 + 0.5 + 0.5
-    WHEN work_category = 'Standard' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'No' THEN 2 + 0.5
-    WHEN work_category = 'Standard' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'Yes' THEN 2 + 0.5
-    WHEN work_category = 'Standard' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'No' THEN 2
-    WHEN work_category = 'Standard' THEN 2
-
-    WHEN work_category = 'Major' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 5 + 0.5 + 0.5
-    WHEN work_category = 'Major' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'No' THEN 5 + 0.5
-    WHEN work_category = 'Major' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'Yes' THEN 5 + 0.5
-    WHEN work_category = 'Major' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'No' THEN 5
-    WHEN work_category = 'Major' THEN 5
-
-    WHEN work_category = 'Minor' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 + 0.5 + 0.5
-    WHEN work_category = 'Minor' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'No' THEN 1 + 0.5
-    WHEN work_category = 'Minor' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'Yes' THEN 1 + 0.5
-    WHEN work_category = 'Minor' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'No' THEN 1
-    WHEN work_category = 'Minor' THEN 1
-
-    WHEN work_category = 'HS2 (Highway)' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 2 + 0.5 + 0.5
-    WHEN work_category = 'HS2 (Highway)' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'No' THEN 2 + 0.5
-    WHEN work_category = 'HS2 (Highway)' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'Yes' THEN 2 + 0.5
-    WHEN work_category = 'HS2 (Highway)' AND is_ttro_required = 'No' AND is_traffic_sensitive = 'No' THEN 2
-    WHEN work_category = 'HS2 (Highway)' THEN 2
-
-    WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 3 + 0.5 + 0.5
-    WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'No' THEN 3 + 0.5
-    WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_ttro_required = 'No' AND is_traffic_sensitive = 'Yes' THEN 3 + 0.5
-    WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_ttro_required = 'No' AND is_traffic_sensitive = 'No' THEN 3
-    WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') THEN 3
-
-    ELSE 0
-    END AS impact_level
+      WHEN work_category = 'Standard' THEN 2
+      WHEN work_category = 'Major' THEN 5
+      WHEN work_category = 'Minor' THEN 1
+      WHEN work_category = 'HS2 (Highway)' THEN 2
+      WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') THEN 3
+      ELSE 0
+    END 
+    -- Add TTRO impact
+    + CASE WHEN is_ttro_required = 'Yes' THEN 0.5 ELSE 0 END
+    -- Add traffic sensitive impact
+    + CASE WHEN is_traffic_sensitive = 'Yes' THEN 0.5 ELSE 0 END
+    -- Add traffic management impact
+    + CASE 
+        -- High Impact Traffic Management
+        WHEN traffic_management_type_ref IN ('road_closure', 'contra_flow', 'lane_closure', 
+             'convoy_workings', 'multi_way_signals', 'two_way_signals') THEN 2.0
+        -- Medium Impact Traffic Management
+        WHEN traffic_management_type_ref IN ('give_and_take', 'stop_go_boards', 'priority_working') THEN 1.0
+        -- Low Impact Traffic Management
+        WHEN traffic_management_type_ref = 'some_carriageway_incursion' THEN 0.5
+        -- No Impact
+        WHEN traffic_management_type_ref = 'no_carriageway_incursion' THEN 0
+        -- Default case for NULL
+        WHEN traffic_management_type_ref IS NULL THEN 0.5
+        ELSE 0
+      END
+    -- Add UPRN density impact based on actual distribution
+    + CASE
+        WHEN uprn_count <= 5 THEN 0.3      -- 33.52% of streets
+        WHEN uprn_count <= 10 THEN 0.4     -- 11.04% of streets
+        WHEN uprn_count <= 25 THEN 0.5     -- 23.20% of streets
+        WHEN uprn_count <= 50 THEN 0.7     -- 16.51% of streets
+        WHEN uprn_count <= 100 THEN 0.9    -- 10.11% of streets
+        WHEN uprn_count <= 200 THEN 1.1    -- 4.01% of streets
+        WHEN uprn_count <= 500 THEN 1.3    -- 1.35% of streets
+        ELSE 1.5                           -- 0.26% of streets
+      END AS impact_level
   FROM (
     SELECT
-      usrn,
-      street_name,
-      highway_authority,
-      activity_type,
-      work_category,
-      actual_start_date_time,
-      is_ttro_required,
-      is_traffic_sensitive,
-      geometry
-    FROM {{ ref('in_progress_list_london') }}
+      w.usrn,
+      w.street_name,
+      w.highway_authority,
+      w.activity_type,
+      w.work_category,
+      w.actual_start_date_time,
+      w.is_ttro_required,
+      w.is_traffic_sensitive,
+      w.traffic_management_type_ref,
+      w.geometry,
+      COALESCE(u.uprn_count, 0) as uprn_count
+    FROM {{ ref('in_progress_list_london') }} w
+    LEFT JOIN {{ ref('uprn_usrn_count') }} u ON w.usrn = u.usrn
 
     UNION ALL
 
     SELECT
-      usrn,
-      street_name,
-      highway_authority,
-      activity_type,
-      work_category,
-      actual_start_date_time,
-      is_ttro_required,
-      is_traffic_sensitive,
-      geometry
-    FROM {{ ref('completed_list_london') }}
+      w.usrn,
+      w.street_name,
+      w.highway_authority,
+      w.activity_type,
+      w.work_category,
+      w.actual_start_date_time,
+      w.is_ttro_required,
+      w.is_traffic_sensitive,
+      w.traffic_management_type_ref,
+      w.geometry,
+      COALESCE(u.uprn_count, 0) as uprn_count
+    FROM {{ ref('completed_list_london') }} w
+    LEFT JOIN {{ ref('uprn_usrn_count') }} u ON w.usrn = u.usrn
   ) AS combined_works
 )
 SELECT
   usrn,
   street_name,
   highway_authority,
-  activity_type,
-  work_category,
-  is_traffic_sensitive,
-  is_ttro_required,
+  uprn_count,
   geometry,
   SUM(impact_level) AS 'total_impact_level',
-  COUNT(CASE WHEN work_category = 'Major' THEN 1 END) AS 'Major Works',
-  COUNT(CASE WHEN work_category = 'Major' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Major Works on Traffic Sensitive Streets',
-  COUNT(CASE WHEN work_category = 'Major' AND is_ttro_required = 'Yes' THEN 1 END) AS 'Major Works Needing TTRO',
-  COUNT(CASE WHEN work_category = 'Major' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Major Works with TTRO on Traffic Sensitive Streets',
-
-  COUNT(CASE WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') THEN 1 END) AS 'Emergency Works',
-  COUNT(CASE WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Emergency Works on Traffic Sensitive Streets',
-  COUNT(CASE WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_ttro_required = 'Yes' THEN 1 END) AS 'Emergency Works Needing TTRO',
-  COUNT(CASE WHEN work_category IN ('Immediate - urgent', 'Immediate - emergency') AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Emergency Works with TTRO on Traffic Sensitive Streets',
-
-  COUNT(CASE WHEN work_category = 'Standard' THEN 1 END) AS 'Standard Works',
-  COUNT(CASE WHEN work_category = 'Standard' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Standard Works on Traffic Sensitive Streets',
-  COUNT(CASE WHEN work_category = 'Standard' AND is_ttro_required = 'Yes' THEN 1 END) AS 'Standard Works Needing TTRO',
-  COUNT(CASE WHEN work_category = 'Standard' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Standard Works with TTRO on Traffic Sensitive Streets',
-
-  COUNT(CASE WHEN work_category = 'HS2 (Highway)' THEN 1 END) AS 'HS2 Highway Works',
-  COUNT(CASE WHEN work_category = 'HS2 (Highway)' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'HS2 Highway Works on Traffic Sensitive Streets',
-  COUNT(CASE WHEN work_category = 'HS2 (Highway)' AND is_ttro_required = 'Yes' THEN 1 END) AS 'HS2 Highway Works Needing TTRO',
-  COUNT(CASE WHEN work_category = 'HS2 (Highway)' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'HS2 Highway Works with TTRO on Traffic Sensitive Streets',
-
-  COUNT(CASE WHEN work_category = 'Minor' THEN 1 END) AS 'Minor Works',
-  COUNT(CASE WHEN work_category = 'Minor' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Minor Works on Traffic Sensitive Streets',
-  COUNT(CASE WHEN work_category = 'Minor' AND is_ttro_required = 'Yes' THEN 1 END) AS 'Minor Works Needing TTRO',
-  COUNT(CASE WHEN work_category = 'Minor' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Minor Works with TTRO on Traffic Sensitive Streets',
-
-  COUNT(CASE WHEN work_category = 'Major (PAA)' THEN 1 END) AS 'Major PAAs',
-  COUNT(CASE WHEN work_category = 'Major (PAA)' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Major PAAs on Traffic Sensitive Streets',
-  COUNT(CASE WHEN work_category = 'Major (PAA)' AND is_ttro_required = 'Yes' THEN 1 END) AS 'Major PAAs Needing TTRO',
-  COUNT(CASE WHEN work_category = 'Major (PAA)' AND is_ttro_required = 'Yes' AND is_traffic_sensitive = 'Yes' THEN 1 END) AS 'Major PAAs with TTRO on Traffic Sensitive Streets',
   {{ current_timestamp() }} AS date_processed
 FROM join_completed_and_in_progress
-GROUP BY usrn, street_name, highway_authority, activity_type, work_category, is_traffic_sensitive, is_ttro_required, geometry
+GROUP BY usrn, street_name, highway_authority, uprn_count, geometry
