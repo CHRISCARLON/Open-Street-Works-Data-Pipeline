@@ -43,7 +43,9 @@ models:
       completed_list_england:
       in_progress_list_england:
       impact_scores_england:
+      usrn_permit_details_england:
     london_overview:
       completed_list_london:
       in_progress_list_london:
       impact_scores_london:
+      usrn_permit_details_london:
