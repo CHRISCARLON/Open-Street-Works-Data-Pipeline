@@ -1,19 +1,20 @@
 import duckdb
 from loguru import logger
 
-def create_table(conn):
+def create_table(conn, schema, name):
     """
-    Creates a new table for the latest open lined identifiers data every month.
+    Creates a new table for the latest open linked identifiers data every month.
     This will replace the table that is already there.
 
     Args:
         Connection object
+        schema
+        table name
     """
-    schema = "os_open_linked_identifiers"
-
+    
     if conn:
         try:
-            table_command = f"""CREATE OR REPLACE TABLE "{schema}"."os_open_linked_identifiers_latest" (
+            table_command = f"""CREATE OR REPLACE TABLE "{schema}"."{name}" (
             CORRELATION_ID VARCHAR,
             IDENTIFIER_1 BIGINT,
             VERSION_NUMBER_1 VARCHAR,

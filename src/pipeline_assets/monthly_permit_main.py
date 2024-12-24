@@ -39,6 +39,8 @@ def main(batch_limit: int):
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
     print(initial_memory)
 
+    logger.success("MONTHLY PERMIT DATA STARTED")
+
     # Quick, basic check of the Street Manager schema before continuing!
     test_link = generate_dl_link()
     test_data = fetch_data(test_link)

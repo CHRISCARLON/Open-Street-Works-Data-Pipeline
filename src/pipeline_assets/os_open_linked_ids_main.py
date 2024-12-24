@@ -15,9 +15,7 @@ from os_open_linked_ids.create_motherduck_table import create_table
 @profile
 def main(batch_limit: int):
     """
-    OS open usrns main will process the latest OS open usrn data.
-
-    USRN = Unique Street Reference Number
+    OS open usrns main will process the latest OS linked open identifiers.
     """
 
     # Get the initial memory usage
@@ -29,20 +27,20 @@ def main(batch_limit: int):
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
 
-    # Connect to MotherDuck
     conn = connect_to_motherduck(token, database)
 
-    # Create table
-    create_table(conn)
+    logger.success("OS OPEN USRN DATA STARTED")
+    create_table(conn, schema="os_open_linked_identifiers", name="os_open_linked_identifiers_uprn_usrn_latest")
+    url = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-11_csv_BLPU-UPRN-Street-USRN-11.zip&redirect")
+    load_csv_data(url, conn, batch_limit, schema="os_open_linked_identifiers", name="os_open_linked_identifiers_uprn_usrn_latest")
+    logger.success("OS OPEN USRN DATA PROCESSED")
 
-    # Fetch url
-    url = fetch_redirect_url()
-
-    # Fetch and process data
-    load_csv_data(url, conn, batch_limit)
+    logger.success("OS ROAD TOID USRN DATA STARTED")
+    create_table(conn, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
+    url_2 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-11_csv_Road-TOID-Street-USRN-10.zip&redirect")
+    load_csv_data(url_2, conn, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
+    logger.success("OS ROAD TOID USRN DATA PROCESSED")
 
     # Get the final memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss
     print(final_memory)
-
-    logger.success("OS OPEN USRN DATA PROCESSED")

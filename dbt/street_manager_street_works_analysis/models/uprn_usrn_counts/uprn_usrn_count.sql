@@ -6,6 +6,6 @@ SELECT
     COUNT(uprn.CORRELATION_ID) as uprn_count
 FROM
     os_open_usrns.open_usrns_latest usrn
-    JOIN os_open_linked_identifiers.os_open_linked_identifiers_latest uprn ON usrn.usrn = uprn.IDENTIFIER_2
+    JOIN os_open_linked_identifiers.os_open_linked_identifiers_uprn_usrn_latest uprn ON usrn.usrn = uprn.IDENTIFIER_2
 GROUP BY
     usrn.usrn

@@ -40,6 +40,8 @@ def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
     print(initial_memory)
 
+    logger.success("HISTORIC DATA HAS BEEN STARTED")
+
     # Generate links
     # Pick a year, pick a starting month (e.g. 2 would be Feb), pick and end month (e.g. 13 would be Dec)
     # 13 = December due to Python indexing

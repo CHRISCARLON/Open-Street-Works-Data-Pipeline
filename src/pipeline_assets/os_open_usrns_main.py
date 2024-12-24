@@ -23,6 +23,8 @@ def main(batch_limit: int):
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
     print(initial_memory)
 
+    logger.success("OS OPEN USRN DATA STARTED")
+
     # Fetch secrets
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]

@@ -19,6 +19,8 @@ def main():
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
     print(f"Initial Memory: {initial_memory}")
 
+    logger.success("DFT DATA STARTED")
+
     # Fetch secret variables
     secrets = get_secrets(secret_name)
 

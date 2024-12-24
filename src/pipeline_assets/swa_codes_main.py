@@ -25,6 +25,8 @@ def main():
     initial_memory = psutil.Process(os.getpid()).memory_info().rss
     print(f"Initial Memory: {initial_memory}")
 
+    logger.success("SWA DATA STARTED")
+
     # Validate that we are getting the data we expect
     validate_data_model()
     logger.info("VALIDATION PASSED")

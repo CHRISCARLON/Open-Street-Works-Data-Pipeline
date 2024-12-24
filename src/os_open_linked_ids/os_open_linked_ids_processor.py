@@ -7,7 +7,7 @@ import pandas as pd
 from loguru import logger
 from .process_into_motherduck import process_chunk
 
-def load_csv_data(url: str, conn, batch_limit: int):
+def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
     """
     Function to stream and process CSV data in batches.
 
@@ -67,7 +67,7 @@ def load_csv_data(url: str, conn, batch_limit: int):
 
                         if len(current_batch) >= batch_limit:
                             df_chunk = pd.DataFrame(current_batch)
-                            process_chunk(df_chunk, conn)
+                            process_chunk(df_chunk, conn, schema, name)
 
                             total_rows_processed += len(current_batch)
                             logger.info(f"Processed rows {total_rows_processed-len(current_batch)+1} to {total_rows_processed}")
@@ -84,7 +84,7 @@ def load_csv_data(url: str, conn, batch_limit: int):
                 if current_batch:
                     try:
                         df_chunk = pd.DataFrame(current_batch)
-                        process_chunk(df_chunk, conn)
+                        process_chunk(df_chunk, conn, schema, name)
                         total_rows_processed += len(current_batch)
                         logger.info(f"Processed final batch: rows {total_rows_processed-len(current_batch)+1} to {total_rows_processed}")
 
