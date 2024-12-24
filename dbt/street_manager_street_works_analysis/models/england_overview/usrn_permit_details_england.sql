@@ -32,6 +32,7 @@ WITH combined_permits AS (
         is_ttro_required,
         is_traffic_sensitive,
         traffic_management_type_ref,
+        collaborative_working,
         ofgem_electricity_licence,
         ofgem_gas_licence,
         ofcom_licence,
