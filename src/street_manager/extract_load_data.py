@@ -14,7 +14,7 @@ def quick_col_rename(df) -> pd.DataFrame:
 
     This is because a lot of data was initially nested within "object_data"
 
-    This will remove "object data." from the column names
+    This will remove "object data." from the column names.
     """
     df.columns = [col.replace("object_data.", "") if "object_data." in col else col for col in df.columns]
     return df
