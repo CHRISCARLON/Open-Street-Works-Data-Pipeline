@@ -2,9 +2,9 @@
 import pytest
 import pandas as pd
 
-from src.street_manager.extract_load_data import quick_col_rename
-from src.street_manager.validate_data_model import check_data_schema
-from src.street_manager.stream_zipped_data import fetch_data
+from src.england_street_manager.extract_load_data import quick_col_rename
+from src.england_street_manager.validate_data_model import check_data_schema
+from src.england_street_manager.stream_zipped_data import fetch_data
 from src.pydantic_model.street_manager_model import (
     StreetManagerPermitModel,
     validate_dataframe_sample,

@@ -1,6 +1,6 @@
 import re
 
-from src.street_manager.date_month import last_month, date_for_table, month_to_abbrev
+from src.england_street_manager.date_month import last_month, date_for_table, month_to_abbrev
 
 def test_last_month():
     month = last_month()

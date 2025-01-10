@@ -3,23 +3,16 @@ import os
 
 from memory_profiler import profile
 from loguru import logger
+from general_functions.creds import secret_name
 
-from street_manager.historic_main_links import generate_monthly_download_links
-from street_manager.motherduck_create_table import motherduck_create_table
+from england_street_manager.historic_main_links import generate_monthly_download_links
+from england_street_manager.motherduck_create_table import motherduck_create_table
 from general_functions.create_motherduck_connection import connect_to_motherduck
 from general_functions.get_credentials import get_secrets
-from general_functions.creds import secret_name
-from street_manager.extract_load_data import (
-    process_batch_and_insert_to_motherduck,
-    quick_col_rename
-    )
-from street_manager.stream_zipped_data import fetch_data
-from street_manager.validate_data_model import check_data_schema
-from pydantic_model.street_manager_model import (
-    StreetManagerPermitModel,
-    validate_dataframe_sample,
-    handle_validation_errors
-)
+from england_street_manager.extract_load_data import (process_batch_and_insert_to_motherduck)
+from england_street_manager.stream_zipped_data import fetch_data
+
+
 
 @profile
 def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
@@ -63,18 +56,7 @@ def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
         month = parts[-1].replace('.zip', '')
         table = f"{month}_{year}"
 
-        # Create MotherDuck table
         motherduck_create_table(conn, schema, table)
-
-        # Quick, basic check of permit data schema
-        test_data = fetch_data(link)
-        test_df = check_data_schema(test_data)
-        test_df = quick_col_rename(test_df)
-        validate = validate_dataframe_sample(test_df, StreetManagerPermitModel)
-        handle_validation_errors(validate)
-        print(test_df.dtypes)
-
-        # If checks pass, then process permit data
         permit_data = fetch_data(link)
         process_batch_and_insert_to_motherduck(permit_data, limit_number, conn, schema, table)
         logger.success(f"Data for {table} has been processed!")

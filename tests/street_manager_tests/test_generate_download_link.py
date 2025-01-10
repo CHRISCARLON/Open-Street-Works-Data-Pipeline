@@ -1,7 +1,7 @@
 import re
 
-from src.street_manager.generate_dl_link import generate_dl_link
-from src.street_manager.historic_main_links import generate_monthly_download_links
+from src.england_street_manager.generate_dl_link import generate_dl_link
+from src.england_street_manager.historic_main_links import generate_monthly_download_links
 
 def test_generate_dl_link():
     """
