@@ -34,7 +34,7 @@ def load_geopackage_open_roads(url, conn, limit):
 
     try:
         # Download the zip file
-        response = requests.get(url)
+        response = requests.get(url, stream=True)
         response.raise_for_status()
 
         # Create a temporary directory

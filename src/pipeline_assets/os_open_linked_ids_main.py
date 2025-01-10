@@ -31,13 +31,13 @@ def main(batch_limit: int):
 
     logger.success("OS OPEN USRN DATA STARTED")
     create_table(conn, schema="os_open_linked_identifiers", name="os_open_linked_identifiers_uprn_usrn_latest")
-    url = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-11_csv_BLPU-UPRN-Street-USRN-11.zip&redirect")
+    url = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_BLPU-UPRN-Street-USRN-11.zip&redirect")
     load_csv_data(url, conn, batch_limit, schema="os_open_linked_identifiers", name="os_open_linked_identifiers_uprn_usrn_latest")
     logger.success("OS OPEN USRN DATA PROCESSED")
 
     logger.success("OS ROAD TOID USRN DATA STARTED")
     create_table(conn, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
-    url_2 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-11_csv_Road-TOID-Street-USRN-10.zip&redirect")
+    url_2 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_Road-TOID-Street-USRN-10.zip&redirect")
     load_csv_data(url_2, conn, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
     logger.success("OS ROAD TOID USRN DATA PROCESSED")
 

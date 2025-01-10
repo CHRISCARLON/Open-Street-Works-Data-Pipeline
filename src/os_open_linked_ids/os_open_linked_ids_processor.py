@@ -33,7 +33,7 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
 
     try:
         # Get url
-        response = requests.get(url)
+        response = requests.get(url, stream=True)
         response.raise_for_status()
 
         # Create the temp dir as the OS download has several files in it

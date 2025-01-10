@@ -53,6 +53,19 @@ class MotherDuckConnector:
             return self.connection
         except (duckdb.ConnectionException, duckdb.Error, Exception) as e:
             raise e
+        
+    def register(self, view_name: str, df):
+        """
+        Register a pandas DataFrame as a DuckDB view.
+        Args:
+            view_name: Name to register the view as
+            df: Pandas DataFrame to register
+        """
+        if self.connection is None:
+            self.motherduck_connect()
+        if self.connection:
+            self.connection.register(view_name, df)
+            logger.success(f"DataFrame registered as view '{view_name}'")
 
     def execute_query(self, query: str):
         if self.connection is None:

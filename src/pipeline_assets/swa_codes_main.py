@@ -49,6 +49,9 @@ def main():
 
     # Create table and insert data into MotherDuck
     with MotherDuckConnector(token, database) as conn:
+        
+        conn.register('df_view', df) 
+
         # Create table with snake_case column names
         create_table_query = f"""
         CREATE OR REPLACE TABLE "{schema}"."{table_name}" (
@@ -77,7 +80,7 @@ def main():
         # Insert data
         insert_query = f"""
         INSERT INTO "{schema}"."{table_name}"
-        SELECT * FROM df
+        SELECT * FROM df_view
         """
         conn.execute_query(insert_query)
 
@@ -109,7 +112,7 @@ def main():
         # Insert data with filter for active accounts
         insert_query = f"""
         INSERT INTO "{schema}"."{table_name_active_latest}"
-        SELECT * FROM df
+        SELECT * FROM df_view
         WHERE account_status = 'Active'
         """
         conn.execute_query(insert_query)

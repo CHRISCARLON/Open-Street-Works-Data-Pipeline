@@ -43,7 +43,7 @@ def create_table_swa_codes_motherduck(conn, table_name):
             raise
 
 
-def load_swa_code_data_motherduck(data, conn, table):
+def load_swa_code_data_motherduck(df, conn, table):
     """
     Inserts a DataFrame into a DuckDB table.
 
@@ -55,9 +55,7 @@ def load_swa_code_data_motherduck(data, conn, table):
         schema: The schema of the table.
         table: The name of the table.
     """
-    df = data
     schema = "geoplace_swa_codes"
-
     try:
         insert_sql = f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df"""
         conn.execute(insert_sql)
