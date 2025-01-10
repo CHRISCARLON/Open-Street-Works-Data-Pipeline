@@ -8,14 +8,14 @@ from general_functions.create_motherduck_connection import connect_to_motherduck
 from general_functions.get_credentials import get_secrets
 from general_functions.creds import secret_name
 
-from os_open_linked_ids_uprns_usrns.os_open_linked_ids_processor import load_csv_data
-from os_open_linked_ids_uprns_usrns.get_redirect_url import fetch_redirect_url
-from os_open_linked_ids_uprns_usrns.create_motherduck_table import create_table
+from src.os_open_linked_ids.os_open_linked_ids_processor import load_csv_data
+from os_open_linked_ids.get_redirect_url import fetch_redirect_url
+from os_open_linked_ids.create_motherduck_table import create_table
 
 @profile
 def main(batch_limit: int):
     """
-    OS open usrns main will process the latest OS linked open identifiers.
+    This will process the latest OS linked open identifiers.
     """
 
     # Get the initial memory usage
@@ -40,6 +40,12 @@ def main(batch_limit: int):
     url_2 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-11_csv_Road-TOID-Street-USRN-10.zip&redirect")
     load_csv_data(url_2, conn, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
     logger.success("OS ROAD TOID USRN DATA PROCESSED")
+
+    logger.success("OS USRN TOPO TOID DATA STARTED")
+    create_table(conn, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_usrn_topo_area_toid_latest")
+    url_3 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_Street-USRN-TopographicArea-TOID-4.zip&redirect")
+    load_csv_data(url_3, conn, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_usrn_topo_area_toid_latest")
+    logger.success("OS USRN TOPO TOID DATA PROCESSED")
 
     # Get the final memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss

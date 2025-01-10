@@ -14,7 +14,7 @@ from .process_into_motherduck import process_chunk
 
 def load_geopackage_open_roads(url, conn, limit):
     """
-    Function to load OS open road data in batches of 50,000 rows.
+    Function to load OS open road data in batches.
 
     It taskes a duckdb connection object and the download url required.
 
