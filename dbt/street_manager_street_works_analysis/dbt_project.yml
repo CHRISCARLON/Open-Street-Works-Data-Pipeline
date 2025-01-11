@@ -35,6 +35,9 @@ vars:
 
 models:
   street_manager_street_works_analysis:
+    impact_score_archive:
+      impact_scores_england_archive:
+      impact_scores_london_archive:
     uprn_usrn_counts:
       uprn_usrn_count:
     dft_data:

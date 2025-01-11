@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: street_manager
+    schema: street_manager
+    tables:
+      - name: impact_scores_england_latest
+      - name: impact_scores_london_latest

@@ -31,7 +31,7 @@ WITH join_completed_and_in_progress AS (
     + CASE 
         -- High Impact Traffic Management
         WHEN traffic_management_type_ref IN ('road_closure', 'contra_flow', 'lane_closure', 
-             'convoy_workings', 'multi_way_signals', 'two_way_signals') THEN 2.0
+            'convoy_workings', 'multi_way_signals', 'two_way_signals') THEN 2.0
         -- Medium Impact Traffic Management
         WHEN traffic_management_type_ref IN ('give_and_take', 'stop_go_boards', 'priority_working') THEN 1.0
         -- Low Impact Traffic Management
