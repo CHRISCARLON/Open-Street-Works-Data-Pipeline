@@ -1,24 +1,24 @@
-# unit_test/test_pydantic_model.py
 import pytest
 import pandas as pd
 
 from src.england_street_manager.extract_load_data import quick_col_rename
-from src.england_street_manager.validate_data_model import check_data_schema
 from src.england_street_manager.stream_zipped_data import fetch_data
 from src.pydantic_model.street_manager_model import (
     StreetManagerPermitModel,
     validate_dataframe_sample,
-    handle_validation_errors
+    handle_validation_errors,
+    check_data_schema
 )
 
 @pytest.fixture
 def sample_data():
-    link = "https://opendata.manage-roadworks.service.gov.uk/permit/2024/01.zip"
+    link = "https://opendata.manage-roadworks.service.gov.uk/permit/2024/12.zip"
     data = fetch_data(link)
     return data
 
 def test_check_data_schema(sample_data):
     df = check_data_schema(sample_data)
+    print(df.head(10))
     assert isinstance(df, pd.DataFrame)
     assert not df.empty
     assert len(df) == 500

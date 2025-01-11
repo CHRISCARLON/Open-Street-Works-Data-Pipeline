@@ -1,7 +1,6 @@
-# unit_test/test_col_rename.py
-
 import pandas as pd 
 from src.england_street_manager.extract_load_data import quick_col_rename
+from loguru import logger
 
 def test_quick_col_rename():
     # Create a sample DataFrame with nested column names
@@ -54,6 +53,7 @@ def test_quick_col_rename():
         "version": [1]
     }
     df = pd.DataFrame(data)
+    logger.info(f"Df Unchanged: {df['object_data.area_name']}")
     
     # Call the quick_col_rename function
     renamed_df = quick_col_rename(df)
@@ -114,3 +114,4 @@ def test_quick_col_rename():
 
     # Assert that the data in the DataFrame remains unchanged
     assert renamed_df.equals(df.rename(columns=lambda col: col.replace("object_data.", "")))
+    logger.info(f"Df Renamed: {renamed_df['area_name']}")

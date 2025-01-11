@@ -7,8 +7,7 @@ from loguru import logger
 from geoplace_swa_codes.create_table_name import table_name_latest, get_table_name
 from geoplace_swa_codes.fetch_swa_codes import (
     get_link,
-    fetch_swa_codes,
-    validate_data_model,
+    fetch_swa_codes
 )
 from general_functions.create_motherduck_connection import MotherDuckConnector
 from general_functions.creds import secret_name
@@ -26,12 +25,8 @@ def main():
     print(f"Initial Memory: {initial_memory}")
 
     logger.success("SWA DATA STARTED")
-
-    # Validate that we are getting the data we expect
-    validate_data_model()
-    logger.info("VALIDATION PASSED")
-
-    # Fetch secrete variables
+    
+    # Fetch secret variables
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
     database = secrets["motherdb"]
@@ -46,6 +41,7 @@ def main():
 
     # Creare swa code dataframe
     df = fetch_swa_codes()
+    logger.success(f"DataFrame Created: {df}")
 
     # Create table and insert data into MotherDuck
     with MotherDuckConnector(token, database) as conn:
@@ -116,7 +112,6 @@ def main():
         WHERE account_status = 'Active'
         """
         conn.execute_query(insert_query)
-
 
     # Get the final memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss

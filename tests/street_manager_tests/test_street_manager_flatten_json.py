@@ -1,7 +1,6 @@
 from src.england_street_manager.flatten_street_manager_data import flatten_json
 
 def test_flatten_json():
-    # Test case 1: Nested JSON object with the provided test data
     json_data = {
         "event_reference": 529770,
         "event_type": "work-start",

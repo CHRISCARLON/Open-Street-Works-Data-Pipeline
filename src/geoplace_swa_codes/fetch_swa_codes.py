@@ -6,10 +6,8 @@ from bs4 import BeautifulSoup, Tag
 from io import BytesIO
 from loguru import logger
 from msoffcrypto import OfficeFile
-from pydantic import ValidationError
-from typing import List, Tuple, Optional
+from typing import Optional
 
-from pydantic_model.swa_codes_model import SWACodeModel
 
 def get_link() -> Optional[str]:
     """
@@ -105,9 +103,6 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
         # Add date time processed column
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         df['date_time_processed'] = current_time
-
-        logger.success(f"DataFrame created successfully: {df.head(10)}")
-
         return df
 
     except requests.RequestException as e:
@@ -117,39 +112,3 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
 
     return None
 
-def validate_data_model() -> Optional[Tuple[List[SWACodeModel], List[str], pd.DataFrame]]:
-    """
-    Fetches SWA codes data, validates it against the SWACode Pydantic model,
-    and returns a list of validated SWACode objects.
-
-    Returns:
-        A list of validated SWACodeModel objects.
-    """
-
-    try:
-        # Fetch the SWA codes data
-        df = fetch_swa_codes()
-        # Explicit type assertion
-        assert isinstance(df, pd.DataFrame), "DataFrame must be present"
-    except (ValueError, AssertionError) as e:
-        logger.error(f"Error getting download link: {e}")
-        return None
-
-    # Convert DataFrame to a list of dictionaries
-    data_dicts = df.to_dict(orient='records')
-
-    # Set variables up for validation process
-    validated_data = []
-    errors = []
-
-    # Iterate through and validate
-    for idx, item in enumerate(data_dicts):
-        try:
-            # Validate the item
-            validated_item = SWACodeModel.model_validate(item)
-            validated_data.append(validated_item)
-        except ValidationError as e:
-            errors.append(f"Error in record {idx}: {str(e)}")
-    logger.success(f"Successfully validated {len(validated_data)} out of {len(data_dicts)} records.")
-    logger.info(f"There were {len(errors)} errors")
-    return validated_data, errors, df
