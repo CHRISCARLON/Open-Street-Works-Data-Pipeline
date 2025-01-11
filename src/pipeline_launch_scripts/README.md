@@ -1,6 +1,6 @@
-# Pipeline assets
+# Pipeline Datasets
 
-Assets are defined as distinct datasets that are processed individually.
+Datasets are defined as distinct entities that are processed individually.
 
 For exmaple:
 

@@ -61,8 +61,9 @@ def load_data_to_db(collected_rows, conn, schema, table_name):
     
     We can use DBT later to create the necessary tables after the initial load. 
     """
+    full_table_name = f'"{schema}"."{table_name}"'
+
     try:
-        full_table_name = f'"{schema}"."{table_name}"'
         conn.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}")
         conn.execute(f"CREATE TABLE IF NOT EXISTS {full_table_name} (table_id VARCHAR, column_values JSON)")
         
@@ -109,6 +110,7 @@ def process_batches(zipped_chunks, limit_number, conn, schema):
                     "098", "099"]
     
     found_csv = False
+    current_csv_name = None 
 
     for file_name, file_size, unzipped_chunks in stream_unzip(zipped_chunks):
         if isinstance(file_name, bytes):
@@ -116,6 +118,7 @@ def process_batches(zipped_chunks, limit_number, conn, schema):
 
         if file_name.endswith('.csv'):
             found_csv = True
+            current_csv_name = file_name
             logger.info("Processing CSV file:", file_name)
             csv_content = BytesIO()
             
@@ -150,7 +153,7 @@ def process_batches(zipped_chunks, limit_number, conn, schema):
         raise FileNotFoundError("No CSV file found.")
 
     if collected_rows:
-        table_name = file_name
+        table_name = current_csv_name
         load_data_to_db(collected_rows, conn, schema, table_name)
         collected_rows.clear()
         total_rows = 0

@@ -2,7 +2,6 @@ import json
 import pandas as pd
 
 from .flatten_street_manager_data import flatten_json
-
 from stream_unzip import stream_unzip
 from loguru import logger
 from tqdm import tqdm
@@ -58,16 +57,19 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
     batch_limit = limit_numbner
     batch_count = 0
     flattened_data = []
+    current_file = None
+    current_item = None
 
     for file, size, unzipped_chunks in tqdm(stream_unzip(zipped_chunks)):
-        if isinstance(file, bytes):
-            file = file.decode('utf-8')
+        current_file = file
+        if isinstance(current_file, bytes):
+            current_file = current_file.decode('utf-8')
 
         try:
             bytes_obj = b''.join(unzipped_chunks)
             json_data = json.loads(bytes_obj.decode('utf-8'))
-            flattened_item = flatten_json(json_data)
-            flattened_data.append(flattened_item)
+            current_item = flatten_json(json_data)
+            flattened_data.append(current_item)
             batch_count += 1
 
             # Process and insert data in batches
@@ -81,13 +83,16 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
                 # Reset the batch for the next iteration
                 flattened_data.clear()
                 batch_count = 0
+                current_item = None 
 
         except Exception as e:
             logger.error(f"{e}")
-            logger.error(f"Error processing {file} with data: {flattened_item}")
-            debug_df = pd.DataFrame(flattened_item)
-            print(debug_df)
-            print(debug_df.dtypes)
+            logger.error(f"Error processing file: {current_file}")
+            if current_item:
+                logger.error("Last processed item:")
+                debug_df = pd.DataFrame([current_item]) 
+                print(debug_df)
+                print(debug_df.dtypes)
             raise
 
     # Process the remaining data
@@ -103,8 +108,12 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
 
     except Exception as e:
         logger.error(f"{e}")
-        logger.error(f"Error processing {file} with data: {flattened_item}")
-        debug_df = pd.DataFrame(flattened_item)
-        print(debug_df)
-        print(debug_df.dtypes)
+        logger.error("Error processing final batch")
+        if flattened_data:
+            logger.error(f"Number of items in final batch: {len(flattened_data)}")
+            last_item = flattened_data[-1] if flattened_data else None
+            if last_item:
+                debug_df = pd.DataFrame([last_item])
+                print(debug_df)
+                print(debug_df.dtypes)
         raise
