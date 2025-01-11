@@ -10,7 +10,7 @@ def process_chunk(df, conn):
         Dataframe
         Connection object
     """
-    schema = "os_open_usrns"
+    schema = "os_open_roads"
 
     if conn:
         try:

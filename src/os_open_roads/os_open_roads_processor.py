@@ -76,24 +76,56 @@ def load_geopackage_open_roads(url, conn, limit):
                             try:
                                 # Convert geometry to WKT string
                                 geom = shape(feature['geometry'])
-                                feature['properties']['geometry'] = wkt.dumps(geom)
+                                properties = feature['properties']
+                                properties['geometry'] = wkt.dumps(geom) 
+
+                                # Append the flattened properties to features list
+                                features.append(properties)
+
                             except Exception as e:
-                                # If there's an error converting the geometry, set it to None
-                                # and log the index of the feature that failed so we're aware of what features failed
-                                # This could be made better - could we store these errors somewhere for future use?
-                                feature['properties']['geometry'] = None
+                                # If there's an error converting the geometry, get properties and set geometry to None
+                                properties = feature['properties']
+                                properties['geometry'] = None
+                                
                                 error_msg = f"Error converting geometry for feature {i}: {e}"
                                 logger.warning(error_msg)
                                 errors.append(error_msg)
-
-                            # Append each feature to the list
-                            features.append(feature['properties'])
+                                
+                                # Append the properties with null geometry
+                                features.append(properties)
 
                             # When the list hits the limit size - e.g. 75,000
                             # Process list into DataFrame
                             if len(features) == chunk_size:
                                 # Process the chunk
                                 df_chunk = pd.DataFrame(features)
+                                
+                                dtype_mapping = {
+                                'id': str,
+                                'fictitious': str,
+                                'road_classification': str,
+                                'road_function': str,
+                                'form_of_way': str,
+                                'road_classification_number': str,
+                                'name_1': str,
+                                'name_1_lang': str,
+                                'name_2': str,
+                                'name_2_lang': str,
+                                'road_structure': str,
+                                'length': str,
+                                'length_uom': str,
+                                'loop': str,
+                                'primary_route': str,
+                                'trunk_road': str,
+                                'start_node': str,
+                                'end_node': str,
+                                'road_number_toid': str,
+                                'road_name_toid': str,
+                                'geometry': str
+                                }
+
+                                df_chunk = df_chunk.astype(dtype_mapping)
+
                                 process_chunk(df_chunk, conn)
                                 logger.info(f"Processed features {i-chunk_size+1} to {i}")
 
@@ -103,7 +135,34 @@ def load_geopackage_open_roads(url, conn, limit):
                         # Process any remaining features outside the loop
                         if features:
                             df_chunk = pd.DataFrame(features)
+
+                            dtype_mapping = {
+                            'id': str,
+                            'fictitious': str,
+                            'road_classification': str,
+                            'road_function': str,
+                            'form_of_way': str,
+                            'road_classification_number': str,
+                            'name_1': str,
+                            'name_1_lang': str,
+                            'name_2': str,
+                            'name_2_lang': str,
+                            'road_structure': str,
+                            'length': str,
+                            'length_uom': str,
+                            'loop': str,
+                            'primary_route': str,
+                            'trunk_road': str,
+                            'start_node': str,
+                            'end_node': str,
+                            'road_number_toid': str,
+                            'road_name_toid': str,
+                            'geometry': str
+                            }
+
+                            df_chunk = df_chunk.astype(dtype_mapping)
                             process_chunk(df_chunk, conn)
+
                             logger.info("Processed remaining features")
                             # Empty the list
                             features = []

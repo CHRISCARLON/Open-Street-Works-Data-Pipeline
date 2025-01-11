@@ -23,7 +23,6 @@ idna = "^3.7"
 requests = "^2.31.0"
 diagrams = "^0.23.4"
 graphviz = "^0.20.3"
-dbt-duckdb = "^1.8.0"
 python-dotenv = "^1.0.1"
 pytest = "^8.2.1"
 geopandas = "^0.14.4"
@@ -36,6 +35,7 @@ fastexcel = "^0.11.5"
 msoffcrypto-tool = "^5.4.1"
 beautifulsoup4 = "^4.12.3"
 odfpy = "^1.4.1"
+dbt-duckdb = "^1.9.1"
 
 
 [build-system]
