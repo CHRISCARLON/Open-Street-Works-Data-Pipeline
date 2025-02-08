@@ -52,5 +52,3 @@ models:
       in_progress_list_london:
       impact_scores_london:
       usrn_permit_details_london:
-    test_new_models:
-      test_new_model:

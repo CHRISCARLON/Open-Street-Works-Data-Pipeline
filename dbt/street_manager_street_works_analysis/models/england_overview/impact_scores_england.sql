@@ -139,7 +139,7 @@ WITH
             -- Normalise density to 0-1 scale by dividing by max density
             traffic_density / NULLIF(MAX(traffic_density) OVER (), 0) as network_importance_factor
         FROM
-            {{ source('street_manager', 'dft_la_data_latest') }}
+            {{ ref('dft_data_joins') }}
     )
 SELECT
      -- Calculate normalised impact scores to serve as a final metric
@@ -159,5 +159,5 @@ SELECT
     {{ current_timestamp() }} AS date_processed
 FROM
     raw_impact_level
-    LEFT JOIN {{ source('street_manager', 'dft_la_data_latest') }} la_dft_data ON raw_impact_level.highway_authority_swa_code = LOWER(la_dft_data.swa_code)
+    LEFT JOIN {{ ref('dft_data_joins') }} la_dft_data ON raw_impact_level.highway_authority_swa_code = LOWER(la_dft_data.swa_code)
     LEFT JOIN network_scoring network_scoring ON raw_impact_level.highway_authority_swa_code = network_scoring.swa_code

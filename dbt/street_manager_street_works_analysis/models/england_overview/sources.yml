@@ -1,7 +1,0 @@
-version: 2
-
-sources:
-  - name: street_manager
-    schema: street_manager
-    tables:
-      - name: dft_la_data_latest
