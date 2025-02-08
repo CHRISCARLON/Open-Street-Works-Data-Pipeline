@@ -5,7 +5,8 @@
 include .env
 
 # Docker and AWS section
-.PHONY: docker-login docker-build docker-tag docker-push docker-verify docker-all
+# AWS ECR Docker deployment configuration
+.PHONY: docker-all docker-login docker-build docker-tag docker-push docker-verify
 
 docker-all: docker-login docker-build docker-tag docker-push docker-verify
 
@@ -13,7 +14,7 @@ docker-login:
 	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
 
 docker-build:
-	docker build -t $(REPO_NAME) .
+	docker buildx build --platform=linux/amd64 -t $(REPO_NAME) .
 
 docker-tag:
 	docker tag $(REPO_NAME):latest $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/$(REPO_NAME):latest
