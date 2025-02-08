@@ -111,6 +111,7 @@ WITH
             ) AS combined_works
     ),
     raw_impact_level AS (
+        -- Calculate non normalised impact scores to serve as a base
         SELECT
             usrn,
             street_name,
@@ -129,12 +130,13 @@ WITH
             uprn_count,
             geometry
     ),
+     -- Calculate metrics to normalise the impact score
     network_scoring AS (
         SELECT
             LOWER(swa_code) as swa_code,
             total_road_length,
             traffic_flow_2023,
-            -- Traffic density per km
+            -- Calculate traffic density per km
             (CAST(traffic_flow_2023 AS FLOAT) /
              NULLIF(CAST(total_road_length AS FLOAT), 0)) as traffic_density,
 
@@ -144,6 +146,7 @@ WITH
             {{ source('street_manager', 'dft_la_data_latest') }}
     )
 SELECT
+     -- Calculate normalised impact scores to serve as a final metric
     raw_impact_level.usrn,
     raw_impact_level.street_name,
     raw_impact_level.highway_authority,
@@ -155,20 +158,9 @@ SELECT
     CAST(la_dft_data.traffic_flow_2023 AS FLOAT) as traffic_flow_2023,
     network_scoring.traffic_density,
     network_scoring.network_importance_factor,
-    -- Original normalisation kept for comparison
-    raw_impact_level.total_impact_level * (
-        LN(
-            (
-                SELECT
-                    AVG(total_road_length)
-                FROM
-                    {{ source('street_manager', 'dft_la_data_latest') }}
-            ) / NULLIF(la_dft_data.total_road_length, 0) + 1
-        ) + 1
-    ) AS old_normalised_impact_level,
-    -- New weighted impact calculation
+    -- Weighted impact calculation
     raw_impact_level.total_impact_level * (1 + network_scoring.network_importance_factor) as weighted_impact_level,
-    current_timestamp AS date_processed
+    {{ current_timestamp() }} AS date_processed
 FROM
     raw_impact_level
     LEFT JOIN {{ source('street_manager', 'dft_la_data_latest') }} la_dft_data ON raw_impact_level.highway_authority_swa_code = LOWER(la_dft_data.swa_code)

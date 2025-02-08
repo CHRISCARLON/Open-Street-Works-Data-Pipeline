@@ -40,28 +40,28 @@ def main(batch_limit: int):
         conn_usrn_uprn.close()
 
     # 2
-    conn_road_toid_usrn = connect_to_motherduck(token, database)
+    # conn_road_toid_usrn = connect_to_motherduck(token, database)
 
-    logger.success("OS ROAD TOID USRN DATA STARTED")
-    create_table_2(conn_road_toid_usrn, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
-    url_2 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_Road-TOID-Street-USRN-10.zip&redirect")
-    load_csv_data(url_2, conn_road_toid_usrn, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
-    logger.success("OS ROAD TOID USRN DATA PROCESSED")
+    # logger.success("OS ROAD TOID USRN DATA STARTED")
+    # create_table_2(conn_road_toid_usrn, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
+    # url_2 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_Road-TOID-Street-USRN-10.zip&redirect")
+    # load_csv_data(url_2, conn_road_toid_usrn, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_toid_usrn_road_latest")
+    # logger.success("OS ROAD TOID USRN DATA PROCESSED")
 
-    if conn_road_toid_usrn:
-        conn_road_toid_usrn.close()
+    # if conn_road_toid_usrn:
+    #     conn_road_toid_usrn.close()
 
     # 3
-    conn_usrn_topo = connect_to_motherduck(token, database)
-    
-    logger.success("OS USRN TOPO TOID DATA STARTED")
-    create_table_3(conn=conn_usrn_topo, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_usrn_topo_area_toid_latest")
-    url_3 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_Street-USRN-TopographicArea-TOID-4.zip&redirect")
-    load_csv_data(url_3, conn_usrn_topo, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_usrn_topo_area_toid_latest")
-    logger.success("OS USRN TOPO TOID DATA PROCESSED")
+    # conn_usrn_topo = connect_to_motherduck(token, database)
 
-    if conn_usrn_topo:
-        conn_usrn_topo.close()
+    # logger.success("OS USRN TOPO TOID DATA STARTED")
+    # create_table_3(conn=conn_usrn_topo, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_usrn_topo_area_toid_latest")
+    # url_3 = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_Street-USRN-TopographicArea-TOID-4.zip&redirect")
+    # load_csv_data(url_3, conn_usrn_topo, batch_limit, schema = "os_open_linked_identifiers", name="os_open_linked_identifiers_usrn_topo_area_toid_latest")
+    # logger.success("OS USRN TOPO TOID DATA PROCESSED")
+
+    # if conn_usrn_topo:
+    #     conn_usrn_topo.close()
 
     # Get the final memory usage
     final_memory = psutil.Process(os.getpid()).memory_info().rss
