@@ -10,7 +10,7 @@ from general_functions.creds import secret_name
 
 from os_open_linked_ids.os_open_linked_ids_processor import load_csv_data
 from os_open_linked_ids.get_redirect_url import fetch_redirect_url
-from os_open_linked_ids.create_motherduck_table import create_table_1, create_table_2, create_table_3
+from os_open_linked_ids.create_motherduck_table import create_table_1
 
 @profile
 def main(batch_limit: int):
