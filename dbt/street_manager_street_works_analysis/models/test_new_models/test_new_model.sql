@@ -111,9 +111,10 @@ SELECT
     i.geometry,
     i.total_impact_level,
     la.total_road_length,
+    la.traffic_flow_2023,
     i.total_impact_level * (
         LN((SELECT AVG(total_road_length) FROM {{ source('street_manager', 'dft_la_data_latest') }}) /
-           NULLIF(la.total_road_length, 0) + 1) + 1
+          NULLIF(la.total_road_length, 0) + 1) + 1
     ) AS normalised_impact_level,
     {{ current_timestamp() }} AS date_processed
 FROM raw_impacts i
