@@ -1,5 +1,12 @@
 # Open Street Works Data Pipeline 🚧
 
+> [!IMPORTANT]
+> This is currently being rewritten to use a more modular and flexible approach.
+>
+> I wrote this project a while ago and it's time to update the code to be more maintainable and flexible.
+>
+> I'll update this README properly when the new version is ready.
+
 [![codecov](https://codecov.io/github/CHRISCARLON/Open-Street-Works-Data-Pipeline/branch/new-data-dev-branch/graph/badge.svg?token=T4PLSPAXDE)](https://codecov.io/github/CHRISCARLON/Open-Street-Works-Data-Pipeline)
 
 **Example pipeline processing Street Manager permit data, Ordnance Survey Open USRN Data, and Geoplace SWA Code data.**
@@ -74,12 +81,15 @@ This equates to a lot of data and processing it can be slow and painful if you'r
 I currently use this pipeline to generate a monthly street works impact score for each USRN in England
 
 ## Overview
+
 This model calculates and normalises impact scores for road works across England's highway network.
 
 It combines permit data with traffic and infrastructure metrics to produce weighted impact scores that reflect both the direct impact of works and the broader network.
 
 ## Input Data Sources
+
 1. **Permit Data**
+
    - In-progress works (`in_progress_list_england`)
    - Completed works (`completed_list_england`)
    - Key fields: USRN, street name, highway authority, work category, TTRO requirements, traffic sensitivity, traffic management type
@@ -91,7 +101,9 @@ It combines permit data with traffic and infrastructure metrics to produce weigh
 ## Impact Score Calculation
 
 ### Base Impact Factors
+
 - **Work Category Impact** (0-5 points)
+
   - Major works: 5 points
   - Immediate works: 4 points
   - Standard works: 2 points
@@ -105,14 +117,18 @@ It combines permit data with traffic and infrastructure metrics to produce weigh
   - UPRN Density Impact: +0.2-1.6 points based on UPRN point density on a USRN
 
 ### Network Context Adjustment
+
 The model applies a network importance factor based on:
+
 - Total road length in the authority
 - Traffic flow data (2023)
 - Traffic density per km (length/flow)
 - Normalised network importance factor (0-1 scale)
 
 ## Output
+
 The final model produces a table with:
+
 - Location identifiers (USRN, street name, highway authority)
 - Raw impact scores
 - Network metrics (road length, traffic flow, density)
