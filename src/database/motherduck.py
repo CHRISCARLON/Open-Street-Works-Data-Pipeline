@@ -2,8 +2,9 @@ import duckdb
 from loguru import logger
 from typing import Dict, Optional
 from data_sources.data_source_config import DataSourceConfig, DataSourceType, DataProcessorType
+from database.database_config import DatabaseProtocol
 
-class MotherDuckManager:
+class MotherDuckManager(DatabaseProtocol):
     """
     Generic MotherDuck manager that handles connections and table operations
     based on data source configurations.
