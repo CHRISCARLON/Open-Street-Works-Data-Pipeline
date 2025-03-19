@@ -189,7 +189,7 @@ Dockerfile.dev
 dev_run_dbt_jobs.sh*
 .terraform
 /test_data
-
+/auth/creds.py
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

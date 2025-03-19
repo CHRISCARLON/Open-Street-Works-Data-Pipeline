@@ -1,137 +1,93 @@
 # Open Street Works Data Pipeline 🚧
 
 > [!IMPORTANT]
-> This is currently being rewritten to use a more modular and flexible approach.
+> This is currently being rewritten from top to bottom to use a more modular and flexible approach.
 >
 > I wrote this project a while ago and it's time to update the code to be more maintainable and flexible.
 >
-> I'll update this README properly when the new version is ready.
+> I'll update this README properly when the new version is fully ready.
 
-[![codecov](https://codecov.io/github/CHRISCARLON/Open-Street-Works-Data-Pipeline/branch/new-data-dev-branch/graph/badge.svg?token=T4PLSPAXDE)](https://codecov.io/github/CHRISCARLON/Open-Street-Works-Data-Pipeline)
+OLD WAY (TOO MUCH CODE AND TOO MESSY)
 
-**Example pipeline processing Street Manager permit data, Ordnance Survey Open USRN Data, and Geoplace SWA Code data.**
+```python
+import psutil
+import os
 
-![StreetManagerPipeline](https://github.com/user-attachments/assets/b169f3b3-64bf-4129-9021-135a56726d3a)
+from memory_profiler import profile
+from loguru import logger
+from general_functions.creds import secret_name
 
-**This is a an end to end analytical pipeline that ingests 3 data sources, performs the relevant transformations, and runs the required DBT models for analytics - it takes around 40 minutes to run.**
+from england_street_manager.generate_dl_link import generate_dl_link
+from england_street_manager.schema_name_trigger import get_raw_data_year
+from england_street_manager.date_month import date_for_table
+from england_street_manager.motherduck_create_table import motherduck_create_table
+from general_functions.create_motherduck_connection import connect_to_motherduck
+from general_functions.get_credentials import get_secrets
+from england_street_manager.extract_load_data import process_batch_and_insert_to_motherduck
+from england_street_manager.stream_zipped_data import fetch_data
 
-**This pipeline feeds an Evidence dashboard that is updated monthly - it can be found here: [Word on The Street](https://word-on-the-street.evidence.app)**
+@profile
+def main(batch_limit: int):
+    """
+    Monthly permit main will process the latest Street Manager Permit data.
 
-## Overview
+    If you run this in April then you will generate the D/L link for March's data.
 
-**This repository contains an efficient data pipeline for processing and analysing:**
+    Args:
+        Batch limit - set this to specify the chunk size for processing (e.g. process in chunks of 100,000 files)
+    """
 
-1. DfT's Street Manager archived permit data
+    # Get the initial memory usage
+    initial_memory = psutil.Process(os.getpid()).memory_info().rss
+    print(initial_memory)
 
-2. Ordnance Survey's Open USRN data
+    logger.success("MONTHLY PERMIT DATA STARTED")
 
-3. Geoplace's SWA Code data
+    # Credentials for MotherDuck
+    secrets = get_secrets(secret_name)
+    token = secrets["motherduck_token"]
+    database = secrets["motherdb"]
+    schema = get_raw_data_year()
 
-4. Scottish Road Works Register (SRWR) archived permit data (TBC)
+    # Create MotherDuck table date
+    table = date_for_table()
 
-## Open Street Works Data Pipeline in 3 points
+    # Initiate motherduck connection and table
+    conn = connect_to_motherduck(token, database)
+    motherduck_create_table(conn, schema, table)
 
-> [!NOTE]
-> The aim of this project is simple.
->
-> Reduce the time it takes to deliver value from open street works data.
+    # Start data processing
+    link = generate_dl_link()
+    data = fetch_data(link)
+    process_batch_and_insert_to_motherduck(data, batch_limit, conn, schema, table)
 
-**It's fast**
+    # Get the final memory usage
+    final_memory = psutil.Process(os.getpid()).memory_info().rss
+    print(final_memory)
 
-- Process an entire month of Street Manager archived permit data ready for analysis in 5 minutes.
-- Process an entire year of Street Manager archived permit data ready for anylsis in around 1 hour.
-- Process all Street Manager archived pemit data from 2020 to 2024 in the morning and be ready to analyse the data in the afternoon.
-- The pipeline utilises batch processing so no need to download, unzip, and deal with saving files to disk - everything is kept in memory.
+    logger.success("MONTHLY PERMIT DATA PROCESSED")
+```
 
-**It's not fussy**
+NEW WAY (IN PROGRESS BUT A LOT CLEANER)
 
-- Run it where you want.
-- Run it locally with Docker or a Python Venv if you want.
-- Run it on a Google Cloud Function/AWS Lambda Function (with some caveats).
-- Run it as Fargate Task on AWS or a Google Compute Engine.
+```python
+from data_sources.street_manager import StreetManager
+from database.motherduck import MotherDuckManager
+from data_processors.street_manager import process_data
 
-**It's flexible**
+def main():
+    # MotherDuck credentials
+    token = ""
+    database = ""
 
-- The project is modular so you can customise it to fit your own needs.
-- Don't want to use AWS Secrets Manager for environment variables? Use another provider or a simple .env file (recommended for local dev only).
-- Don't want to use MotherDuck as your data warehouse? Add in a function so the end destination is Google Big Query instead.
-- Only want to focus on Street Manager data? Launch the entry point that doesn't process SRWR data.
-- You can integrate other tools from the Modern Data Stack such as DLT, DBT, or orchestrators like Airflow and Mage if you want more functionality.
-- You can run several instances of the project for different analytical requirements.
+    # Create all the configurations
+    street_manager_config_latest = StreetManager.create_default_latest()
 
-## Why did I create this Project?
+    # Process the data
+    with MotherDuckManager(token, database) as motherduck_manager:
+        motherduck_manager.setup_for_data_source(street_manager_config_latest)
+        process_data(street_manager_config_latest.download_links[0], 150000, motherduck_manager, street_manager_config_latest.schema_name, street_manager_config_latest.table_names[0])
 
-Both DfT's Street Manager and Scotland's SRWR are the authoritative sources of street work permit data for England and Scotland.
-
-They make available large quantities of archived permit data every month and have done so for several years.
-
-Both data sources also need to be combined with other data sources for meaningful analysis.
-
-This equates to a lot of data and processing it can be slow and painful if you're not careful.
-
-**This project can help you:**
-
-- Maintain a consistent and structured way to develop, test, and deploy street work permit data pipelines.
-- Automate your development and deployment so you can focus on analysis and delivering value from the data.
-- Utilise the power of cloud compute to process data faster.
-- Utilise elements of the Modern Data Stack that allow for slick reporting and BI.
-
-## Impact Scores Model
-
-I currently use this pipeline to generate a monthly street works impact score for each USRN in England
-
-## Overview
-
-This model calculates and normalises impact scores for road works across England's highway network.
-
-It combines permit data with traffic and infrastructure metrics to produce weighted impact scores that reflect both the direct impact of works and the broader network.
-
-## Input Data Sources
-
-1. **Permit Data**
-
-   - In-progress works (`in_progress_list_england`)
-   - Completed works (`completed_list_england`)
-   - Key fields: USRN, street name, highway authority, work category, TTRO requirements, traffic sensitivity, traffic management type
-
-2. **Infrastructure Data**
-   - UPRN-USRN mapping (`uprn_usrn_count`)
-   - DFT Local Authority data (`dft_la_data_latest`) contains road length and traffic flow information
-
-## Impact Score Calculation
-
-### Base Impact Factors
-
-- **Work Category Impact** (0-5 points)
-
-  - Major works: 5 points
-  - Immediate works: 4 points
-  - Standard works: 2 points
-  - Minor works: 1 point
-  - etc
-
-- **Additional Impact Factors**
-  - TTRO Required: +0.5 points
-  - Traffic Sensitive: +0.5 points
-  - Traffic Management Impact: +0-2 points based on severity
-  - UPRN Density Impact: +0.2-1.6 points based on UPRN point density on a USRN
-
-### Network Context Adjustment
-
-The model applies a network importance factor based on:
-
-- Total road length in the authority
-- Traffic flow data (2023)
-- Traffic density per km (length/flow)
-- Normalised network importance factor (0-1 scale)
-
-## Output
-
-The final model produces a table with:
-
-- Location identifiers (USRN, street name, highway authority)
-- Raw impact scores
-- Network metrics (road length, traffic flow, density)
-- Final weighted impact scores that account for both direct works impact and network importance
-
-This model helps identify high-impact works areas by considering both the immediate disruption of works and their context within the broader road network.
+if __name__ == "__main__":
+    main()
+```

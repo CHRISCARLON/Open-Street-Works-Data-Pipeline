@@ -6,8 +6,8 @@ from loguru import logger
 
 from dft_data.dft_data import fetch_gss_codes, fetch_road_lengths, fetch_traffic_flows
 from general_functions.create_motherduck_connection import MotherDuckConnector
-from general_functions.creds import secret_name
-from general_functions.get_credentials import get_secrets
+from src.auth.creds import secret_name
+from src.auth.get_credentials import get_secrets
 from general_functions.create_table_names import create_table_names
 
 @profile

@@ -5,7 +5,7 @@ def get_table_name(url):
     """
     Create table table from part of url using a Regex expression
     """
-
+    
     url_link = url
 
     pattern = r"SWA_CODES_\d{4}-\d{2}-\d{2}"

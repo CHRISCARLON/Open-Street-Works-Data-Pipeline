@@ -10,8 +10,8 @@ from geoplace_swa_codes.fetch_swa_codes import (
     fetch_swa_codes
 )
 from general_functions.create_motherduck_connection import MotherDuckConnector
-from general_functions.creds import secret_name
-from general_functions.get_credentials import get_secrets
+from src.auth.creds import secret_name
+from src.auth.get_credentials import get_secrets
 
 
 @ profile

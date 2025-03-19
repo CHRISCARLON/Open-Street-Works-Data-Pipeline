@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, List, Union
 from datetime import date, timedelta, datetime
-from data_sources.data_source_config import DataProcessorType, DataSourceType, TimeRange, DataSourceConfig
+from data_source_config import DataProcessorType, DataSourceType, TimeRange, DataSourceConfig
 
 class StreetManager(DataSourceConfig):
     """
@@ -15,7 +15,7 @@ class StreetManager(DataSourceConfig):
         batch_limit: Optional[int] = None,
         year: Optional[int] = None,
         start_month: Optional[int] = None,
-        end_month: Optional[int] = None
+        end_month: Optional[int] = None,
     ):
         """
         Initialise a Street Manager configuration.
@@ -87,6 +87,80 @@ class StreetManager(DataSourceConfig):
         
         # Default fallback
         return ["NO Download Links Generated"]
+
+    def last_month(self) -> list:
+        """
+        Get the previous month's year and month.
+        
+        Returns:
+            [2024, "03"] if you run it in April 2024
+        """
+        current_date = date.today()
+        first_day_of_current_month = date(current_date.year, current_date.month, 1)
+        last_day_of_previous_month = first_day_of_current_month - timedelta(days=1)
+        year = last_day_of_previous_month.year
+        month = f"{last_day_of_previous_month.month:02d}"
+        return [year, month]
+    
+    def date_for_table(self) -> Union[str, List[str]]:
+        """
+        Creates formatted date string(s) for table names based on time range.
+        
+        Returns:
+            For LATEST: A string like "03_2024" for the previous month
+            For HISTORIC: A list of strings like ["01_2023", "02_2023", ...] 
+        """
+        if self.time_range == TimeRange.LATEST:
+            # Get previous month
+            year_month = self.last_month()
+            year = str(year_month[0])
+            month = year_month[1]
+            return f"{month}_{year}"
+        
+        elif self.time_range == TimeRange.HISTORIC:
+            # Extract dates from generated download links
+            table_names = []
+            for link in self.download_links:
+                parts = link.split('/')
+                year = parts[-2]
+                month = parts[-1].replace('.zip', '')
+                table_names.append(f"{month}_{year}")
+            return table_names
+        
+        else:
+            raise ValueError("Invalid time range")
+    
+    @property
+    def table_names(self) -> List[str]:
+        """
+        Get all table names when multiple historic tables are available.
+        """
+        
+        date_suffix = self.date_for_table()
+        
+        if isinstance(date_suffix, str):
+            # Single table case
+            return [f"{date_suffix}"]
+        
+        elif isinstance(date_suffix, list):
+            # Multiple tables case
+            return [f"{suffix}" for suffix in date_suffix]
+        
+        else:
+            raise ValueError("Invalid date suffix")
+    
+    @property
+    def schema_name(self) -> str:
+        """
+        Get the schema name for the Street Manager data based on last month.
+        """
+        if self.time_range == TimeRange.LATEST:
+            year_month = self.last_month()
+            previous_month_year = year_month[0]
+            return f"raw_data_{previous_month_year}"
+        elif self.time_range == TimeRange.HISTORIC:
+            return f"raw_data_{self.year}"
+        return f"raw_data_{date.today().year}"
     
     def __str__(self) -> str:
         """String representation of the configuration."""
@@ -99,29 +173,51 @@ class StreetManager(DataSourceConfig):
                 f"base_url={self.base_url}, "
                 f"time_range={self.time_range.value}, "
                 f"batch_limit={self.batch_limit}, "
-                f"download_links=[{links_str}])")
-    
+                f"download_links=[{links_str}]), "
+                f"schema_name={self.schema_name}, "
+                f"table_names={self.table_names}")
+
     @classmethod
-    def create_default(cls) -> 'StreetManager':
+    def create_default_latest(cls) -> 'StreetManager':
         """Create a default Street Manager configuration."""
         return cls(
             processor_type=DataProcessorType.MOTHERDUCK,
             time_range=TimeRange.LATEST,
             batch_limit=150000
         )
+    
+    @classmethod
+    def create_default_historic_2024(cls) -> 'StreetManager':
+        """Create a default Street Manager configuration."""
+        return cls(
+            processor_type=DataProcessorType.MOTHERDUCK,
+            time_range=TimeRange.HISTORIC,
+            batch_limit=150000,
+            year=2024,
+            start_month=1,
+            end_month=13
+        )
+    
+    @classmethod
+    def create_default_historic_2023(cls) -> 'StreetManager':
+        """Create a default Street Manager configuration."""
+        return cls(
+            processor_type=DataProcessorType.MOTHERDUCK,
+            time_range=TimeRange.HISTORIC,
+            batch_limit=150000,
+            year=2023,
+            start_month=1,
+            end_month=13
+        )
 
-# Example usage
-street_manager_config = StreetManager.create_default()
-print(street_manager_config)
-print(f"Download links: {street_manager_config.download_links}")
-
-# street_manager_historic_config = StreetManager(
-#     processor_type=DataProcessorType.MOTHERDUCK,
-#     time_range=TimeRange.HISTORIC,
-#     batch_limit=150000,
-#     year=2024,
-#     start_month=1,
-#     end_month=13
-# )
-# print(street_manager_historic_config)
-
+    @classmethod
+    def create_default_historic_2022(cls) -> 'StreetManager':
+        """Create a default Street Manager configuration."""
+        return cls(
+            processor_type=DataProcessorType.MOTHERDUCK,
+            time_range=TimeRange.HISTORIC,
+            batch_limit=150000,
+            year=2022,
+            start_month=1,
+            end_month=13
+        )

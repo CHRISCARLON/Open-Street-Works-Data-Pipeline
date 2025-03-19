@@ -8,7 +8,6 @@ from loguru import logger
 from msoffcrypto import OfficeFile
 from typing import Optional
 
-
 def get_link() -> Optional[str]:
     """
     Scrape download link from website

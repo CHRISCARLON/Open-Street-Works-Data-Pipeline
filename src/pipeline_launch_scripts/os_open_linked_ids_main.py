@@ -5,8 +5,8 @@ from memory_profiler import profile
 from loguru import logger
 
 from general_functions.create_motherduck_connection import connect_to_motherduck
-from general_functions.get_credentials import get_secrets
-from general_functions.creds import secret_name
+from src.auth.get_credentials import get_secrets
+from src.auth.creds import secret_name
 
 from os_open_linked_ids.os_open_linked_ids_processor import load_csv_data
 from os_open_linked_ids.get_redirect_url import fetch_redirect_url
