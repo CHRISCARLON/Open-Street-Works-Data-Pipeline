@@ -22,9 +22,15 @@ def insert_into_motherduck(df, conn, schema: str, table: str):
 
     if conn:
         try:
-            insert_sql = (
-                f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df"""
-            )
+            logger.info(f"Attempting to insert into schema: {schema}, table: {table}")
+            
+            conn.register("df_temp", df)
+            
+            if schema == "open_usrns_latest" and table == "os_open_usrns":
+                insert_sql = f"""INSERT INTO open_usrns_latest.os_open_usrns SELECT * FROM df_temp"""
+            else:
+                insert_sql = f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df_temp"""
+                
             conn.execute(insert_sql)
             logger.success(f"Inserted {len(df)} rows into {schema}.{table}")
         except Exception as e:
@@ -96,10 +102,10 @@ def load_geopackage_open_usrns(url: str, conn, batch_size: int, schema: str, tab
                     with fiona.open(gpkg_file, "r") as src:
                         # Print some of the metadata to check everything is OK
                         crs = src.crs
-                        schema = src.schema
+                        data_schema = src.schema
 
                         logger.info(f"The CRS is: {crs}")
-                        logger.info(f"The Schema is: {schema}")
+                        logger.info(f"The Data Schema is: {data_schema}")
                         
                         # Get total number of features for the progress bar
                         total_features = len(src)
