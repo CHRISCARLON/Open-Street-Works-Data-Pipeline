@@ -9,14 +9,14 @@ from england_street_manager.historic_main_links import generate_monthly_download
 from england_street_manager.motherduck_create_table import motherduck_create_table
 from general_functions.create_motherduck_connection import connect_to_motherduck
 from src.auth.get_credentials import get_secrets
-from england_street_manager.extract_load_data import (process_batch_and_insert_to_motherduck)
+from england_street_manager.extract_load_data import (
+    process_batch_and_insert_to_motherduck,
+)
 from england_street_manager.stream_zipped_data import fetch_data
-
 
 
 @profile
 def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
-
     """
     Historic Permit Main will process batches of historic data.
 
@@ -51,14 +51,16 @@ def main(schema_name, limit_number, year_int, start_month_int, end_month_int):
 
     for link in links:
         # Extract month and year from link for MotherDuck table
-        parts = link.split('/')
+        parts = link.split("/")
         year = parts[-2]
-        month = parts[-1].replace('.zip', '')
+        month = parts[-1].replace(".zip", "")
         table = f"{month}_{year}"
 
         motherduck_create_table(conn, schema, table)
         permit_data = fetch_data(link)
-        process_batch_and_insert_to_motherduck(permit_data, limit_number, conn, schema, table)
+        process_batch_and_insert_to_motherduck(
+            permit_data, limit_number, conn, schema, table
+        )
         logger.success(f"Data for {table} has been processed!")
 
     # Get final, high level memory usage

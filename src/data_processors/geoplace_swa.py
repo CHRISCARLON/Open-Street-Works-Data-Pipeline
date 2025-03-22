@@ -1,37 +1,31 @@
-import requests
-import pandas as pd
-
-from datetime import datetime
-from bs4 import BeautifulSoup, Tag
-from io import BytesIO
+import duckdb
 from loguru import logger
-from msoffcrypto import OfficeFile
 from typing import Optional
+import pandas as pd
+import requests
+from io import BytesIO
+from datetime import datetime
+from msoffcrypto import OfficeFile
 
 
-def get_link() -> Optional[str]:
+def insert_table_to_motherduck(df, conn, schema, table):
     """
-    Scrape download link from website
-    Returns:
-        str: Download link as a string
-    Raises:
-        ValueError: If no download link is found or any error occurs
+    Inserts a DataFrame into a DuckDB table.
+
+    This function also ensures that the order of the columns is always the same.
+
+    Args:
+        df: The DataFrame to be inserted.
+        conn: The MotherDuck connection.
+        schema: The schema of the table.
+        table: The name of the table.
     """
-    url = "https://www.geoplace.co.uk/local-authority-resources/street-works-managers/view-swa-codes"
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, "html.parser")
-        download_link = soup.find("a", class_="download-item__download-link")
-        if download_link and isinstance(download_link, Tag):
-            href = download_link.get("href")
-            logger.success("Link Found")
-            return str(href)
-        else:
-            raise ValueError("No valid download link found on the page")
-    except Exception as e:
-        logger.error(f"Error in get_link: {e}")
-        raise ValueError(f"Failed to get download link: {e}")
+        insert_sql = f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df"""
+        conn.execute(insert_sql)
+    except (duckdb.DataError, duckdb.Error, Exception) as e:
+        logger.error(f"Error inserting DataFrame into DuckDB: {e}")
+        raise
 
 
 def clean_name_geoplace(x: str):
@@ -59,7 +53,7 @@ def clean_name_geoplace(x: str):
     return x
 
 
-def fetch_swa_codes() -> Optional[pd.DataFrame]:
+def fetch_swa_codes(url: str) -> Optional[pd.DataFrame]:
     """
     Use download link to fetch data.
     Data is an old xls file and needs extra steps to create dataframe.
@@ -69,8 +63,6 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
         Optional[pd.DataFrame]: DataFrame containing the SWA codes data, or None if an error occurs.
     """
     try:
-        url = get_link()
-        # Explicit type assertion
         assert isinstance(url, str), "URL must be a string"
     except (ValueError, AssertionError) as e:
         logger.error(f"Error getting download link: {e}")
@@ -125,3 +117,23 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
         logger.error(f"Unexpected error in fetch_swa_codes: {e}")
 
     return None
+
+
+def process_data(url: str, conn, schema_name: str, table_name: str) -> None:
+    """
+    Main function to fetch and process data stream with Pandas.
+
+    Args:
+        url: The URL to fetch the data from.
+        conn: The MotherDuck connection.
+        schema: The schema of the table.
+        table: The name of the table.
+    """
+    try:
+        df = fetch_swa_codes(url)
+        if df is not None:
+            insert_table_to_motherduck(df, conn, schema_name, table_name)
+            logger.success(f"Data inserted into {schema_name}.{table_name}")
+    except Exception as e:
+        logger.error(f"Error processing data: {e}")
+        raise

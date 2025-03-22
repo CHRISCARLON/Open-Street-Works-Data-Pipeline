@@ -15,7 +15,10 @@ def quick_col_rename(df) -> pd.DataFrame:
 
     This will remove "object data." from the column names.
     """
-    df.columns = [col.replace("object_data.", "") if "object_data." in col else col for col in df.columns]
+    df.columns = [
+        col.replace("object_data.", "") if "object_data." in col else col
+        for col in df.columns
+    ]
     return df
 
 
@@ -33,8 +36,8 @@ def insert_dataframe_to_motherduck(df, conn, schema, table):
     """
     try:
         column_names = df.columns.tolist()
-        columns_sql = ', '.join(column_names)
-        placeholders = ', '.join([f"df.{name}" for name in column_names])
+        columns_sql = ", ".join(column_names)
+        placeholders = ", ".join([f"df.{name}" for name in column_names])
         insert_sql = f"""INSERT INTO "{schema}"."{table}" ({columns_sql}) SELECT {placeholders} FROM df"""
         conn.execute(insert_sql)
     except Exception as e:
@@ -42,7 +45,9 @@ def insert_dataframe_to_motherduck(df, conn, schema, table):
         raise
 
 
-def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, schema, table):
+def process_batch_and_insert_to_motherduck(
+    zipped_chunks, limit_numbner, conn, schema, table
+):
     """
     Streams data from DfT into MotherDuck.
     Process data in batches of [whatever you decide].
@@ -63,11 +68,11 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
     for file, size, unzipped_chunks in tqdm(stream_unzip(zipped_chunks)):
         current_file = file
         if isinstance(current_file, bytes):
-            current_file = current_file.decode('utf-8')
+            current_file = current_file.decode("utf-8")
 
         try:
-            bytes_obj = b''.join(unzipped_chunks)
-            json_data = json.loads(bytes_obj.decode('utf-8'))
+            bytes_obj = b"".join(unzipped_chunks)
+            json_data = json.loads(bytes_obj.decode("utf-8"))
             current_item = flatten_json(json_data)
             flattened_data.append(current_item)
             batch_count += 1
@@ -75,24 +80,24 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
             # Process and insert data in batches
             if batch_count >= batch_limit:
                 df = pd.DataFrame(flattened_data)
-                df = df.fillna('NULL')
+                df = df.fillna("NULL")
                 df = quick_col_rename(df)
 
                 # Insert the batch into MothertDuck
                 insert_dataframe_to_motherduck(df, conn, schema, table)
                 logger.success("Batch processed!")
-                
+
                 # Reset the batch for the next iteration
                 flattened_data.clear()
                 batch_count = 0
-                current_item = None 
+                current_item = None
 
         except Exception as e:
             logger.error(f"{e}")
             logger.error(f"Error processing file: {current_file}")
             if current_item:
                 logger.error("Last processed item:")
-                debug_df = pd.DataFrame([current_item]) 
+                debug_df = pd.DataFrame([current_item])
                 print(debug_df)
                 print(debug_df.dtypes)
             raise
@@ -101,7 +106,7 @@ def process_batch_and_insert_to_motherduck(zipped_chunks, limit_numbner, conn, s
     try:
         if flattened_data:
             df = pd.DataFrame(flattened_data)
-            df = df.fillna('NULL')
+            df = df.fillna("NULL")
             df = quick_col_rename(df)
             # Insert the batch into MothertDuck
             insert_dataframe_to_motherduck(df, conn, schema, table)

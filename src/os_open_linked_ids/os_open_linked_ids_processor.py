@@ -7,6 +7,7 @@ import pandas as pd
 from loguru import logger
 from .process_into_motherduck import process_chunk
 
+
 def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
     """
     Function to stream and process CSV data in batches.
@@ -17,14 +18,14 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
         batch_limit (int): Number of rows to process in each batch
     """
     fieldnames = [
-        'CORRELATION_ID',
-        'IDENTIFIER_1',
-        'VERSION_NUMBER_1',
-        'VERSION_DATE_1',
-        'IDENTIFIER_2',
-        'VERSION_NUMBER_2',
-        'VERSION_DATE_2',
-        'CONFIDENCE'
+        "CORRELATION_ID",
+        "IDENTIFIER_1",
+        "VERSION_NUMBER_1",
+        "VERSION_DATE_1",
+        "IDENTIFIER_2",
+        "VERSION_NUMBER_2",
+        "VERSION_DATE_2",
+        "CONFIDENCE",
     ]
 
     errors = []
@@ -38,17 +39,21 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
 
         # Create the temp dir as the OS download has several files in it
         with tempfile.TemporaryDirectory() as temp_dir:
-            zip_path = os.path.join(temp_dir, 'temp.zip')
-            with open(zip_path, 'wb') as zip_file:
+            zip_path = os.path.join(temp_dir, "temp.zip")
+            with open(zip_path, "wb") as zip_file:
                 zip_file.write(response.content)
 
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            with zipfile.ZipFile(zip_path, "r") as zip_ref:
                 zip_ref.extractall(temp_dir)
 
             # Get the csv file that has the data in it
             csv_file = next(
-                (os.path.join(temp_dir, f) for f in os.listdir(temp_dir) if f.endswith('.csv')),
-                None
+                (
+                    os.path.join(temp_dir, f)
+                    for f in os.listdir(temp_dir)
+                    if f.endswith(".csv")
+                ),
+                None,
             )
 
             if not csv_file:
@@ -56,7 +61,7 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
                 logger.error(error_msg)
                 raise FileNotFoundError(error_msg)
 
-            with open(csv_file, 'r', newline='') as file:
+            with open(csv_file, "r", newline="") as file:
                 # Create a single CSV reader for the entire file
                 reader = csv.DictReader(file, fieldnames=fieldnames)
                 next(reader)  # Skip header
@@ -70,7 +75,9 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
                             process_chunk(df_chunk, conn, schema, name)
 
                             total_rows_processed += len(current_batch)
-                            logger.info(f"Processed rows {total_rows_processed-len(current_batch)+1} to {total_rows_processed}")
+                            logger.info(
+                                f"Processed rows {total_rows_processed-len(current_batch)+1} to {total_rows_processed}"
+                            )
 
                             current_batch = []
 
@@ -86,7 +93,9 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
                         df_chunk = pd.DataFrame(current_batch)
                         process_chunk(df_chunk, conn, schema, name)
                         total_rows_processed += len(current_batch)
-                        logger.info(f"Processed final batch: rows {total_rows_processed-len(current_batch)+1} to {total_rows_processed}")
+                        logger.info(
+                            f"Processed final batch: rows {total_rows_processed-len(current_batch)+1} to {total_rows_processed}"
+                        )
 
                     except Exception as e:
                         error_msg = f"Error processing final batch: {e}"
@@ -105,6 +114,8 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
             for error in errors:
                 print(error)
 
-        logger.info(f"Completed processing. Total rows processed: {total_rows_processed}")
+        logger.info(
+            f"Completed processing. Total rows processed: {total_rows_processed}"
+        )
 
     return None

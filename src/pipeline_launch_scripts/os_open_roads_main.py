@@ -12,6 +12,7 @@ from os_open_roads.get_redirect_url import fetch_redirect_url
 from os_open_roads.os_open_roads_processor import load_geopackage_open_roads
 from os_open_roads.create_motherduck_table import create_table
 
+
 @profile
 def main(batch_limit: int):
     """

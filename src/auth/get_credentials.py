@@ -21,6 +21,7 @@ def get_secrets(secret_name, region_name="eu-west-2") -> dict:
 
     try:
         get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        logger.success("Secrets Retrieved")
     except Exception as e:
         logger.error(f"Unable to retrieve secret {secret_name}: {str(e)}")
         raise e

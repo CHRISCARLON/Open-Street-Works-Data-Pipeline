@@ -1,11 +1,12 @@
 import re
 from loguru import logger
 
+
 def get_table_name(url):
     """
     Create table table from part of url using a Regex expression
     """
-    
+
     url_link = url
 
     pattern = r"SWA_CODES_\d{4}-\d{2}-\d{2}"
@@ -17,6 +18,7 @@ def get_table_name(url):
         return result
     else:
         logger.error("The required pattern was not found")
+
 
 def table_name_latest():
     """

@@ -5,6 +5,7 @@ from loguru import logger
 # src/general_functions/create_motherduck_connection.py
 # MotherDuck Connector
 
+
 def create_table_swa_codes_motherduck(conn, table_name):
     """
     Creates a new table for the latest open usrn data every month.
@@ -38,7 +39,12 @@ def create_table_swa_codes_motherduck(conn, table_name):
             );"""
             conn.execute(table_command)
             logger.success("MotherDuck Table created successfully.")
-        except (duckdb.ConnectionException, duckdb.DataError, duckdb.Error, Exception) as e:
+        except (
+            duckdb.ConnectionException,
+            duckdb.DataError,
+            duckdb.Error,
+            Exception,
+        ) as e:
             logger.error(f"An error occurred: {e}")
             raise
 

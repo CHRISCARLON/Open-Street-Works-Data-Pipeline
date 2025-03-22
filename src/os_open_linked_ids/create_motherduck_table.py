@@ -4,6 +4,7 @@ from loguru import logger
 # TODO this needs rolled up into a more abstract, reuseable function
 # This is just done quickly to make sure the pipeline works
 
+
 def create_table_1(conn, schema, name):
     """
     Creates a new table for the latest open linked identifiers data every month.
@@ -14,7 +15,7 @@ def create_table_1(conn, schema, name):
         schema
         table name
     """
-    
+
     if conn:
         try:
             table_command = f"""CREATE OR REPLACE TABLE "{schema}"."{name}" (
@@ -29,9 +30,15 @@ def create_table_1(conn, schema, name):
             );"""
             conn.execute(table_command)
             logger.success("MotherDuck Table created successfully.")
-        except (duckdb.ConnectionException, duckdb.DataError, duckdb.Error, Exception) as e:
+        except (
+            duckdb.ConnectionException,
+            duckdb.DataError,
+            duckdb.Error,
+            Exception,
+        ) as e:
             logger.error(f"An error occurred: {e}")
             raise
+
 
 def create_table_2(conn, schema, name):
     """
@@ -43,7 +50,7 @@ def create_table_2(conn, schema, name):
         schema
         table name
     """
-    
+
     if conn:
         try:
             table_command = f"""CREATE OR REPLACE TABLE "{schema}"."{name}" (
@@ -58,9 +65,15 @@ def create_table_2(conn, schema, name):
             );"""
             conn.execute(table_command)
             logger.success("MotherDuck Table created successfully.")
-        except (duckdb.ConnectionException, duckdb.DataError, duckdb.Error, Exception) as e:
+        except (
+            duckdb.ConnectionException,
+            duckdb.DataError,
+            duckdb.Error,
+            Exception,
+        ) as e:
             logger.error(f"An error occurred: {e}")
             raise
+
 
 def create_table_3(conn, schema, name):
     """
@@ -72,7 +85,7 @@ def create_table_3(conn, schema, name):
         schema
         table name
     """
-    
+
     if conn:
         try:
             table_command = f"""CREATE OR REPLACE TABLE "{schema}"."{name}" (
@@ -87,6 +100,11 @@ def create_table_3(conn, schema, name):
             );"""
             conn.execute(table_command)
             logger.success("MotherDuck Table created successfully.")
-        except (duckdb.ConnectionException, duckdb.DataError, duckdb.Error, Exception) as e:
+        except (
+            duckdb.ConnectionException,
+            duckdb.DataError,
+            duckdb.Error,
+            Exception,
+        ) as e:
             logger.error(f"An error occurred: {e}")
             raise

@@ -53,7 +53,7 @@ class MotherDuckConnector:
             return self.connection
         except (duckdb.ConnectionException, duckdb.Error, Exception) as e:
             raise e
-        
+
     def register(self, view_name: str, df):
         """
         Register a pandas DataFrame as a DuckDB view.

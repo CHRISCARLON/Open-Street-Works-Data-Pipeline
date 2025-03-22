@@ -5,16 +5,13 @@ from memory_profiler import profile
 from loguru import logger
 
 from geoplace_swa_codes.create_table_name import table_name_latest, get_table_name
-from geoplace_swa_codes.fetch_swa_codes import (
-    get_link,
-    fetch_swa_codes
-)
+from geoplace_swa_codes.fetch_swa_codes import get_link, fetch_swa_codes
 from general_functions.create_motherduck_connection import MotherDuckConnector
 from src.auth.creds import secret_name
 from src.auth.get_credentials import get_secrets
 
 
-@ profile
+@profile
 def main():
     """
     This will process the most recent Geoplace SWA Code list data
@@ -25,7 +22,7 @@ def main():
     print(f"Initial Memory: {initial_memory}")
 
     logger.success("SWA DATA STARTED")
-    
+
     # Fetch secret variables
     secrets = get_secrets(secret_name)
     token = secrets["motherduck_token"]
@@ -45,8 +42,7 @@ def main():
 
     # Create table and insert data into MotherDuck
     with MotherDuckConnector(token, database) as conn:
-        
-        conn.register('df_view', df) 
+        conn.register("df_view", df)
 
         # Create table with snake_case column names
         create_table_query = f"""

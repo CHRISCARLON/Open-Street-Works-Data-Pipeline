@@ -1,5 +1,6 @@
 from .date_month import last_month
 
+
 def generate_dl_link() -> str:
     """
     Function to generate download link.

@@ -6,6 +6,7 @@ from loguru import logger
 from pydantic import BaseModel, Field, ConfigDict, ValidationError
 from typing import List, Tuple, Optional
 
+
 class SWACodeModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
@@ -33,7 +34,10 @@ class SWACodeModel(BaseModel):
         None, alias="SWA Code of New Company"
     )
 
-def validate_data_model() -> Optional[Tuple[List[SWACodeModel], List[str], pd.DataFrame]]:
+
+def validate_data_model() -> (
+    Optional[Tuple[List[SWACodeModel], List[str], pd.DataFrame]]
+):
     """
     Fetches SWA codes data, validates it against the SWA Code Pydantic model,
     and returns a list of validated SWACode objects.
@@ -52,7 +56,7 @@ def validate_data_model() -> Optional[Tuple[List[SWACodeModel], List[str], pd.Da
         return None
 
     # Convert DataFrame to a list of dictionaries
-    data_dicts = df.to_dict(orient='records')
+    data_dicts = df.to_dict(orient="records")
 
     # Set variables up for validation process
     validated_data = []
@@ -66,6 +70,8 @@ def validate_data_model() -> Optional[Tuple[List[SWACodeModel], List[str], pd.Da
             validated_data.append(validated_item)
         except ValidationError as e:
             errors.append(f"Error in record {idx}: {str(e)}")
-    logger.success(f"Successfully validated {len(validated_data)} out of {len(data_dicts)} records.")
+    logger.success(
+        f"Successfully validated {len(validated_data)} out of {len(data_dicts)} records."
+    )
     logger.info(f"There were {len(errors)} errors")
     return validated_data, errors, df

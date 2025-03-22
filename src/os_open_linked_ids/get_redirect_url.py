@@ -1,6 +1,7 @@
 import requests
 from loguru import logger
 
+
 def fetch_redirect_url(url: str) -> str:
     """
     Call the redirect url and then fetch the actual download url.

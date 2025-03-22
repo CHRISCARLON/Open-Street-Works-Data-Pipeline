@@ -11,8 +11,11 @@ from england_street_manager.date_month import date_for_table
 from england_street_manager.motherduck_create_table import motherduck_create_table
 from general_functions.create_motherduck_connection import connect_to_motherduck
 from src.auth.get_credentials import get_secrets
-from england_street_manager.extract_load_data import (process_batch_and_insert_to_motherduck)
+from england_street_manager.extract_load_data import (
+    process_batch_and_insert_to_motherduck,
+)
 from england_street_manager.stream_zipped_data import fetch_data
+
 
 @profile
 def main(batch_limit: int):

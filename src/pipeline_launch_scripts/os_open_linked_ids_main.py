@@ -12,6 +12,7 @@ from os_open_linked_ids.os_open_linked_ids_processor import load_csv_data
 from os_open_linked_ids.get_redirect_url import fetch_redirect_url
 from os_open_linked_ids.create_motherduck_table import create_table_1
 
+
 @profile
 def main(batch_limit: int):
     """
@@ -31,9 +32,21 @@ def main(batch_limit: int):
     conn_usrn_uprn = connect_to_motherduck(token, database)
 
     logger.success("OS USRN to URPN DATA STARTED")
-    create_table_1(conn_usrn_uprn, schema="os_open_linked_identifiers", name="os_open_linked_identifiers_uprn_usrn_latest")
-    url = fetch_redirect_url(url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_BLPU-UPRN-Street-USRN-11.zip&redirect")
-    load_csv_data(url, conn_usrn_uprn, batch_limit, schema="os_open_linked_identifiers", name="os_open_linked_identifiers_uprn_usrn_latest")
+    create_table_1(
+        conn_usrn_uprn,
+        schema="os_open_linked_identifiers",
+        name="os_open_linked_identifiers_uprn_usrn_latest",
+    )
+    url = fetch_redirect_url(
+        url="https://api.os.uk/downloads/v1/products/LIDS/downloads?area=GB&format=CSV&fileName=lids-2024-12_csv_BLPU-UPRN-Street-USRN-11.zip&redirect"
+    )
+    load_csv_data(
+        url,
+        conn_usrn_uprn,
+        batch_limit,
+        schema="os_open_linked_identifiers",
+        name="os_open_linked_identifiers_uprn_usrn_latest",
+    )
     logger.success("OS USRN to UPRN DATA PROCESSED")
 
     if conn_usrn_uprn:

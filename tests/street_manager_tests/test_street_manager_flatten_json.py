@@ -1,5 +1,6 @@
 from src.england_street_manager.flatten_street_manager_data import flatten_json
 
+
 def test_flatten_json():
     json_data = {
         "event_reference": 529770,
@@ -44,12 +45,12 @@ def test_flatten_json():
             "close_footway_ref": "yes_provide_pedestrian_walkway",
             "current_traffic_management_type": "Multi-way signals",
             "current_traffic_management_type_ref": "multi_way_signals",
-            "current_traffic_management_update_date": "2020-06-11T10:11:00.000Z"
+            "current_traffic_management_update_date": "2020-06-11T10:11:00.000Z",
         },
         "event_time": "2020-06-04T08:00:00.000Z",
         "object_type": "PERMIT",
         "object_reference": "TSR1591199404915-01",
-        "version": 1
+        "version": 1,
     }
     expected_output = {
         "event_reference": 529770,
@@ -97,6 +98,6 @@ def test_flatten_json():
         "event_time": "2020-06-04T08:00:00.000Z",
         "object_type": "PERMIT",
         "object_reference": "TSR1591199404915-01",
-        "version": 1
+        "version": 1,
     }
     assert flatten_json(json_data) == expected_output

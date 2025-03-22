@@ -1,6 +1,7 @@
-import pandas as pd 
+import pandas as pd
 from src.england_street_manager.extract_load_data import quick_col_rename
 from loguru import logger
+
 
 def test_quick_col_rename():
     # Create a sample DataFrame with nested column names
@@ -12,7 +13,9 @@ def test_quick_col_rename():
         "object_data.promoter_swa_code": ["STPR"],
         "object_data.promoter_organisation": ["Smoke Test Promoter"],
         "object_data.highway_authority": ["CITY OF WESTMINSTER"],
-        "object_data.works_location_coordinates": ["LINESTRING(501251.53 222574.64,501305.92 222506.65)"],
+        "object_data.works_location_coordinates": [
+            "LINESTRING(501251.53 222574.64,501305.92 222506.65)"
+        ],
         "object_data.street_name": ["HIGH STREET NORTH"],
         "object_data.area_name": ["LONDON"],
         "object_data.work_category": ["Standard"],
@@ -46,15 +49,17 @@ def test_quick_col_rename():
         "object_data.close_footway_ref": ["yes_provide_pedestrian_walkway"],
         "object_data.current_traffic_management_type": ["Multi-way signals"],
         "object_data.current_traffic_management_type_ref": ["multi_way_signals"],
-        "object_data.current_traffic_management_update_date": ["2020-06-11T10:11:00.000Z"],
+        "object_data.current_traffic_management_update_date": [
+            "2020-06-11T10:11:00.000Z"
+        ],
         "event_time": ["2020-06-04T08:00:00.000Z"],
         "object_type": ["PERMIT"],
         "object_reference": ["TSR1591199404915-01"],
-        "version": [1]
+        "version": [1],
     }
     df = pd.DataFrame(data)
     logger.info(f"Df Unchanged: {df['object_data.area_name']}")
-    
+
     # Call the quick_col_rename function
     renamed_df = quick_col_rename(df)
 
@@ -108,10 +113,12 @@ def test_quick_col_rename():
         "event_time",
         "object_type",
         "object_reference",
-        "version"
+        "version",
     ]
     assert all(col in renamed_df.columns for col in expected_columns)
 
     # Assert that the data in the DataFrame remains unchanged
-    assert renamed_df.equals(df.rename(columns=lambda col: col.replace("object_data.", "")))
+    assert renamed_df.equals(
+        df.rename(columns=lambda col: col.replace("object_data.", ""))
+    )
     logger.info(f"Df Renamed: {renamed_df['area_name']}")

@@ -1,6 +1,7 @@
 import duckdb
 from loguru import logger
 
+
 def create_table(conn):
     """
     Creates a new table for the latest open usrn data every month.
@@ -20,6 +21,11 @@ def create_table(conn):
             );"""
             conn.execute(table_command)
             logger.success("MotherDuck Table created successfully.")
-        except (duckdb.ConnectionException, duckdb.DataError, duckdb.Error, Exception) as e:
+        except (
+            duckdb.ConnectionException,
+            duckdb.DataError,
+            duckdb.Error,
+            Exception,
+        ) as e:
             logger.error(f"An error occurred: {e}")
             raise

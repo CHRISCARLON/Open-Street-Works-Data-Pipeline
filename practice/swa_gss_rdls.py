@@ -9,9 +9,10 @@ from loguru import logger
 from msoffcrypto import OfficeFile
 from typing import Optional, Tuple
 
-def save_to_parquet(df: Optional[pd.DataFrame],
-                   data_type: str,
-                   base_path: str = "data") -> bool:
+
+def save_to_parquet(
+    df: Optional[pd.DataFrame], data_type: str, base_path: str = "data"
+) -> bool:
     if df is None:
         logger.error(f"Cannot save {data_type} codes - DataFrame is None")
         return False
@@ -22,7 +23,7 @@ def save_to_parquet(df: Optional[pd.DataFrame],
         save_path.mkdir(parents=True, exist_ok=True)
 
         # Generate filename with timestamp
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{data_type}_codes_{timestamp}.parquet"
         full_path = save_path / filename
 
@@ -34,6 +35,7 @@ def save_to_parquet(df: Optional[pd.DataFrame],
     except Exception as e:
         logger.error(f"Error saving {data_type} codes to parquet: {e}")
         return False
+
 
 def get_link() -> Optional[str]:
     """
@@ -47,10 +49,10 @@ def get_link() -> Optional[str]:
     try:
         response = requests.get(url)
         response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
-        download_link = soup.find('a', class_='download-item__download-link')
+        soup = BeautifulSoup(response.content, "html.parser")
+        download_link = soup.find("a", class_="download-item__download-link")
         if download_link and isinstance(download_link, Tag):
-            href = download_link.get('href')
+            href = download_link.get("href")
             logger.success("Link Found")
             return str(href)
         else:
@@ -58,6 +60,7 @@ def get_link() -> Optional[str]:
     except Exception as e:
         logger.error(f"Error in get_link: {e}")
         raise ValueError(f"Failed to get download link: {e}")
+
 
 def fetch_swa_codes() -> Optional[pd.DataFrame]:
     """
@@ -82,20 +85,20 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
 
         result = BytesIO(response.content)
         office_file = OfficeFile(result)
-        office_file.load_key('VelvetSweatshop')
+        office_file.load_key("VelvetSweatshop")
 
         decrypted_file = BytesIO()
         office_file.decrypt(decrypted_file)
         decrypted_file.seek(0)
 
         # Read in and do some basic renames and transformation
-        df = pd.read_excel(decrypted_file, header=1, engine='xlrd')
-        df = df.astype(str).replace('nan', None)
-        df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
+        df = pd.read_excel(decrypted_file, header=1, engine="xlrd")
+        df = df.astype(str).replace("nan", None)
+        df.columns = df.columns.str.lower().str.replace(" ", "_").str.replace("/", "_")
 
         # Add date time processed column
-        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        df['date_time_processed'] = current_time
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        df["date_time_processed"] = current_time
 
         logger.success(f"DataFrame created successfully: {df.head(10)}")
 
@@ -110,6 +113,7 @@ def fetch_swa_codes() -> Optional[pd.DataFrame]:
 
     return None
 
+
 def fetch_gss_codes() -> Optional[pd.DataFrame]:
     try:
         data = requests.get("https://roadtraffic.dft.gov.uk/api/local-authorities")
@@ -120,9 +124,12 @@ def fetch_gss_codes() -> Optional[pd.DataFrame]:
     except Exception:
         raise
 
+
 def fetch_road_lengths():
     try:
-        data = requests.get("https://assets.publishing.service.gov.uk/media/65fb0052aa9b76001dfbdc03/rdl0202.ods")
+        data = requests.get(
+            "https://assets.publishing.service.gov.uk/media/65fb0052aa9b76001dfbdc03/rdl0202.ods"
+        )
         response = data.content
         bytes_io = BytesIO(response)
 
@@ -136,6 +143,7 @@ def fetch_road_lengths():
 
     except Exception as e:
         raise Exception(f"Failed to fetch road length data: {str(e)}")
+
 
 def clean_name(x: str):
     x = x.replace("LONDON BOROUGH OF", "").strip()
@@ -163,6 +171,7 @@ def clean_name(x: str):
     x = str(x).lower()
     return x
 
+
 def process_data() -> Optional[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]]:
     df = pd.read_parquet("test_data/swa_codes_20241205_114253.parquet")
     df_2 = pd.read_parquet("test_data/gss_codes_20241205_114253.parquet")
@@ -180,7 +189,7 @@ def process_data() -> Optional[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]]:
 
         df_swa.loc[:, "account_name"] = df_swa.loc[:, "account_name"].apply(clean_name)
         df_gss.loc[:, "name"] = df_gss.loc[:, "name"].apply(clean_name)
-        df_rdls = df_rdls.drop(columns=['Notes'])
+        df_rdls = df_rdls.drop(columns=["Notes"])
 
         if not isinstance(df_swa, pd.DataFrame) or not isinstance(df_gss, pd.DataFrame):
             print("Error: Incorrect data types in processed data")
@@ -192,33 +201,43 @@ def process_data() -> Optional[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]]:
         print(f"Error processing data: {e}")
         return None
 
-def merge_datasets(data: Optional[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]]) -> pd.DataFrame:
+
+def merge_datasets(
+    data: Optional[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]],
+) -> pd.DataFrame:
     if data is None:
         raise ValueError("Input data is None")
 
     df_swa, df_gss, df_rdls = data
     try:
-        merge_1: pd.DataFrame = (df_swa.merge(df_gss,
-            left_on='account_name',
-            right_on='name',
-            how='left')
-            .drop(columns=['name'])
-            .dropna(subset=['ons_code'])
-            .loc[lambda df: df['account_type'].isin(['English Unitary', 'English County'])]
+        merge_1: pd.DataFrame = (
+            df_swa.merge(df_gss, left_on="account_name", right_on="name", how="left")
+            .drop(columns=["name"])
+            .dropna(subset=["ons_code"])
+            .loc[
+                lambda df: df["account_type"].isin(
+                    ["English Unitary", "English County"]
+                )
+            ]
         )
 
-        merge_2: pd.DataFrame = (merge_1.merge(df_rdls,
-                    left_on='ons_code',
-                    right_on='ONS Area Code',
-                    how='left')
+        merge_2: pd.DataFrame = merge_1.merge(
+            df_rdls, left_on="ons_code", right_on="ONS Area Code", how="left"
         )
 
-        merge_2 = merge_2.rename(columns={"account_name": "local_authority_name", "account_type": "local_authority_type", "id": "df_local_authority_id"})
+        merge_2 = merge_2.rename(
+            columns={
+                "account_name": "local_authority_name",
+                "account_type": "local_authority_type",
+                "id": "df_local_authority_id",
+            }
+        )
 
         return merge_2
     except Exception as e:
         print(f"Error during merge: {e}")
         raise
+
 
 if __name__ == "__main__":
     data = process_data()

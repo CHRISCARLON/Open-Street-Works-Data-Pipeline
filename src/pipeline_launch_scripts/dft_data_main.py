@@ -10,6 +10,7 @@ from src.auth.creds import secret_name
 from src.auth.get_credentials import get_secrets
 from general_functions.create_table_names import create_table_names
 
+
 @profile
 def main():
     """
@@ -249,12 +250,12 @@ def main():
         """
         conn.execute_query(insert_traffic_flows_latest)
 
-
         # Get the final memory usage
         final_memory = psutil.Process(os.getpid()).memory_info().rss
         print(final_memory)
 
         logger.success("DFT DATA PROCESSED")
+
 
 if __name__ == "__main__":
     main()

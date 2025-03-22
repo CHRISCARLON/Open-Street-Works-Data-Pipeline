@@ -6,6 +6,7 @@ import json
 from stream_unzip import stream_unzip
 from tqdm import tqdm
 
+
 # Core elements of the Street Manager permit data
 class StreetManagerPermitModel(BaseModel):
     event_reference: Optional[int]
@@ -55,6 +56,7 @@ class StreetManagerPermitModel(BaseModel):
     collaboration_type: Optional[str] = Field(default=None)
     collaboration_type_ref: Optional[str] = Field(default=None)
 
+
 # Validate a small sample against the model
 def validate_dataframe_sample(
     df: pd.DataFrame, model: type[StreetManagerPermitModel], sample_size: int = 500
@@ -74,6 +76,7 @@ def validate_dataframe_sample(
             errors.append({"index": index, "errors": e.errors()})
     return errors
 
+
 # Raise a ValueError if the list returned contains something - if empty continue as normal as no error
 def handle_validation_errors(validation_errors: list):
     if validation_errors:
@@ -87,29 +90,31 @@ def handle_validation_errors(validation_errors: list):
     else:
         logger.success("The Pydantic model has been passed! Allez!")
 
+
 # Functions to test a sample of 500 files to ensure schema is valid
 def flatten_json(json_data) -> dict:
     """
     Street manager archived open data comes in nested json files
     This function flattens the structure
-    
+
     Args:
         json_data to flatten
-        
+
     Returns:
         flattened data
     """
     flattened_data = {}
 
-    def flatten(data, prefix=''):
+    def flatten(data, prefix=""):
         if isinstance(data, dict):
             for key in data:
-                flatten(data[key], f'{prefix}{key}.')
+                flatten(data[key], f"{prefix}{key}.")
         else:
             flattened_data[prefix[:-1]] = data
 
     flatten(json_data)
     return flattened_data
+
 
 def check_data_schema(zipped_chunks):
     """
@@ -129,12 +134,12 @@ def check_data_schema(zipped_chunks):
             break
 
         if isinstance(file, bytes):
-            file = file.decode('utf-8')
+            file = file.decode("utf-8")
 
         try:
             # Decode bytes to string and load into JSON
-            bytes_obj = b''.join(unzipped_chunks)
-            json_data = json.loads(bytes_obj.decode('utf-8'))
+            bytes_obj = b"".join(unzipped_chunks)
+            json_data = json.loads(bytes_obj.decode("utf-8"))
             # Flatten the JSON data if necessary and add to list
             flattened_data = flatten_json(json_data)
             data_list.append(flattened_data)

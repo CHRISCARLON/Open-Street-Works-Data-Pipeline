@@ -8,7 +8,12 @@ from general_functions.create_motherduck_connection import connect_to_motherduck
 from src.auth.get_credentials import get_secrets
 from src.auth.creds import secret_name
 from scottish_road_works_register.generate_dl_links import dl_link_creator
-from scottish_road_works_register.experimental_extract_load_data import fetch_presigned_url, fetch_data, process_batches
+from scottish_road_works_register.experimental_extract_load_data import (
+    fetch_presigned_url,
+    fetch_data,
+    process_batches,
+)
+
 
 @profile
 def main(schema_name, batch_limit):

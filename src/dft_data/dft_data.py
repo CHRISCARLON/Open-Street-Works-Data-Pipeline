@@ -4,9 +4,12 @@ import pandas as pd
 from io import BytesIO
 from typing import Optional
 
+
 def fetch_road_lengths() -> Optional[pd.DataFrame]:
     try:
-        data = requests.get("https://assets.publishing.service.gov.uk/media/65fb0052aa9b76001dfbdc03/rdl0202.ods")
+        data = requests.get(
+            "https://assets.publishing.service.gov.uk/media/65fb0052aa9b76001dfbdc03/rdl0202.ods"
+        )
         response = data.content
         bytes_io = BytesIO(response)
 
@@ -17,16 +20,14 @@ def fetch_road_lengths() -> Optional[pd.DataFrame]:
         )
 
         df = df.astype(str)
-        df.columns = (df.columns
-                    .str.replace("'", "")
-                    .str.strip()
-        )
-        df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
+        df.columns = df.columns.str.replace("'", "").str.strip()
+        df.columns = df.columns.str.lower().str.replace(" ", "_").str.replace("/", "_")
         print(df.head(15))
         return df
 
     except Exception as e:
         raise Exception(f"Failed to fetch road length data: {str(e)}")
+
 
 def clean_name_gss(x: str):
     """
@@ -43,6 +44,7 @@ def clean_name_gss(x: str):
     x = str(x).lower()
     return x
 
+
 def fetch_gss_codes() -> Optional[pd.DataFrame]:
     try:
         data = requests.get("https://roadtraffic.dft.gov.uk/api/local-authorities")
@@ -50,11 +52,12 @@ def fetch_gss_codes() -> Optional[pd.DataFrame]:
 
         df = pd.DataFrame(reponse)
         df = df.astype(str)
-        df.columns = (df.columns
-                    .str.lower()
-                    .str.replace(' ', '_')
-                    .str.replace('/', '_')
-                    .str.strip())
+        df.columns = (
+            df.columns.str.lower()
+            .str.replace(" ", "_")
+            .str.replace("/", "_")
+            .str.strip()
+        )
         df.loc[:, "name"] = df.loc[:, "name"].apply(clean_name_gss)
         df.loc[df["name"] == "newcastle upon tyne", "name"] = "newcastle"
         df.loc[df["name"] == "thames", "name"] = "kingston upon thames"
@@ -66,9 +69,12 @@ def fetch_gss_codes() -> Optional[pd.DataFrame]:
     except Exception as e:
         raise Exception(f"Failed to fetch gfss code data: {str(e)}")
 
+
 def fetch_traffic_flows() -> Optional[pd.DataFrame]:
     try:
-        data = requests.get("https://assets.publishing.service.gov.uk/media/664b86614f29e1d07fadcb4c/tra8904-km-by-local-authority.ods")
+        data = requests.get(
+            "https://assets.publishing.service.gov.uk/media/664b86614f29e1d07fadcb4c/tra8904-km-by-local-authority.ods"
+        )
         response = data.content
         bytes_io = BytesIO(response)
 
@@ -79,13 +85,15 @@ def fetch_traffic_flows() -> Optional[pd.DataFrame]:
         )
 
         df = df.astype(str)
-        df.columns = (df.columns
-                    .str.replace(r'_\[note_8\]', '')
-                    .str.replace(r'_\[note_8\]_\[r\]', '')
-                    .str.replace('Integrated Transport Authority (ITA)', 'Integrated Transport Authority')
-                    .str.strip()
+        df.columns = (
+            df.columns.str.replace(r"_\[note_8\]", "")
+            .str.replace(r"_\[note_8\]_\[r\]", "")
+            .str.replace(
+                "Integrated Transport Authority (ITA)", "Integrated Transport Authority"
+            )
+            .str.strip()
         )
-        df.columns = df.columns.str.lower().str.replace(' ', '_').str.replace('/', '_')
+        df.columns = df.columns.str.lower().str.replace(" ", "_").str.replace("/", "_")
         print(df.head(15))
         print(df.columns)
         return df

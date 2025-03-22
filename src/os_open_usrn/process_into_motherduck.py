@@ -1,5 +1,6 @@
 from loguru import logger
 
+
 def process_chunk(df, conn):
     """
     Takes a conncection object and a dataframe
@@ -14,7 +15,9 @@ def process_chunk(df, conn):
 
     if conn:
         try:
-            insert_sql = f"""INSERT INTO "{schema}"."open_usrns_latest" SELECT * FROM df"""
+            insert_sql = (
+                f"""INSERT INTO "{schema}"."open_usrns_latest" SELECT * FROM df"""
+            )
             conn.execute(insert_sql)
         except Exception as e:
             logger.error(f"Error inserting DataFrame into DuckDB: {e}")

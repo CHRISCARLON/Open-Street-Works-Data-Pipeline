@@ -1,9 +1,10 @@
 import requests
 from loguru import logger
 
+
 def fetch_redirect_url() -> str:
     """
-    Call the redirect url and then fetch the actual download url. 
+    Call the redirect url and then fetch the actual download url.
     This is suboptimal and will change in future versions.
     """
     url = "https://api.os.uk/downloads/v1/products/OpenUSRN/downloads?area=GB&format=GeoPackage&redirect"
