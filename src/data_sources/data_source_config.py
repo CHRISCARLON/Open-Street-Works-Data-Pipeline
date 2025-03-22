@@ -27,6 +27,10 @@ class DataSourceType(Enum):
         "geoplace_swa",
         "https://www.geoplace.co.uk/local-authority-resources/street-works-managers/view-swa-codes",
     )
+    OS_OPEN_USRN = (
+        "os_open_usrn",
+        "https://api.os.uk/downloads/v1/products/OpenUSRN/downloads?area=GB&format=GeoPackage&redirect",
+    )
     # Add other data sources as needed
 
     def __init__(self, code: str, base_url: str):

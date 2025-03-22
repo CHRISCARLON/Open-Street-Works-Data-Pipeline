@@ -129,6 +129,7 @@ def process_data(url: str, conn, schema_name: str, table_name: str) -> None:
         schema: The schema of the table.
         table: The name of the table.
     """
+    logger.info(f"Starting data stream processing from {url}")
     try:
         df = fetch_swa_codes(url)
         if df is not None:
