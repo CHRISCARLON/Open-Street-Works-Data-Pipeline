@@ -203,9 +203,9 @@ def load_csv_data(url: str, conn, batch_limit: int, schema: str, name: str):
         )
 
 
-def process_data(url: str, conn, batch_limit: int, schema: str, name: str):
+def process_data(url: str, conn, batch_limit: int, schema_name: str, table_name: str):
     """
     Process the data from the url and insert it into the database.
     """
     # Load the data
-    load_csv_data(url, conn, batch_limit, schema, name)
+    load_csv_data(url, conn, batch_limit, schema_name, table_name)

@@ -188,7 +188,7 @@ def load_geopackage_open_usrns(
     return None
 
 
-def process_data(url: str, conn, batch_size: int, schema: str, table: str):
+def process_data(url: str, conn, batch_size: int, schema_name: str, table_name: str):
     """
     Process the data from the url and insert it into the motherduck table.
     """
@@ -196,4 +196,4 @@ def process_data(url: str, conn, batch_size: int, schema: str, table: str):
         f"Starting data stream processing from {url} with batch size {batch_size}"
     )
     redirect_url = fetch_redirect_url(url)
-    load_geopackage_open_usrns(redirect_url, conn, batch_size, schema, table)
+    load_geopackage_open_usrns(redirect_url, conn, batch_size, schema_name, table_name)
