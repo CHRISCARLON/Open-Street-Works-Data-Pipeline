@@ -9,6 +9,7 @@ from shapely.geometry import shape
 from loguru import logger
 from tqdm import tqdm
 
+
 def insert_into_motherduck(df, conn, schema: str, table: str):
     """
     Processes dataframe into MotherDuck table
@@ -23,20 +24,23 @@ def insert_into_motherduck(df, conn, schema: str, table: str):
     if conn:
         try:
             logger.info(f"Attempting to insert into schema: {schema}, table: {table}")
-            
+
             conn.register("df_temp", df)
-            
+
             if schema == "open_usrns_latest" and table == "os_open_usrns":
-                insert_sql = f"""INSERT INTO open_usrns_latest.os_open_usrns SELECT * FROM df_temp"""
+                insert_sql = """INSERT INTO open_usrns_latest.os_open_usrns SELECT * FROM df_temp"""
             else:
-                insert_sql = f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df_temp"""
-                
+                insert_sql = (
+                    f"""INSERT INTO "{schema}"."{table}" SELECT * FROM df_temp"""
+                )
+
             conn.execute(insert_sql)
             logger.success(f"Inserted {len(df)} rows into {schema}.{table}")
         except Exception as e:
             logger.error(f"Error inserting DataFrame into DuckDB: {e}")
             raise
     return None
+
 
 def fetch_redirect_url(url: str) -> str:
     """
@@ -53,7 +57,10 @@ def fetch_redirect_url(url: str) -> str:
         raise
     return redirect_url
 
-def load_geopackage_open_usrns(url: str, conn, batch_size: int, schema: str, table: str):
+
+def load_geopackage_open_usrns(
+    url: str, conn, batch_size: int, schema: str, table: str
+):
     """
     Function to load OS open usrn data in batches of 50,000 rows.
 
@@ -106,7 +113,7 @@ def load_geopackage_open_usrns(url: str, conn, batch_size: int, schema: str, tab
 
                         logger.info(f"The CRS is: {crs}")
                         logger.info(f"The Data Schema is: {data_schema}")
-                        
+
                         # Get total number of features for the progress bar
                         total_features = len(src)
                         logger.info(f"Total features to process: {total_features}")
@@ -115,7 +122,9 @@ def load_geopackage_open_usrns(url: str, conn, batch_size: int, schema: str, tab
                         features = []
 
                         # Use tqdm for progress tracking
-                        for i, feature in enumerate(tqdm(src, total=total_features, desc="Processing features")):
+                        for i, feature in enumerate(
+                            tqdm(src, total=total_features, desc="Processing features")
+                        ):
                             try:
                                 # Convert geometry to WKT string
                                 geom = shape(feature["geometry"])
@@ -149,7 +158,9 @@ def load_geopackage_open_usrns(url: str, conn, batch_size: int, schema: str, tab
                         if features:
                             df_chunk = pd.DataFrame(features)
                             insert_into_motherduck(df_chunk, conn, schema, table)
-                            logger.info(f"Processed remaining features: {len(features)}")
+                            logger.info(
+                                f"Processed remaining features: {len(features)}"
+                            )
                             # Empty the list
                             features = []
 
@@ -176,10 +187,13 @@ def load_geopackage_open_usrns(url: str, conn, batch_size: int, schema: str, tab
                 print(error)
     return None
 
+
 def process_data(url: str, conn, batch_size: int, schema: str, table: str):
     """
     Process the data from the url and insert it into the motherduck table.
     """
-    logger.info(f"Starting data stream processing from {url} with batch size {batch_size}")
+    logger.info(
+        f"Starting data stream processing from {url} with batch size {batch_size}"
+    )
     redirect_url = fetch_redirect_url(url)
     load_geopackage_open_usrns(redirect_url, conn, batch_size, schema, table)

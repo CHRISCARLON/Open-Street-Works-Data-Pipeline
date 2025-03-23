@@ -31,6 +31,10 @@ class DataSourceType(Enum):
         "os_open_usrn",
         "https://api.os.uk/downloads/v1/products/OpenUSRN/downloads?area=GB&format=GeoPackage&redirect",
     )
+    OS_USRN_UPRN = (
+        "os_usrn_uprn",
+        "https://api.os.uk/downloads/v1/products/LIDS/downloads",
+    )
     # Add other data sources as needed
 
     def __init__(self, code: str, base_url: str):
