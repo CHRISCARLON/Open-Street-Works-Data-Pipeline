@@ -35,7 +35,7 @@ class MotherDuckManager(DatabaseProtocol):
         """
         if not self.token:
             logger.warning("No token provided, MotherDuck connection not made")
-            return None
+            raise ValueError("No token provided, MotherDuck connection not made")
 
         try:
             connection_string = f"md:{self.database}?motherduck_token={self.token}"
