@@ -276,7 +276,7 @@ class StreetManager(DataSourceConfig):
         return cls(
             processor_type=DataProcessorType.MOTHERDUCK,
             time_range=TimeRange.HISTORIC,
-            batch_limit=150000,
+            batch_limit=200000,
             year=2022,
             start_month=1,
             end_month=13,
