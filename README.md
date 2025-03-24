@@ -16,7 +16,7 @@ This project automates the extraction, loading, and transformation (ELT) of data
 
 - **Process Raw Data**: Process raw data from Street Manager and other sources into a structured format
 - **Load into MotherDuck**: Load the processed data into MotherDuck
-- **DBT Analysis**: Run DBT models for transforming raw data into actionable insights - for example and england wide street works impact scores
+- **DBT Analysis**: Run DBT models for transforming raw data into actionable insights - for example an england wide street work impact scores.
 
 Check out [Word on the Street](https://word-on-the-street.evidence.app) for an example of a BI product that is based on this data pipeline.
 
