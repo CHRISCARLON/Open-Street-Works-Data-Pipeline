@@ -27,10 +27,10 @@ def main():
     os_open_usrn_config = OsOpenUsrn.create_default_latest()
     os_usrn_uprn_config = OsUsrnUprn.create_default_latest()
 
-    logger.success(f"street_manager_config: {street_manager_config}")
-    logger.success(f"geoplace_swa_config: {geoplace_swa_config}")
-    logger.success(f"os_open_usrn_config: {os_open_usrn_config}")
-    logger.success(f"os_usrn_uprn_config: {os_usrn_uprn_config}")
+    logger.info(f"street_manager_config: {street_manager_config}")
+    logger.info(f"geoplace_swa_config: {geoplace_swa_config}")
+    logger.info(f"os_open_usrn_config: {os_open_usrn_config}")
+    logger.info(f"os_usrn_uprn_config: {os_usrn_uprn_config}")
 
     # Process Data
     with MotherDuckManager(token, database) as motherduck_manager_street_manager:

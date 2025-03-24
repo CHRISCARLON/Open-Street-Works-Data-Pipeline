@@ -1,93 +1,94 @@
 # Open Street Works Data Pipeline 🚙
 
-> [!IMPORTANT]
-> This is currently being rewritten from top to bottom to use a more modular and flexible approach.
->
-> I wrote this project a while ago and it's time to update the code to be more maintainable and flexible.
->
-> I'll update this README properly when the new version is fully ready.
+A data pipeline for processing UK street works/Ordnance Survey data.
 
-OLD WAY (TOO MUCH CODE AND TOO MESSY)
+## Overview
 
-```python
-import psutil
-import os
+This project automates the extraction, loading, and transformation (ELT) of data from:
 
-from memory_profiler import profile
-from loguru import logger
-from general_functions.creds import secret_name
+- Street Manager
+- Ordnance Survey Linked Identifiers
+- Ordnance Survey Open USRNs
+- Geoplace SWA Codes
+- Scottish Roadworks Register (SRWR) - **TBC**
 
-from england_street_manager.generate_dl_link import generate_dl_link
-from england_street_manager.schema_name_trigger import get_raw_data_year
-from england_street_manager.date_month import date_for_table
-from england_street_manager.motherduck_create_table import motherduck_create_table
-from general_functions.create_motherduck_connection import connect_to_motherduck
-from general_functions.get_credentials import get_secrets
-from england_street_manager.extract_load_data import process_batch_and_insert_to_motherduck
-from england_street_manager.stream_zipped_data import fetch_data
+## Features
 
-@profile
-def main(batch_limit: int):
-    """
-    Monthly permit main will process the latest Street Manager Permit data.
+- **Process Raw Data**: Process raw data from Street Manager and other sources into a structured format
+- **Load into MotherDuck**: Load the processed data into MotherDuck
+- **DBT Analysis**: Run DBT models for transforming raw data into actionable insights - for example and england wide street works impact scores
 
-    If you run this in April then you will generate the D/L link for March's data.
+Check out [Word on the Street](https://word-on-the-street.evidence.app) for an example of a BI product that is based on this data pipeline.
 
-    Args:
-        Batch limit - set this to specify the chunk size for processing (e.g. process in chunks of 100,000 files)
-    """
+## Components
 
-    # Get the initial memory usage
-    initial_memory = psutil.Process(os.getpid()).memory_info().rss
-    print(initial_memory)
+- **Data Sources**: Configurable interfaces for different data providers
+- **Data Processors**: Specialised handlers for each data source format
+- **Database Layer**: Abstraction over MotherDuck/DuckDB connections and operations
+- **Analysis**: DBT models for creating analytical aggregations
+- **Infrastructure**: Terraform configurations for cloud deployment
 
-    logger.success("MONTHLY PERMIT DATA STARTED")
+## Getting Started
 
-    # Credentials for MotherDuck
-    secrets = get_secrets(secret_name)
-    token = secrets["motherduck_token"]
-    database = secrets["motherdb"]
-    schema = get_raw_data_year()
+### Prerequisites
 
-    # Create MotherDuck table date
-    table = date_for_table()
+- Python 3.11+
+- Poetry for dependency management
+- AWS credentials (if using cloud deployment)
+- MotherDuck token
 
-    # Initiate motherduck connection and table
-    conn = connect_to_motherduck(token, database)
-    motherduck_create_table(conn, schema, table)
+FYI - This can be run:
 
-    # Start data processing
-    link = generate_dl_link()
-    data = fetch_data(link)
-    process_batch_and_insert_to_motherduck(data, batch_limit, conn, schema, table)
+- Locally with a Python venv
+- Locally with Docker
+- In the cloud with AWS Fargate (see terraform/main.tf)
 
-    # Get the final memory usage
-    final_memory = psutil.Process(os.getpid()).memory_info().rss
-    print(final_memory)
+### Installation
 
-    logger.success("MONTHLY PERMIT DATA PROCESSED")
+```bash
+# Clone the repository
+git clone https://github.com/your-username/open-street-works-data-pipeline.git
+cd open-street-works-data-pipeline
+
+# Install dependencies using Poetry
+poetry install --no-root
 ```
 
-NEW WAY (IN PROGRESS BUT A LOT CLEANER)
+### Configuration
 
-```python
-from data_sources.street_manager import StreetManager
-from database.motherduck import MotherDuckManager
-from data_processors.street_manager import process_data
+Create a `.env` file with your configuration:
 
-def main():
-    # MotherDuck credentials
-    token = ""
-    database = ""
+```zsh
+# MotherDuck credentials
+MOTHERDUCK_TOKEN=your_token
+MOTHERDB=your_database
 
-    # Create all the configurations
-    street_manager_config_latest = StreetManager.create_default_latest()
-
-    # Process the data
-    with MotherDuckManager(token, database) as motherduck_manager:
-        motherduck_manager.setup_for_data_source(street_manager_config_latest)
-        process_data(street_manager_config_latest.download_links[0], 150000, motherduck_manager, street_manager_config_latest.schema_name, street_manager_config_latest.table_names[0])
-
-if __name__ == "__main__":
-    main()
+# AWS deployment (if using)
+REGION=your_aws_region
+ACCOUNT_ID=your_aws_account_id
+REPO_NAME=your_ecr_repo_name
 ```
+
+### Running the Pipeline
+
+```bash
+poetry run python -m src.main
+```
+
+## Deployment
+
+If deploying to AWS Fargate, the project includes a Makefile to simplify Docker image building and AWS deployment:
+
+```bash
+# Build and push Docker image to ECR
+make docker-all
+
+# Apply Terraform configuration
+cd terraform
+terraform init
+terraform apply
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
