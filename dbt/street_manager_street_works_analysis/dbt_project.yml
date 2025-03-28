@@ -56,3 +56,5 @@ models:
       collab_overview_england:
     emergency_works:
       emergency_works_overview_england:
+    new_connections:
+      new_connections_england:
